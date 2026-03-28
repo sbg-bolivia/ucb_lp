@@ -1,0 +1,291 @@
+@import "tailwindcss";
+
+@variant dark (&:where(.dark *));
+
+/* Gilroy Font Family */
+@font-face {
+  font-family: "Gilroy";
+  src: url("/gilroy/Gilroy-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Gilroy";
+  src: url("/gilroy/Gilroy-Medium.ttf") format("truetype");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Gilroy";
+  src: url("/gilroy/Gilroy-SemiBold.ttf") format("truetype");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Gilroy";
+  src: url("/gilroy/Gilroy-Bold.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "GuarujaTitle";
+  src: url("/gilroy/GuarujaTitle.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@theme {
+  --font-family-sans: "Gilroy", "sans-serif";
+  --font-family-heading: "GuarujaTitle", "sans-serif";
+
+  /* Colors for light mode */
+  --color-background: #f8fafb;
+  --color-foreground: hsl(240 10% 23.9%);
+  --color-card: hsl(0 0% 100%);
+  --color-card-foreground: hsl(240 10% 3.9%);
+  --color-popover: hsl(0 0% 100%);
+  --color-popover-foreground: hsl(240 10% 3.9%);
+  --color-primary: #060C20;
+  --color-primary-foreground: hsl(0 0% 98%);
+  --color-secondary: #0072CF;
+  --color-secondary-foreground: hsl(0 0% 98%);
+  --color-muted: hsl(240 4.8% 95.9%);
+  --color-muted-foreground: hsl(240 3.8% 46.1%);
+  --color-accent: #7ECFC3;
+  --color-accent-foreground: hsl(0 0% 98%);
+  --color-destructive: hsl(0 84.2% 60.2%);
+  --color-destructive-foreground: hsl(0 0% 98%);
+  --color-border: hsl(140 15.9% 92%);
+  --color-input: hsl(240 5.9% 90%);
+  --color-ring: #0072CF;
+
+  /* Sidebar colors for light mode */
+  --sidebar: hsl(0 0% 100%);
+  --sidebar-foreground: hsl(240 10% 3.9%);
+  --sidebar-primary: hsl(215, 40%, 42%);
+  --sidebar-primary-foreground: hsl(0 0% 98%);
+  --sidebar-accent: hsl(215, 40%, 96%);
+  --sidebar-accent-foreground: hsl(215, 40%, 20%);
+  --sidebar-border: hsl(240 5.9% 85%);
+  --sidebar-ring: hsl(215, 40%, 42%);
+
+  --radius: 0.6rem;
+}
+
+.dark {
+  /* Colors for dark mode */
+  --color-background: hsl(220, 15%, 6%);
+  --color-foreground: hsl(0 0% 98%);
+  --color-card: hsl(220, 15%, 10%);
+  --color-card-foreground: hsl(0 0% 98%);
+  --color-popover: hsl(220, 15%, 9%);
+  --color-popover-foreground: hsl(0 0% 98%);
+  --color-primary: hsl(210, 50%, 58%);
+  --color-primary-foreground: hsl(0 0% 98%);
+  --color-secondary: hsl(187, 60%, 57%);
+  --color-secondary-foreground: hsl(0 0% 98%);
+  --color-muted: hsl(220, 12%, 14%);
+  --color-muted-foreground: hsl(240 5% 64.9%);
+  --color-accent: hsl(220, 15%, 8%);
+  --color-accent-foreground: hsl(0 0% 98%);
+  --color-destructive: hsl(0 62.8% 30.6%);
+  --color-destructive-foreground: hsl(0 0% 98%);
+  --color-border: hsl(220, 12%, 12%);
+  --color-input: hsl(220, 12%, 14%);
+  --color-ring: hsl(210, 50%, 58%);
+
+  /* Sidebar colors for dark mode */
+  --sidebar: hsl(220, 15%, 5%);
+  --sidebar-foreground: hsl(0 0% 98%);
+  --sidebar-primary: hsl(210, 50%, 58%);
+  --sidebar-primary-foreground: hsl(0 0% 98%);
+  --sidebar-accent: hsl(210, 50%, 15%);
+  --sidebar-accent-foreground: hsl(0 0% 98%);
+  --sidebar-border: hsl(220, 12%, 10%);
+  --sidebar-ring: hsl(210, 50%, 58%);
+}
+
+/* Global styles */
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-family-heading);
+  }
+}
+
+html {
+  height: 100%;
+}
+
+body {
+  height: 100%;
+  font-family: var(--font-family-sans);
+  background-color: var(--color-background);
+  color: var(--color-foreground);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Custom animations and utilities */
+@layer components {
+  .animate-blob {
+    animation: blob 7s infinite;
+  }
+
+  .animation-delay-2000 {
+    animation-delay: 2s;
+  }
+
+  .animation-delay-4000 {
+    animation-delay: 4s;
+  }
+
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  .bg-grid-pattern {
+    background-image: linear-gradient(rgba(0, 0, 0, 0.1) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 0, 0, 0.1) 1px, transparent 1px);
+    background-size: 20px 20px;
+  }
+
+  .dark .bg-grid-pattern {
+    background-image: linear-gradient(
+        rgba(255, 255, 255, 0.1) 1px,
+        transparent 1px
+      ), linear-gradient(90deg, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+  }
+
+  /* Typography classes */
+  .text-heading-1 {
+    @apply text-3xl sm:text-4xl md:text-5xl leading-tight;
+    font-family: var(--font-family-heading);
+  }
+
+  .text-heading-2 {
+    @apply text-2xl sm:text-3xl md:text-4xl leading-tight;
+    font-family: var(--font-family-heading);
+  }
+
+  .text-heading-3 {
+    @apply text-xl sm:text-2xl leading-tight;
+    font-family: var(--font-family-heading);
+  }
+
+  .text-body-large {
+    @apply text-lg sm:text-xl leading-relaxed;
+  }
+
+  .text-body {
+    @apply text-base leading-relaxed;
+  }
+
+  .text-body-small {
+    @apply text-sm leading-relaxed;
+  }
+
+  .text-label {
+    @apply text-sm font-medium;
+  }
+
+}
+
+@layer utilities {
+  /* Custom scrollbar styles for tables */
+  .table-scroll-container {
+    overflow-x: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 #f1f5f9;
+  }
+
+  .table-scroll-container::-webkit-scrollbar {
+    height: 8px;
+  }
+
+  .table-scroll-container::-webkit-scrollbar-track {
+    background: #f1f5f9;
+    border-radius: 4px;
+  }
+
+  .table-scroll-container::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 4px;
+  }
+
+  .table-scroll-container::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+  }
+
+  /* Dark mode scrollbar */
+  .dark .table-scroll-container {
+    scrollbar-color: #475569 #1e293b;
+  }
+
+  .dark .table-scroll-container::-webkit-scrollbar-track {
+    background: #1e293b;
+  }
+
+  .dark .table-scroll-container::-webkit-scrollbar-thumb {
+    background: #475569;
+  }
+
+  .dark .table-scroll-container::-webkit-scrollbar-thumb:hover {
+    background: #64748b;
+  }
+
+  @keyframes blob {
+    0% {
+      transform: translate(0px, 0px) scale(1);
+    }
+    33% {
+      transform: translate(30px, -50px) scale(1.1);
+    }
+    66% {
+      transform: translate(-20px, 20px) scale(0.9);
+    }
+    100% {
+      transform: translate(0px, 0px) scale(1);
+    }
+  }
+
+  @keyframes particleFloat {
+    0% {
+      transform: translateY(0) translateX(0) scale(0.5);
+      opacity: 0;
+    }
+    10% {
+      opacity: 0.7;
+      transform: translateY(-10vh) translateX(calc(var(--x-movement, 0) * 0.1))
+        scale(1);
+    }
+    50% {
+      opacity: 0.8;
+      transform: translateY(-50vh) translateX(calc(var(--x-movement, 0) * 0.5))
+        scale(1.2);
+    }
+    90% {
+      opacity: 0.6;
+    }
+    100% {
+      transform: translateY(-120vh) translateX(var(--x-movement, 0)) scale(0.8);
+      opacity: 0;
+    }
+  }
+}

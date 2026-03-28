@@ -1,0 +1,154 @@
+{
+  "hero": {
+    "title": "Modern {modern} Platform for Your Business",
+    "modern": "Platform",
+    "subtitle": "The smartest way to manage users, content and configure your platform efficiently and scalably.",
+    "ctaPrimary": "Get Started",
+    "ctaSecondary": "View Features"
+  },
+  "bento": {
+    "title": "Everything you need to build your {platform}",
+    "platform": "platform",
+    "subtitle": "Powerful and easy-to-use tools to create exceptional experiences",
+    "cards": {
+      "ai": {
+        "title": "AI Code Reviews",
+        "description": "Improve your code quality with AI-powered automatic reviews."
+      },
+      "realtime": {
+        "title": "Realtime Previews",
+        "description": "See your changes as you code with instant updates."
+      },
+      "integrations": {
+        "title": "One-Click Integrations",
+        "description": "Connect your favorite tools effortlessly."
+      },
+      "connectivity": {
+        "title": "MCP Connectivity",
+        "description": "Seamless integration with the Model Context Protocol."
+      },
+      "automation": {
+        "title": "Parallel Coding Agents",
+        "description": "Automate repetitive tasks and accelerate your workflow."
+      },
+      "deployment": {
+        "title": "Easy Deployment",
+        "description": "Deploy your application with one click to any platform."
+      }
+    }
+  },
+  "cta": {
+    "title": "Ready to transform",
+    "titleHighlight": "your platform?",
+    "subtitle": "Join professionals who are already scaling their operations with MyApp",
+    "buttonPrimary": "Get started",
+    "buttonSecondary": "View plans",
+    "trust": {
+      "noCommitment": "No commitment",
+      "quickSetup": "Setup in minutes",
+      "support247": "24/7 Support"
+    }
+  },
+  "faq": {
+    "title": "Frequently",
+    "titleHighlight": "Asked Questions",
+    "subtitle": "Everything you need to know about our platform",
+    "items": [
+      {
+        "q": "How does user management work?",
+        "a": "Our system allows you to create, manage and organize users with different roles and permissions easily and efficiently."
+      },
+      {
+        "q": "What integrations are available?",
+        "a": "We support over 50 popular integrations including third-party APIs, authentication services, and analytics tools."
+      },
+      {
+        "q": "What is the platform performance?",
+        "a": "Our platform offers optimized performance with response times under 100ms on Basic plans and under 50ms on higher plans."
+      },
+      {
+        "q": "Can I manage team permissions?",
+        "a": "Yes, our RBAC (Role-Based Access Control) system allows you to configure granular permissions for team members."
+      },
+      {
+        "q": "Is there a free trial?",
+        "a": "Yes, all plans include a 14-day free trial with no credit card required. You can cancel anytime."
+      },
+      {
+        "q": "What support options are available?",
+        "a": "We offer email support on Basic, priority support on Professional, and dedicated 24/7 support on Enterprise plans."
+      }
+    ]
+  },
+  "pricing": {
+    "title": "Plans for Every",
+    "titleHighlight": "Type of User",
+    "subtitle": "Choose the plan that fits your needs, from individual users to professional organizations and large teams.",
+    "annual": "Annual",
+    "monthly": "Monthly",
+    "discount": "-20%",
+    "billedAnnually": "Billed annually",
+    "perMonth": "/month",
+    "mostPopular": "⭐ Most Popular",
+    "plans": {
+      "basic": {
+        "name": "Basic",
+        "description": "Perfect for individual users",
+        "monthlyPrice": "$29",
+        "annualPrice": "$19",
+        "buttonText": "Get Started",
+        "features": [
+          "Up to 100 users",
+          "2 basic integrations",
+          "Standard dashboard",
+          "Email support",
+          "1GB storage",
+          "Basic API"
+        ]
+      },
+      "professional": {
+        "name": "Professional",
+        "description": "Ideal for small teams",
+        "monthlyPrice": "$99",
+        "annualPrice": "$79",
+        "buttonText": "Join Now",
+        "features": [
+          "Up to 1,000 users",
+          "10 integrations",
+          "Advanced dashboard",
+          "Priority support",
+          "10GB storage",
+          "Basic RBAC system",
+          "Advanced analytics",
+          "Full API"
+        ]
+      },
+      "enterprise": {
+        "name": "Enterprise",
+        "description": "For large organizations",
+        "monthlyPrice": "$299",
+        "annualPrice": "$239",
+        "buttonText": "Contact Sales",
+        "features": [
+          "Unlimited users",
+          "Unlimited integrations",
+          "Custom dashboard",
+          "24/7 support",
+          "Unlimited storage",
+          "Full RBAC",
+          "Custom API",
+          "White-label available",
+          "Guaranteed SLA"
+        ]
+      }
+    },
+    "includes": "Includes:",
+    "includesMore": "Everything above +"
+  },
+  "testimonials": {
+    "title": "Effortless",
+    "titleHighlight": "Management",
+    "subtitle": "Hear how professionals scale their operations faster, collaborate seamlessly, and manage with confidence using MyApp's powerful tools"
+  },
+  "loading": "Loading..."
+}

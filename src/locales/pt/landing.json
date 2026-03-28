@@ -1,0 +1,154 @@
+{
+  "hero": {
+    "title": "Plataforma {modern} Moderna para seu Negócio",
+    "modern": "Modern",
+    "subtitle": "A forma mais inteligente de gerenciar usuários, conteúdo e configurar sua plataforma de forma eficiente e escalável.",
+    "ctaPrimary": "Começar Agora",
+    "ctaSecondary": "Ver Recursos"
+  },
+  "bento": {
+    "title": "Tudo que você precisa para construir sua {platform}",
+    "platform": "plataforma",
+    "subtitle": "Ferramentas poderosas e fáceis de usar para criar experiências excepcionais",
+    "cards": {
+      "ai": {
+        "title": "Revisão de Código com IA",
+        "description": "Melhore a qualidade do seu código com revisões automáticas alimentadas por IA."
+      },
+      "realtime": {
+        "title": "Visualizações em Tempo Real",
+        "description": "Veja suas mudanças enquanto codifica com atualizações instantâneas."
+      },
+      "integrations": {
+        "title": "Integrações de Um Clique",
+        "description": "Conecte suas ferramentas favoritas sem esforço."
+      },
+      "connectivity": {
+        "title": "Conectividade MCP",
+        "description": "Integração perfeita com o Protocolo de Contexto do Modelo."
+      },
+      "automation": {
+        "title": "Agentes de Codificação Paralela",
+        "description": "Automatize tarefas repetitivas e acelere seu fluxo de trabalho."
+      },
+      "deployment": {
+        "title": "Implantação Fácil",
+        "description": "Implante sua aplicação com um clique em qualquer plataforma."
+      }
+    }
+  },
+  "cta": {
+    "title": "Pronto para transformar",
+    "titleHighlight": "sua plataforma?",
+    "subtitle": "Junte-se a profissionais que já estão escalando suas operações com MyApp",
+    "buttonPrimary": "Começar agora",
+    "buttonSecondary": "Ver planos",
+    "trust": {
+      "noCommitment": "Sem compromisso",
+      "quickSetup": "Configuração em minutos",
+      "support247": "Suporte 24/7"
+    }
+  },
+  "faq": {
+    "title": "Perguntas",
+    "titleHighlight": "Frequentes",
+    "subtitle": "Tudo o que você precisa saber sobre nossa plataforma",
+    "items": [
+      {
+        "q": "Como funciona o gerenciamento de usuários?",
+        "a": "Nosso sistema permite criar, gerenciar e organizar usuários com diferentes funções e permissões de forma simples e eficiente."
+      },
+      {
+        "q": "Quais integrações estão disponíveis?",
+        "a": "Suportamos mais de 50 integrações populares, incluindo APIs de terceiros, serviços de autenticação e ferramentas de análise."
+      },
+      {
+        "q": "Qual é o desempenho da plataforma?",
+        "a": "Nossa plataforma oferece desempenho otimizado com tempos de resposta inferiores a 100ms em planos Básicos e inferiores a 50ms em planos superiores."
+      },
+      {
+        "q": "Posso gerenciar permissões da equipe?",
+        "a": "Sim, nosso sistema RBAC (Controle de Acesso Baseado em Funções) permite configurar permissões granulares para membros da equipe."
+      },
+      {
+        "q": "Há teste gratuito?",
+        "a": "Sim, todos os planos incluem 14 dias de teste gratuito sem cartão de crédito. Você pode cancelar a qualquer momento."
+      },
+      {
+        "q": "Quais opções de suporte estão disponíveis?",
+        "a": "Oferecemos suporte por email no Básico, suporte prioritário no Profissional e suporte dedicado 24/7 em planos Empresariais."
+      }
+    ]
+  },
+  "pricing": {
+    "title": "Planos para Cada",
+    "titleHighlight": "Tipo de Usuário",
+    "subtitle": "Escolha o plano que se adapte às suas necessidades, desde usuários individuais até organizações profissionais e grandes equipes.",
+    "annual": "Anual",
+    "monthly": "Mensal",
+    "discount": "-20%",
+    "billedAnnually": "Cobrado anualmente",
+    "perMonth": "/mês",
+    "mostPopular": "⭐ Mais Popular",
+    "plans": {
+      "basic": {
+        "name": "Básico",
+        "description": "Perfeito para usuários individuais",
+        "monthlyPrice": "$29",
+        "annualPrice": "$19",
+        "buttonText": "Começar",
+        "features": [
+          "Até 100 usuários",
+          "2 integrações básicas",
+          "Dashboard padrão",
+          "Suporte por email",
+          "Armazenamento 1GB",
+          "API básica"
+        ]
+      },
+      "professional": {
+        "name": "Profissional",
+        "description": "Ideal para equipes pequenas",
+        "monthlyPrice": "$99",
+        "annualPrice": "$79",
+        "buttonText": "Juntar-se Agora",
+        "features": [
+          "Até 1.000 usuários",
+          "10 integrações",
+          "Dashboard avançado",
+          "Suporte prioritário",
+          "Armazenamento 10GB",
+          "Sistema RBAC básico",
+          "Análise avançada",
+          "API completa"
+        ]
+      },
+      "enterprise": {
+        "name": "Empresarial",
+        "description": "Para grandes organizações",
+        "monthlyPrice": "$299",
+        "annualPrice": "$239",
+        "buttonText": "Contatar Vendas",
+        "features": [
+          "Usuários ilimitados",
+          "Integrações ilimitadas",
+          "Dashboard personalizado",
+          "Suporte 24/7",
+          "Armazenamento ilimitado",
+          "RBAC completo",
+          "API personalizada",
+          "White-label disponível",
+          "SLA garantido"
+        ]
+      }
+    },
+    "includes": "Inclui:",
+    "includesMore": "Tudo acima +"
+  },
+  "testimonials": {
+    "title": "Gestão",
+    "titleHighlight": "sem esforço",
+    "subtitle": "Ouça como profissionais escalam suas operações mais rápido, colaboram perfeitamente e gerenciam com confiança usando as poderosas ferramentas do MyApp"
+  },
+  "loading": "Carregando..."
+}
