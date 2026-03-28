@@ -31,7 +31,12 @@
     "preview": "next build && next start",
     "start": "next start",
     "typecheck": "tsc --noEmit",
+    "validate": "pnpm run lint && pnpm run typecheck",
+    "validate:strict": "pnpm run check && pnpm run typecheck",
     "prepare": "husky"
+  },
+  "lint-staged": {
+    "*.{js,cjs,mjs,ts,tsx,jsx,json,jsonc,css}": "biome check --write --files-ignore-unknown=true --no-errors-on-unmatched"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
