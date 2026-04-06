@@ -202,7 +202,10 @@ export default function TenantInfo() {
             tenant.twitterUrl ||
             tenant.instagramUrl ||
             tenant.linkedinUrl ||
-            tenant.youtubeUrl) && (
+            tenant.youtubeUrl ||
+            tenant.meetupUrl ||
+            tenant.whatsappUrl ||
+            tenant.tiktokUrl) && (
             <div>
               <h4 className="text-sm font-medium text-foreground mb-3">
                 Redes Sociales
@@ -256,6 +259,36 @@ export default function TenantInfo() {
                     className="inline-flex items-center px-3 py-1 rounded-md text-xs font-medium border bg-red-600/15 text-red-600 border-red-600 hover:bg-red-600/20 transition-colors"
                   >
                     YouTube
+                  </a>
+                )}
+                {tenant.meetupUrl && (
+                  <a
+                    href={tenant.meetupUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center px-3 py-1 rounded-md text-xs font-medium border bg-rose-600/15 text-rose-600 border-rose-600 hover:bg-rose-600/20 transition-colors"
+                  >
+                    Meetup
+                  </a>
+                )}
+                {tenant.whatsappUrl && (
+                  <a
+                    href={tenant.whatsappUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center px-3 py-1 rounded-md text-xs font-medium border bg-emerald-600/15 text-emerald-600 border-emerald-600 hover:bg-emerald-600/20 transition-colors"
+                  >
+                    WhatsApp
+                  </a>
+                )}
+                {tenant.tiktokUrl && (
+                  <a
+                    href={tenant.tiktokUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center px-3 py-1 rounded-md text-xs font-medium border bg-zinc-600/15 text-foreground border-zinc-500 hover:bg-zinc-600/20 transition-colors"
+                  >
+                    TikTok
                   </a>
                 )}
               </div>

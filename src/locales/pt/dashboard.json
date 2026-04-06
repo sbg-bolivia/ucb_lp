@@ -214,6 +214,10 @@
   "faviconUrl": "URL do Favicon",
   "logoUrlHelp": "URL completa ou caminho relativo do logo (ex: /images/logo.png)",
   "faviconUrlHelp": "URL completa ou caminho relativo do favicon (ex: /favicon.ico)",
+  "clubPublicTeam": "Equipe pública",
+  "clubPublicTeamDesc": "Core team do site: fotos, nomes e links (página /equipo).",
+  "clubEventsAdmin": "Eventos do clube",
+  "clubEventsAdminDesc": "Criar, editar e excluir eventos exibidos no site público.",
   "feedbackDialog": {
     "title": "Sugestões e Relatórios de Erros",
     "description": "Ajude-nos a melhorar a plataforma enviando suas sugestões ou relatando bugs.",

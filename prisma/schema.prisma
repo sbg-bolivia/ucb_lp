@@ -31,6 +31,9 @@ model Tenant {
   instagramUrl    String?
   linkedinUrl     String?
   youtubeUrl      String?
+  meetupUrl       String?
+  whatsappUrl     String?
+  tiktokUrl       String?
   foundedYear     Int?
   logoUrl         String?
   faviconUrl      String?
@@ -41,6 +44,8 @@ model Tenant {
   privacyUrl      String?
   cookiesUrl      String?
   complaintsUrl   String?
+  /// Miembros del core team para la página pública /equipo (JSON array)
+  coreTeam        Json?
   isActive        Boolean      @default(true)
   createdAt       DateTime     @default(now())
   updatedAt       DateTime     @updatedAt
@@ -48,8 +53,31 @@ model Tenant {
   permissions     Permission[]
   roles           Role[]
   translations    Translation[]
+  clubEvents      ClubEvent[]
 
   @@map("tenants")
+}
+
+/// Eventos del club (sitio público /eventos); CRUD desde el dashboard.
+model ClubEvent {
+  id           String    @id @default(uuid())
+  tenantId     String
+  tenant       Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  title        String
+  description  String?   @db.Text
+  startsAt     DateTime?
+  endsAt       DateTime?
+  location     String?
+  imageUrl     String?
+  externalUrl  String?
+  isPublished  Boolean   @default(true)
+  sortOrder    Int       @default(0)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  @@index([tenantId])
+  @@index([tenantId, isPublished, startsAt])
+  @@map("club_events")
 }
 
 model User {

@@ -214,6 +214,10 @@
   "faviconUrl": "Favicon URL",
   "logoUrlHelp": "Full URL or relative path of the logo (e.g: /images/logo.png)",
   "faviconUrlHelp": "Full URL or relative path of the favicon (e.g: /favicon.ico)",
+  "clubPublicTeam": "Public team",
+  "clubPublicTeamDesc": "Core team on the site: photos, names and links (/equipo page).",
+  "clubEventsAdmin": "Club events",
+  "clubEventsAdminDesc": "Create, edit and delete events shown on the public site.",
   "feedbackDialog": {
     "title": "Suggestions & Bug Reports",
     "description": "Help us improve the platform by sending your suggestions or reporting bugs.",

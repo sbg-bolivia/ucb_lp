@@ -1,21 +1,19 @@
 "use client";
 
-import { CasesSection } from "@/components/axium/cases-section";
-import { ContactSection } from "@/components/axium/contact-section";
-import { HeroSection } from "@/components/axium/hero-section";
-import { InspirationalSection } from "@/components/axium/inspirational-section";
-import { ProcessSection } from "@/components/axium/process-section";
-import { ServicesSection } from "@/components/axium/services-section";
+import { ClubActivities } from "@/components/club-landing/club-activities";
+import { ClubCtaBand } from "@/components/club-landing/club-cta-band";
+import { ClubHero } from "@/components/club-landing/club-hero";
+import { ClubHomeHighlights } from "@/components/club-landing/club-home-highlights";
+import { ClubHomeLandingExtras } from "@/components/club-landing/club-home-landing-extras";
 
 export function HomePageContent() {
   return (
-    <div className="min-h-screen bg-white">
-      <HeroSection />
-      <ServicesSection />
-      <ProcessSection />
-      <CasesSection />
-      <ContactSection />
-      <InspirationalSection />
-    </div>
+    <>
+      <ClubHero />
+      <ClubHomeLandingExtras />
+      <ClubHomeHighlights />
+      <ClubActivities />
+      <ClubCtaBand />
+    </>
   );
 }

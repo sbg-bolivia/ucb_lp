@@ -12,7 +12,10 @@
   "formatter": {
     "enabled": true,
     "indentStyle": "space",
-    "indentWidth": 2
+    "indentWidth": 2,
+    // Windows: los archivos suelen guardarse con CRLF; sin esto Biome marca
+    // todo el proyecto como “format” incorrecto (diff con ␍) y falla el commit.
+    "lineEnding": "crlf"
   },
   "organizeImports": {
     "enabled": true

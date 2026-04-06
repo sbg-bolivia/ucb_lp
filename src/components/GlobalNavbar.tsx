@@ -18,79 +18,25 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { ClubNavLogo } from "@/components/club-landing/club-logo";
+import { ClubThemeToggle } from "@/components/club-landing/club-theme-toggle";
 import { useTranslation } from "@/hooks/useTranslation";
+import { SHOW_PUBLIC_LOGIN } from "@/lib/public-auth";
 import { useUser } from "@/hooks/useUser";
 import { getInitials } from "@/lib/utils/avatar";
-import {
-  ChevronDown,
-  Cloud,
-  Code,
-  Grid,
-  LayoutDashboard,
-  LogOut,
-  Menu,
-  Settings,
-  Shield,
-  Smartphone,
-  User,
-  Workflow,
-  Zap,
-} from "lucide-react";
+import { LayoutDashboard, LogOut, Menu, Settings, User } from "lucide-react";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-
-const services = [
-  {
-    icon: Smartphone,
-    title: "Aplicaciones Móviles",
-    description:
-      "Apps nativas e híbridas para iOS y Android con soporte offline.",
-  },
-  {
-    icon: Cloud,
-    title: "Aplicaciones Web",
-    description:
-      "Plataformas cloud-native con alta disponibilidad y seguridad enterprise.",
-  },
-  {
-    icon: Code,
-    title: "Software a Medida",
-    description:
-      "Soluciones enterprise-grade adaptadas a tu arquitectura de negocio.",
-  },
-  {
-    icon: Workflow,
-    title: "Automatización de Procesos",
-    description:
-      "Workflows inteligentes que reducen tareas manuales hasta en un 80%.",
-  },
-];
+import { useRouter } from "next/navigation";
+import { useCallback, useMemo, useState } from "react";
 
 export default function GlobalNavbar() {
-  const _pathname = usePathname();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [isServicesOpen, setIsServicesOpen] = useState(false);
-  const servicesTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  /** Navbar solo en páginas distintas al landing: siempre estilo sólido */
+  const isScrolled = true;
   const { user, isAuthenticated, signOut } = useAuthContext();
   const { primaryRole } = useUser();
   const router = useRouter();
   const { t } = useTranslation("common");
-
-  const handleServicesMouseEnter = useCallback(() => {
-    if (servicesTimeoutRef.current) {
-      clearTimeout(servicesTimeoutRef.current);
-      servicesTimeoutRef.current = null;
-    }
-    setIsServicesOpen(true);
-  }, []);
-
-  const handleServicesMouseLeave = useCallback(() => {
-    servicesTimeoutRef.current = setTimeout(() => {
-      setIsServicesOpen(false);
-    }, 200);
-  }, []);
 
   const handleSignOut = useCallback(async () => {
     await signOut();
@@ -116,22 +62,6 @@ export default function GlobalNavbar() {
 
   const userInitials = useMemo(() => getInitials(user?.name), [user?.name]);
 
-  useEffect(() => {
-    const handleScroll = () => {
-      const scrollPosition = window.scrollY;
-      const viewportHeight = window.innerHeight;
-      setIsScrolled(scrollPosition > viewportHeight);
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-      if (servicesTimeoutRef.current) {
-        clearTimeout(servicesTimeoutRef.current);
-      }
-    };
-  }, []);
-
   return (
     <>
       <nav
@@ -145,104 +75,50 @@ export default function GlobalNavbar() {
           <div className="flex justify-between items-center h-14 md:h-16">
             {/* Logo */}
             <div className="flex-shrink-0">
-              <Link href="/" className="flex items-center">
-                <img
-                  src={isScrolled ? "/logo2.png" : "/logo3.png"}
-                  alt="AXIUM"
-                  className="h-8 w-auto md:h-9 transition-all duration-300"
-                />
-              </Link>
+              <ClubNavLogo />
             </div>
 
             {/* Desktop Navigation Links */}
-            <div className="hidden lg:flex items-center gap-6 flex-1 justify-center ml-8">
+            <div className="hidden lg:flex flex-1 flex-wrap items-center justify-center gap-x-3 gap-y-1 px-2 xl:gap-x-5">
               <Link
-                href="#casos"
-                className={`text-sm font-medium transition-colors ${
-                  isScrolled
-                    ? "text-foreground hover:text-secondary"
-                    : "text-white hover:text-white/80"
-                }`}
+                href="/"
+                className="whitespace-nowrap text-xs font-medium text-foreground transition-colors hover:text-secondary xl:text-sm"
               >
-                Casos de Éxito
+                Inicio
               </Link>
-
-              {/* Services Dropdown */}
-              <div
-                className="relative"
-                onMouseEnter={handleServicesMouseEnter}
-                onMouseLeave={handleServicesMouseLeave}
-              >
-                <button
-                  type="button"
-                  className={`flex items-center gap-1 text-sm font-medium transition-colors ${
-                    isScrolled
-                      ? "text-foreground hover:text-secondary"
-                      : "text-white hover:text-white/80"
-                  }`}
-                >
-                  Servicios
-                  <ChevronDown
-                    className={`h-4 w-4 transition-transform ${isServicesOpen ? "rotate-180" : ""}`}
-                  />
-                </button>
-
-                {/* Services Mega Menu */}
-                {isServicesOpen && (
-                  <div
-                    className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-[600px] bg-white rounded-lg shadow-2xl border border-gray-200 p-6 z-[60]"
-                    onMouseEnter={handleServicesMouseEnter}
-                    onMouseLeave={handleServicesMouseLeave}
-                  >
-                    <div className="flex items-center gap-2 mb-4">
-                      <Grid className="h-5 w-5 text-secondary" />
-                      <h3 className="font-semibold text-gray-900">Servicios</h3>
-                    </div>
-                    <div className="grid grid-cols-2 gap-4">
-                      {services.map((service) => (
-                        <Link
-                          key={service.title}
-                          href="#servicios"
-                          className="block group hover:bg-gray-50 p-3 rounded-lg transition-colors"
-                        >
-                          <div className="flex items-start gap-3">
-                            <div className="w-8 h-8 bg-secondary/10 rounded-lg flex items-center justify-center flex-shrink-0 group-hover:bg-secondary/20 transition-colors">
-                              <service.icon className="w-4 h-4 text-secondary" />
-                            </div>
-                            <div>
-                              <h4 className="font-medium text-gray-900 text-sm mb-1 group-hover:text-secondary transition-colors">
-                                {service.title}
-                              </h4>
-                              <p className="text-xs text-gray-600 leading-relaxed">
-                                {service.description}
-                              </p>
-                            </div>
-                          </div>
-                        </Link>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-
               <Link
-                href="#como-trabajamos"
-                className={`text-sm font-medium transition-colors ${
-                  isScrolled
-                    ? "text-foreground hover:text-secondary"
-                    : "text-white hover:text-white/80"
-                }`}
+                href="/nosotros"
+                className="whitespace-nowrap text-xs font-medium text-foreground transition-colors hover:text-secondary xl:text-sm"
               >
-                Cómo Trabajamos
+                Nosotros
               </Link>
-
               <Link
-                href="#contacto"
-                className={`text-sm font-medium transition-colors ${
-                  isScrolled
-                    ? "text-foreground hover:text-secondary"
-                    : "text-white hover:text-white/80"
-                }`}
+                href="/beneficios"
+                className="whitespace-nowrap text-xs font-medium text-foreground transition-colors hover:text-secondary xl:text-sm"
+              >
+                Beneficios
+              </Link>
+              <Link
+                href="/eventos"
+                className="whitespace-nowrap text-xs font-medium text-foreground transition-colors hover:text-secondary xl:text-sm"
+              >
+                Eventos
+              </Link>
+              <Link
+                href="/equipo"
+                className="whitespace-nowrap text-xs font-medium text-foreground transition-colors hover:text-secondary xl:text-sm"
+              >
+                Equipo
+              </Link>
+              <Link
+                href="/unete"
+                className="whitespace-nowrap text-xs font-medium text-foreground transition-colors hover:text-secondary xl:text-sm"
+              >
+                Únete
+              </Link>
+              <Link
+                href="/contacto"
+                className="whitespace-nowrap text-xs font-medium text-foreground transition-colors hover:text-secondary xl:text-sm"
               >
                 Contacto
               </Link>
@@ -250,11 +126,11 @@ export default function GlobalNavbar() {
 
             {/* Desktop Auth Section */}
             <div className="hidden lg:block">
-              <div className="ml-4 flex items-center md:ml-6 gap-4">
-                <LanguageSelector isTransparent={!isScrolled} />
+              <div className="ml-4 flex items-center md:ml-6 gap-3">
+                <ClubThemeToggle />
+                <LanguageSelector isTransparent={false} />
                 {isAuthenticated ? (
                   <div className="flex items-center space-x-4">
-                    {/* User Name */}
                     <span
                       className={`font-medium text-sm transition-colors ${
                         isScrolled ? "text-foreground" : "text-white"
@@ -263,7 +139,6 @@ export default function GlobalNavbar() {
                       {user?.name || t("user")}
                     </span>
 
-                    {/* User Avatar Dropdown */}
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <button
@@ -322,7 +197,7 @@ export default function GlobalNavbar() {
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </div>
-                ) : (
+                ) : SHOW_PUBLIC_LOGIN ? (
                   <div className="flex items-center space-x-4">
                     <button
                       type="button"
@@ -336,7 +211,7 @@ export default function GlobalNavbar() {
                       {t("signIn")}
                     </button>
                   </div>
-                )}
+                ) : null}
               </div>
             </div>
 
@@ -364,14 +239,66 @@ export default function GlobalNavbar() {
                   className="w-96 bg-white border-gray-200"
                 >
                   <SheetHeader className="px-2">
-                    <SheetTitle className="text-white text-lg">
+                    <SheetTitle className="text-lg text-foreground">
                       {t("mainMenu")}
                     </SheetTitle>
                   </SheetHeader>
                   <div className="mt-6 px-2">
-                    <div className="mb-4 px-2">
+                    <div className="mb-4 flex items-center justify-between gap-2 px-2">
+                      <ClubThemeToggle />
                       <LanguageSelector />
                     </div>
+                    <nav className="mb-6 flex flex-col gap-1 border-b border-border pb-4">
+                      <Link
+                        href="/"
+                        onClick={() => setIsMenuOpen(false)}
+                        className="rounded-lg px-3 py-2 text-sm font-medium text-foreground hover:bg-muted"
+                      >
+                        Inicio
+                      </Link>
+                      <Link
+                        href="/nosotros"
+                        onClick={() => setIsMenuOpen(false)}
+                        className="rounded-lg px-3 py-2 text-sm font-medium text-foreground hover:bg-muted"
+                      >
+                        Nosotros
+                      </Link>
+                      <Link
+                        href="/beneficios"
+                        onClick={() => setIsMenuOpen(false)}
+                        className="rounded-lg px-3 py-2 text-sm font-medium text-foreground hover:bg-muted"
+                      >
+                        Beneficios
+                      </Link>
+                      <Link
+                        href="/eventos"
+                        onClick={() => setIsMenuOpen(false)}
+                        className="rounded-lg px-3 py-2 text-sm font-medium text-foreground hover:bg-muted"
+                      >
+                        Eventos
+                      </Link>
+                      <Link
+                        href="/equipo"
+                        onClick={() => setIsMenuOpen(false)}
+                        className="rounded-lg px-3 py-2 text-sm font-medium text-foreground hover:bg-muted"
+                      >
+                        Equipo
+                      </Link>
+                      <Link
+                        href="/unete"
+                        onClick={() => setIsMenuOpen(false)}
+                        className="rounded-lg px-3 py-2 text-sm font-medium text-foreground hover:bg-muted"
+                      >
+                        Únete
+                      </Link>
+                      <Link
+                        href="/contacto"
+                        onClick={() => setIsMenuOpen(false)}
+                        className="rounded-lg px-3 py-2 text-sm font-medium text-foreground hover:bg-muted"
+                      >
+                        Contacto
+                      </Link>
+                    </nav>
                     {isAuthenticated ? (
                       <div className="space-y-4">
                         {/* User Info */}
@@ -389,10 +316,10 @@ export default function GlobalNavbar() {
                             )}
                           </Avatar>
                           <div className="flex flex-col">
-                            <span className="text-sm font-medium text-white">
+                            <span className="text-sm font-medium text-foreground">
                               {user?.name || t("user")}
                             </span>
-                            <span className="text-xs text-gray-300">
+                            <span className="text-xs text-muted-foreground">
                               {user?.email || ""}
                             </span>
                           </div>
@@ -405,14 +332,14 @@ export default function GlobalNavbar() {
                             router.push(getDashboardUrl());
                             setIsMenuOpen(false);
                           }}
-                          className="group flex items-center px-5 py-4 rounded-xl text-sm font-medium transition-all duration-200 text-gray-300 hover:text-white hover:bg-accent w-full"
+                          className="group flex w-full items-center rounded-xl px-5 py-4 text-sm font-medium text-muted-foreground transition-all duration-200 hover:bg-muted hover:text-foreground"
                         >
-                          <LayoutDashboard className="mr-3 h-5 w-5 text-gray-400 group-hover:text-white" />
+                          <LayoutDashboard className="mr-3 h-5 w-5" />
                           <div className="flex-1 text-left">
-                            <div className="font-medium text-white">
+                            <div className="font-medium text-foreground">
                               {t("dashboard")}
                             </div>
-                            <div className="text-xs text-gray-400">
+                            <div className="text-xs text-muted-foreground">
                               {t("mainPanel")}
                             </div>
                           </div>
@@ -425,14 +352,14 @@ export default function GlobalNavbar() {
                             router.push("/dashboard/settings");
                             setIsMenuOpen(false);
                           }}
-                          className="group flex items-center px-5 py-4 rounded-xl text-sm font-medium transition-all duration-200 text-gray-300 hover:text-white hover:bg-accent w-full"
+                          className="group flex w-full items-center rounded-xl px-5 py-4 text-sm font-medium text-muted-foreground transition-all duration-200 hover:bg-muted hover:text-foreground"
                         >
-                          <Settings className="mr-3 h-5 w-5 text-gray-400 group-hover:text-white" />
+                          <Settings className="mr-3 h-5 w-5" />
                           <div className="flex-1 text-left">
-                            <div className="font-medium text-white">
+                            <div className="font-medium text-foreground">
                               {t("settings")}
                             </div>
-                            <div className="text-xs text-gray-400">
+                            <div className="text-xs text-muted-foreground">
                               {t("accountSettings")}
                             </div>
                           </div>
@@ -445,25 +372,25 @@ export default function GlobalNavbar() {
                             router.push("/dashboard/profile");
                             setIsMenuOpen(false);
                           }}
-                          className="group flex items-center px-5 py-4 rounded-xl text-sm font-medium transition-all duration-200 text-gray-300 hover:text-white hover:bg-accent w-full"
+                          className="group flex w-full items-center rounded-xl px-5 py-4 text-sm font-medium text-muted-foreground transition-all duration-200 hover:bg-muted hover:text-foreground"
                         >
-                          <User className="mr-3 h-5 w-5 text-gray-400 group-hover:text-white" />
+                          <User className="mr-3 h-5 w-5" />
                           <div className="flex-1 text-left">
-                            <div className="font-medium text-white">
+                            <div className="font-medium text-foreground">
                               {t("profile")}
                             </div>
-                            <div className="text-xs text-gray-400">
+                            <div className="text-xs text-muted-foreground">
                               {t("personalInfo")}
                             </div>
                           </div>
                         </button>
 
                         {/* Logout Button */}
-                        <div className="pt-4 border-t border-gray-700">
+                        <div className="border-t border-border pt-4">
                           <button
                             type="button"
                             onClick={handleSignOut}
-                            className="group flex items-center px-5 py-4 rounded-xl text-sm font-medium transition-all duration-200 text-red-400 hover:text-red-300 hover:bg-red-900/20 w-full"
+                            className="group flex w-full items-center rounded-xl px-5 py-4 text-sm font-medium text-red-600 transition-all duration-200 hover:bg-red-50 dark:hover:bg-red-950/30"
                           >
                             <LogOut className="mr-3 h-5 w-5" />
                             <div className="flex-1 text-left">
@@ -472,7 +399,7 @@ export default function GlobalNavbar() {
                           </button>
                         </div>
                       </div>
-                    ) : (
+                    ) : SHOW_PUBLIC_LOGIN ? (
                       <div className="space-y-4">
                         <button
                           type="button"
@@ -484,12 +411,12 @@ export default function GlobalNavbar() {
                         <Link
                           href="/signup"
                           onClick={() => setIsMenuOpen(false)}
-                          className="w-full bg-transparent border border-gray-600 text-white hover:bg-gray-700 px-4 py-2 rounded-lg font-medium transition-colors block text-center"
+                          className="block w-full rounded-lg border border-border bg-transparent px-4 py-2 text-center font-medium text-foreground transition-colors hover:bg-muted"
                         >
                           {t("signUp")}
                         </Link>
                       </div>
-                    )}
+                    ) : null}
                   </div>
                 </SheetContent>
               </Sheet>

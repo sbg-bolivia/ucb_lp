@@ -1,2 +1,6 @@
 #!/usr/bin/env sh
-pnpm exec lint-staged
+# Revisión en commit: solo linter (no formateador ni orden de imports).
+# - Muestra avisos/errores en consola.
+# - No modifica archivos y no revierte nada (eso lo hacía lint-staged al fallar).
+# Formato e imports: en local ejecuta  pnpm check  o  pnpm check:write  cuando quieras.
+pnpm exec biome lint .

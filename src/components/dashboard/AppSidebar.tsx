@@ -30,6 +30,7 @@ import { useTranslation } from "@/hooks/useTranslation";
 import { useUser } from "@/hooks/useUser";
 import { cn } from "@/lib/utils";
 import {
+  Calendar,
   ChevronDown,
   LayoutDashboard,
   LogOut,
@@ -88,6 +89,18 @@ export function AppSidebar() {
           href: "/dashboard/roles",
           icon: Shield,
           description: t("configureRBAC"),
+        },
+        {
+          title: t("clubPublicTeam"),
+          href: "/dashboard/club-equipo",
+          icon: Users,
+          description: t("clubPublicTeamDesc"),
+        },
+        {
+          title: t("clubEventsAdmin"),
+          href: "/dashboard/club-eventos",
+          icon: Calendar,
+          description: t("clubEventsAdminDesc"),
         },
         {
           title: t("settings2"),

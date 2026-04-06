@@ -35,6 +35,9 @@ function getFieldDisplayName(fieldName: string): string {
     instagramUrl: "Instagram",
     linkedinUrl: "LinkedIn",
     youtubeUrl: "YouTube",
+    meetupUrl: "Meetup (club)",
+    whatsappUrl: "WhatsApp (grupo)",
+    tiktokUrl: "TikTok",
     foundedYear: "Año de fundación",
     logoUrl: "URL del logo",
     faviconUrl: "URL del favicon",
@@ -88,6 +91,9 @@ export default function SettingsPage() {
     instagramUrl: "",
     linkedinUrl: "",
     youtubeUrl: "",
+    meetupUrl: "",
+    whatsappUrl: "",
+    tiktokUrl: "",
     foundedYear: "",
     logoUrl: "",
     faviconUrl: "",
@@ -123,6 +129,9 @@ export default function SettingsPage() {
         instagramUrl: companyInfo.instagramUrl || "",
         linkedinUrl: companyInfo.linkedinUrl || "",
         youtubeUrl: companyInfo.youtubeUrl || "",
+        meetupUrl: companyInfo.meetupUrl || "",
+        whatsappUrl: companyInfo.whatsappUrl || "",
+        tiktokUrl: companyInfo.tiktokUrl || "",
         foundedYear: companyInfo.foundedYear?.toString() || "",
         logoUrl: companyInfo.logoUrl || "",
         faviconUrl: companyInfo.faviconUrl || "",
@@ -137,7 +146,7 @@ export default function SettingsPage() {
     }
   }, [companyInfo]);
 
-  // Update company info mutation
+  // @ts-expect-error TS2589 — profundidad de tipos Zod + tRPC en companyInfo.update
   const updateCompanyInfo = trpc.companyInfo.update.useMutation({
     onSuccess: () => {
       toast.success("Información de la empresa actualizada exitosamente");
@@ -199,6 +208,9 @@ export default function SettingsPage() {
         instagramUrl: formData.instagramUrl || null,
         linkedinUrl: formData.linkedinUrl || null,
         youtubeUrl: formData.youtubeUrl || null,
+        meetupUrl: formData.meetupUrl?.trim() || null,
+        whatsappUrl: formData.whatsappUrl?.trim() || null,
+        tiktokUrl: formData.tiktokUrl?.trim() || null,
         logoUrl: formData.logoUrl?.trim() || null,
         faviconUrl: formData.faviconUrl?.trim() || null,
       });
@@ -508,6 +520,42 @@ export default function SettingsPage() {
                     handleInputChange("youtubeUrl", e.target.value)
                   }
                   placeholder="https://youtube.com/@myapp"
+                />
+              </div>
+              <div className="space-y-2 md:col-span-2">
+                <Label htmlFor="meetupUrl">Meetup del club</Label>
+                <Input
+                  id="meetupUrl"
+                  value={formData.meetupUrl}
+                  onChange={(e) =>
+                    handleInputChange("meetupUrl", e.target.value)
+                  }
+                  placeholder="https://www.meetup.com/..."
+                />
+                <p className="text-xs text-muted-foreground">
+                  Se muestra en la web pública (página Únete y pie de página).
+                </p>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="whatsappUrl">WhatsApp (invitación al grupo)</Label>
+                <Input
+                  id="whatsappUrl"
+                  value={formData.whatsappUrl}
+                  onChange={(e) =>
+                    handleInputChange("whatsappUrl", e.target.value)
+                  }
+                  placeholder="https://chat.whatsapp.com/..."
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="tiktokUrl">TikTok</Label>
+                <Input
+                  id="tiktokUrl"
+                  value={formData.tiktokUrl}
+                  onChange={(e) =>
+                    handleInputChange("tiktokUrl", e.target.value)
+                  }
+                  placeholder="https://www.tiktok.com/@..."
                 />
               </div>
             </div>

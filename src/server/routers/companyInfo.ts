@@ -1,4 +1,6 @@
+import { Prisma } from "@prisma/client";
 import { z } from "zod";
+import { coreTeamArraySchema } from "../../lib/club-core-team-schema";
 import { prisma } from "../../lib/db";
 import { TenantUncheckedUpdateInputObjectZodSchema } from "../../lib/zod/schemas";
 import { hasPermissionOrManage } from "../../services/rbacService";
@@ -55,6 +57,9 @@ export const companyInfoRouter = router({
         instagramUrl: true,
         linkedinUrl: true,
         youtubeUrl: true,
+        meetupUrl: true,
+        whatsappUrl: true,
+        tiktokUrl: true,
         foundedYear: true,
         logoUrl: true,
         faviconUrl: true,
@@ -65,6 +70,7 @@ export const companyInfoRouter = router({
         privacyUrl: true,
         cookiesUrl: true,
         complaintsUrl: true,
+        coreTeam: true,
       })
         .partial()
         .extend({
@@ -75,6 +81,9 @@ export const companyInfoRouter = router({
           instagramUrl: z.string().url().optional().nullable(),
           linkedinUrl: z.string().url().optional().nullable(),
           youtubeUrl: z.string().url().optional().nullable(),
+          meetupUrl: z.string().url().optional().nullable(),
+          whatsappUrl: z.string().url().optional().nullable(),
+          tiktokUrl: z.string().url().optional().nullable(),
           logoUrl: z
             .string()
             .optional()
@@ -113,6 +122,7 @@ export const companyInfoRouter = router({
             .min(1800)
             .max(new Date().getFullYear())
             .optional(),
+          coreTeam: coreTeamArraySchema.optional().nullable(),
         })
     )
     .mutation(async ({ input, ctx }) => {
@@ -135,13 +145,22 @@ export const companyInfoRouter = router({
         );
       }
 
-      // Update tenant information
+      const { coreTeam, ...rest } = input;
+
+      const data: Prisma.TenantUncheckedUpdateInput = {
+        ...rest,
+        updatedAt: new Date(),
+      };
+      if (coreTeam !== undefined) {
+        data.coreTeam =
+          coreTeam && coreTeam.length > 0
+            ? (coreTeam as Prisma.InputJsonValue)
+            : Prisma.DbNull;
+      }
+
       const updatedTenant = await prisma.tenant.update({
         where: { id: ctx.user.tenantId },
-        data: {
-          ...input,
-          updatedAt: new Date(),
-        },
+        data,
       });
       return updatedTenant;
     }),

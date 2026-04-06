@@ -1,39 +1,42 @@
 import type { Metadata } from "next";
 
+import { CLUB } from "@/lib/club-brand";
+
+const siteUrl =
+  process.env.SITE_URL ||
+  process.env.NEXT_PUBLIC_SITE_URL ||
+  "http://localhost:3000";
+
+const defaultTitle = `${CLUB.shortName} | ${CLUB.fullUniversity}`;
+const defaultDescription = `${CLUB.shortName} en la ${CLUB.fullUniversity}: comunidad estudiantil, AWS, proyectos en la nube y certificaciones. ${CLUB.tagline}`;
+
 export const defaultMetadata: Metadata = {
   title: {
-    default:
-      "AXIUM - Software Personalizado para Empresas | Desarrollo a Medida",
-    template: "%s | AXIUM",
+    default: defaultTitle,
+    template: `%s | ${CLUB.shortName}`,
   },
-  description:
-    "AXIUM desarrolla software personalizado para empresas en crecimiento y grandes organizaciones. Soluciones enterprise-grade, aplicaciones web y móviles, automatización de procesos e IA. Tu socio tecnológico en Perú.",
+  description: defaultDescription,
   keywords: [
-    "software personalizado",
-    "desarrollo de software",
-    "aplicaciones web",
-    "aplicaciones móviles",
-    "automatización de procesos",
-    "inteligencia artificial",
-    "desarrollo enterprise",
-    "software a medida",
-    "desarrollo de software Perú",
-    "consultoría tecnológica",
-    "arquitectura de software",
-    "sistemas escalables",
-    "transformación digital",
-    "ingeniería de software",
-    "desarrollo de productos",
+    "AWS",
+    "AWS Cloud Club",
+    "UCB",
+    "Universidad Católica Boliviana",
+    "San Pablo",
+    "cloud computing",
+    "Bolivia",
+    "estudiantes",
+    "AWS Educate",
+    "comunidad tech",
   ],
-  authors: [{ name: "AXIUM" }],
-  creator: "AXIUM",
-  publisher: "AXIUM",
+  authors: [{ name: CLUB.shortName }],
+  creator: CLUB.shortName,
+  publisher: CLUB.shortName,
   formatDetection: {
     email: false,
     address: false,
     telephone: false,
   },
-  metadataBase: new URL(process.env.SITE_URL || "https://axium.com.pe"),
+  metadataBase: new URL(siteUrl),
   alternates: {
     canonical: "/",
   },
@@ -44,28 +47,25 @@ export const defaultMetadata: Metadata = {
   },
   openGraph: {
     type: "website",
-    locale: "es_PE",
-    url: process.env.SITE_URL || "https://axium.com.pe",
-    title: "AXIUM - Software Personalizado para Empresas | Desarrollo a Medida",
-    description:
-      "Desarrollamos software personalizado que transforma procesos manuales en sistemas eficientes y escalables. Soluciones enterprise-grade para empresas en crecimiento.",
-    siteName: "AXIUM",
+    locale: "es_BO",
+    url: siteUrl,
+    title: defaultTitle,
+    description: defaultDescription,
+    siteName: CLUB.shortName,
     images: [
       {
         url: "/logo.png",
         width: 1200,
         height: 630,
-        alt: "AXIUM - Software Personalizado para Empresas",
+        alt: `${CLUB.shortName} — ${CLUB.fullUniversity}`,
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "AXIUM - Software Personalizado para Empresas",
-    description:
-      "Desarrollamos software personalizado que transforma procesos manuales en sistemas eficientes y escalables.",
+    title: defaultTitle,
+    description: defaultDescription,
     images: ["/logo.png"],
-    creator: "@axium",
   },
   robots: {
     index: true,
@@ -97,7 +97,7 @@ export function generateMetadata({
   image?: string;
 }): Metadata {
   return {
-    title: title ? `${title} | AXIUM` : defaultMetadata.title,
+    title: title ? `${title} | ${CLUB.shortName}` : defaultMetadata.title,
     description: description || defaultMetadata.description,
     keywords: keywords || defaultMetadata.keywords,
     openGraph: {
@@ -115,50 +115,30 @@ export function generateMetadata({
   };
 }
 
-// Metadata específica para la página principal de AXIUM
 export const homePageMetadata: Metadata = {
-  title: "AXIUM - Software Personalizado para Empresas | Desarrollo a Medida",
-  description:
-    "AXIUM desarrolla software personalizado para empresas en crecimiento y grandes organizaciones. Soluciones enterprise-grade, aplicaciones web y móviles, automatización de procesos e IA. Tu socio tecnológico en Perú.",
-  keywords: [
-    "software personalizado",
-    "desarrollo de software",
-    "aplicaciones web",
-    "aplicaciones móviles",
-    "automatización de procesos",
-    "inteligencia artificial",
-    "desarrollo enterprise",
-    "software a medida",
-    "desarrollo de software Perú",
-    "consultoría tecnológica",
-    "arquitectura de software",
-    "sistemas escalables",
-    "transformación digital",
-    "ingeniería de software",
-    "desarrollo de productos",
-  ],
+  title: defaultTitle,
+  description: defaultDescription,
+  keywords: defaultMetadata.keywords as string[],
   openGraph: {
     type: "website",
-    locale: "es_PE",
-    url: process.env.SITE_URL || "https://axium.com.pe",
-    title: "AXIUM - Software Personalizado para Empresas | Desarrollo a Medida",
-    description:
-      "Desarrollamos software personalizado que transforma procesos manuales en sistemas eficientes y escalables. Soluciones enterprise-grade para empresas en crecimiento.",
-    siteName: "AXIUM",
+    locale: "es_BO",
+    url: siteUrl,
+    title: defaultTitle,
+    description: defaultDescription,
+    siteName: CLUB.shortName,
     images: [
       {
         url: "/logo.png",
         width: 1200,
         height: 630,
-        alt: "AXIUM - Software Personalizado para Empresas",
+        alt: `${CLUB.shortName} — ${CLUB.fullUniversity}`,
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "AXIUM - Software Personalizado para Empresas",
-    description:
-      "Desarrollamos software personalizado que transforma procesos manuales en sistemas eficientes y escalables.",
+    title: defaultTitle,
+    description: defaultDescription,
     images: ["/logo.png"],
   },
 };

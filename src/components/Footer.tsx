@@ -1,6 +1,7 @@
 "use client";
 
 import { useTranslation } from "@/hooks/useTranslation";
+import { CLUB } from "@/lib/club-brand";
 import { trpc } from "@/utils/trpc";
 import {
   Facebook,
@@ -8,7 +9,6 @@ import {
   Linkedin,
   Mail,
   MapPin,
-  Phone,
   Twitter,
   Youtube,
 } from "lucide-react";
@@ -81,10 +81,9 @@ export function Footer() {
 
   // Default values if no company info is available
   const defaultInfo = {
-    name: "MyApp",
-    displayName: "My Application Platform",
-    description:
-      "La plataforma líder para gestión de usuarios y autenticación.",
+    name: CLUB.shortName,
+    displayName: CLUB.fullUniversity,
+    description: CLUB.tagline,
     email: null,
     phone: null,
     address: null,
@@ -139,13 +138,13 @@ export function Footer() {
           {/* Company Info */}
           <div className="md:col-span-2 space-y-4">
             <div className="flex items-center gap-3 mb-4">
-              <img src="/logo.png" alt="AXIUM" className="h-10 w-auto" />
-              <span className="text-2xl font-semibold text-white">AXIUM</span>
+              <img src="/logo.png" alt={CLUB.shortName} className="h-10 w-auto" />
+              <span className="text-2xl font-semibold text-white">
+                {CLUB.shortName}
+              </span>
             </div>
             <p className="text-gray-400 text-sm leading-relaxed max-w-md">
-              Tu socio tecnológico de confianza. Desarrollamos software a medida
-              que transforma procesos manuales en sistemas eficientes y
-              escalables.
+              {info.description}
             </p>
 
             {/* Contact Info */}
@@ -153,24 +152,15 @@ export function Footer() {
               <div className="flex items-center gap-2 text-sm text-gray-400">
                 <Mail className="h-4 w-4 text-blue-500" />
                 <a
-                  href="mailto:contacto@axium.com.pe"
+                  href={`mailto:${CLUB.email}`}
                   className="hover:text-blue-400 transition-colors"
                 >
-                  contacto@axium.com.pe
-                </a>
-              </div>
-              <div className="flex items-center gap-2 text-sm text-gray-400">
-                <Phone className="h-4 w-4 text-blue-500" />
-                <a
-                  href="tel:+51999999999"
-                  className="hover:text-blue-400 transition-colors"
-                >
-                  +51 999 999 999
+                  {CLUB.email}
                 </a>
               </div>
               <div className="flex items-center gap-2 text-sm text-gray-400">
                 <MapPin className="h-4 w-4 text-blue-500" />
-                <span>Lima, Perú</span>
+                <span>{CLUB.city}</span>
               </div>
             </div>
 
@@ -198,36 +188,36 @@ export function Footer() {
             <h4 className="font-semibold text-white">Enlaces Rápidos</h4>
             <ul className="space-y-2">
               <li>
-                <a
-                  href="#servicios"
+                <Link
+                  href="/"
                   className="text-sm text-gray-400 hover:text-blue-400 transition-colors"
                 >
-                  Servicios
-                </a>
+                  Inicio
+                </Link>
               </li>
               <li>
-                <a
-                  href="#casos"
+                <Link
+                  href="/#beneficios"
                   className="text-sm text-gray-400 hover:text-blue-400 transition-colors"
                 >
-                  Casos de Éxito
-                </a>
+                  Beneficios
+                </Link>
               </li>
               <li>
-                <a
-                  href="#como-trabajamos"
+                <Link
+                  href="/#cta"
                   className="text-sm text-gray-400 hover:text-blue-400 transition-colors"
                 >
-                  Cómo Trabajamos
-                </a>
+                  Únete
+                </Link>
               </li>
               <li>
-                <a
-                  href="#contacto"
+                <Link
+                  href="/#contacto"
                   className="text-sm text-gray-400 hover:text-blue-400 transition-colors"
                 >
                   Contacto
-                </a>
+                </Link>
               </li>
             </ul>
           </div>
@@ -255,8 +245,8 @@ export function Footer() {
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <p className="text-sm text-gray-400">
               © {new Date().getFullYear()}{" "}
-              <span className="text-white font-medium">AXIUM</span>. Todos los
-              derechos reservados.
+              <span className="text-white font-medium">{CLUB.shortName}</span>.
+              Todos los derechos reservados.
             </p>
             <div className="flex gap-6 text-sm text-gray-400">
               <Link

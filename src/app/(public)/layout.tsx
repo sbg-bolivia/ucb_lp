@@ -1,16 +1,9 @@
-import { Footer } from "@/components/Footer";
-import GlobalNavbar from "@/components/GlobalNavbar";
+import { PublicShell } from "@/components/PublicShell";
 
 export default function PublicLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  return (
-    <>
-      <GlobalNavbar />
-      {children}
-      <Footer />
-    </>
-  );
+  return <PublicShell>{children}</PublicShell>;
 }

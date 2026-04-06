@@ -1,50 +1,37 @@
 import { NextResponse } from "next/server";
 
 export async function GET() {
-  const baseUrl = process.env.SITE_URL || "https://axium.com.pe";
+  const baseUrl =
+    process.env.SITE_URL ||
+    process.env.NEXT_PUBLIC_SITE_URL ||
+    "http://localhost:3000";
 
   const staticPages = [
+    { path: "/", priority: 1.0, changeFrequency: "weekly" as const },
+    { path: "/nosotros", priority: 0.9, changeFrequency: "weekly" as const },
     {
-      url: baseUrl,
-      lastModified: new Date(),
-      changeFrequency: "weekly",
-      priority: 1.0,
-    },
-    {
-      url: `${baseUrl}/#servicios`,
-      lastModified: new Date(),
-      changeFrequency: "weekly",
+      path: "/beneficios",
       priority: 0.9,
+      changeFrequency: "weekly" as const,
+    },
+    { path: "/eventos", priority: 0.9, changeFrequency: "weekly" as const },
+    { path: "/equipo", priority: 0.85, changeFrequency: "monthly" as const },
+    { path: "/unete", priority: 0.95, changeFrequency: "weekly" as const },
+    { path: "/contacto", priority: 0.85, changeFrequency: "monthly" as const },
+    {
+      path: "/legal/terms",
+      priority: 0.3,
+      changeFrequency: "yearly" as const,
     },
     {
-      url: `${baseUrl}/#como-trabajamos`,
-      lastModified: new Date(),
-      changeFrequency: "monthly",
-      priority: 0.8,
+      path: "/legal/privacy",
+      priority: 0.3,
+      changeFrequency: "yearly" as const,
     },
     {
-      url: `${baseUrl}/#casos-de-exito`,
-      lastModified: new Date(),
-      changeFrequency: "weekly",
-      priority: 0.8,
-    },
-    {
-      url: `${baseUrl}/#contacto`,
-      lastModified: new Date(),
-      changeFrequency: "monthly",
-      priority: 0.7,
-    },
-    {
-      url: `${baseUrl}/signin`,
-      lastModified: new Date(),
-      changeFrequency: "monthly",
-      priority: 0.5,
-    },
-    {
-      url: `${baseUrl}/signup`,
-      lastModified: new Date(),
-      changeFrequency: "monthly",
-      priority: 0.5,
+      path: "/legal/cookies",
+      priority: 0.3,
+      changeFrequency: "yearly" as const,
     },
   ];
 
@@ -54,8 +41,8 @@ export async function GET() {
     .map(
       (page) => `
   <url>
-    <loc>${page.url}</loc>
-    <lastmod>${page.lastModified.toISOString()}</lastmod>
+    <loc>${baseUrl}${page.path}</loc>
+    <lastmod>${new Date().toISOString()}</lastmod>
     <changefreq>${page.changeFrequency}</changefreq>
     <priority>${page.priority}</priority>
   </url>`

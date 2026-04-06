@@ -1,5 +1,6 @@
 "use client";
 
+import { CLUB } from "@/lib/club-brand";
 import { ArrowRight, Send } from "lucide-react";
 import { motion } from "motion/react";
 import { useState } from "react";
@@ -22,7 +23,7 @@ export function ContactSection() {
 
   const handleWhatsApp = () => {
     const message = encodeURIComponent(
-      "Hola, me gustaría conocer más sobre los servicios de AXIUM."
+      "Hola, me gustaría conocer más sobre el AWS Cloud Club UCB."
     );
     window.open(`https://wa.me/51999999999?text=${message}`, "_blank");
   };
@@ -153,7 +154,7 @@ export function ContactSection() {
               </h3>
               <div className="space-y-3">
                 <a
-                  href="mailto:contacto@axium.com.pe"
+                  href={`mailto:${CLUB.email}`}
                   className="flex items-center gap-3 text-gray-600 hover:text-secondary transition-colors group"
                 >
                   <span className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center group-hover:bg-secondary/10 transition-colors">
@@ -173,7 +174,7 @@ export function ContactSection() {
                       />
                     </svg>
                   </span>
-                  <span>contacto@axium.com.pe</span>
+                  <span>{CLUB.email}</span>
                 </a>
                 <a
                   href="tel:+51999999999"

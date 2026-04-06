@@ -89,7 +89,7 @@ export function ProcessSection() {
             </span>
           </h2>
           <p className="text-body text-gray-600">
-            En Axium, creamos soluciones que capturan la atención del cliente,
+            En el club, creamos soluciones que capturan la atención del cliente,
             ganan su confianza y construyen relaciones duraderas basadas en
             innovación y éxito medible.
           </p>

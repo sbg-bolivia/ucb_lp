@@ -1,7 +1,7 @@
 services:
   postgres:
     image: postgres:16-alpine
-    container_name: template-i18n-db
+    container_name: awscloudclub-db
     restart: unless-stopped
     environment:
       POSTGRES_USER: dev
