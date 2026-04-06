@@ -110,7 +110,11 @@ export function Footer() {
     updatedAt: new Date(),
   };
 
-  const baseInfo = companyInfo || defaultInfo;
+  // Evita TS2589 (inferencia profunda tRPC + literal). Fechas vienen serializadas desde la API.
+  const baseInfo: typeof defaultInfo =
+    companyInfo != null
+      ? (companyInfo as unknown as typeof defaultInfo)
+      : defaultInfo;
 
   // Use translations if available, otherwise use base values
   const info = useMemo(
