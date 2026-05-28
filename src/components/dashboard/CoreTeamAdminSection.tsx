@@ -29,11 +29,23 @@ export function CoreTeamAdminSection() {
 
   useEffect(() => {
     if (tenant) {
-      setMembers(parseCoreTeamJson((tenant as any).coreTeam) ?? []);
+      setMembers(
+        parseCoreTeamJson((tenant as { coreTeam?: unknown }).coreTeam) ?? []
+      );
     }
   }, [tenant]);
 
-  const updateInfo = (trpc.companyInfo.update as any).useMutation({
+  const updateInfo = (
+    trpc.companyInfo.update as unknown as {
+      useMutation: (opts: {
+        onSuccess: () => void;
+        onError: (e: unknown) => void;
+      }) => {
+        mutateAsync: (input: { coreTeam: unknown }) => Promise<unknown>;
+        isPending: boolean;
+      };
+    }
+  ).useMutation({
     onSuccess: () => {
       toast.success("Equipo público guardado");
       refetch();
