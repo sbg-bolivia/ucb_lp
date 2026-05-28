@@ -29,17 +29,17 @@ export function CoreTeamAdminSection() {
 
   useEffect(() => {
     if (tenant) {
-      setMembers(parseCoreTeamJson(tenant.coreTeam) ?? []);
+      setMembers(parseCoreTeamJson((tenant as any).coreTeam) ?? []);
     }
   }, [tenant]);
 
-  // @ts-expect-error TS2589
-  const updateInfo = trpc.companyInfo.update.useMutation({
+  const updateInfo = (trpc.companyInfo.update as any).useMutation({
     onSuccess: () => {
       toast.success("Equipo público guardado");
       refetch();
     },
-    onError: (e) => toast.error(e.message || "Error al guardar"),
+    onError: (e: unknown) =>
+      toast.error(e instanceof Error ? e.message : "Error al guardar"),
   });
 
   const save = async () => {

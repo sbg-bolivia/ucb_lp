@@ -63,7 +63,7 @@ export function ClubHomeHighlights() {
               rel="noopener noreferrer"
               className="font-semibold text-[#3b41ff] underline-offset-2 hover:underline dark:text-violet-300"
             >
-              AWS Cloud Club Universidad Distrital
+              AWS Student Builder Group Universidad Distrital
             </a>
             .
           </p>

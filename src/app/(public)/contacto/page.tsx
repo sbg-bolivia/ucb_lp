@@ -4,7 +4,7 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = clubPageMeta(
   "Contacto",
-  "Contacto del AWS Cloud Club UCB La Paz: correo, WhatsApp y QR con enlaces a redes."
+  "Contacto del AWS Student Builder Group UCB La Paz: correo, WhatsApp y QR con enlaces a redes."
 );
 
 export default function ContactoPage() {

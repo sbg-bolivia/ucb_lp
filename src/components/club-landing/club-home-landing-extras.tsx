@@ -25,7 +25,7 @@ import { clubTheme } from "./club-theme";
 const stats = [
   {
     icon: Globe2,
-    value: "AWS Cloud Clubs",
+    value: "AWS Student Builder Groups",
     label: "Red mundial de capítulos estudiantiles",
   },
   {
@@ -239,7 +239,7 @@ export function ClubHomeLandingExtras() {
                 {[
                   "Laboratorios guiados y retos por niveles",
                   "Espacio seguro para preguntar y equivocarse",
-                  "Conexión con la red global de Cloud Clubs",
+                  "Conexión con la red global de Student Builder Groups",
                 ].map((line) => (
                   <li
                     key={line}

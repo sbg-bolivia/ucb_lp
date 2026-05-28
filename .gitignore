@@ -52,7 +52,12 @@ yarn-error.log*
 .idea
 
 # editor / OS
-.cursor/
+.cursor/*
+!.cursor/PROJECT.md
+!.cursor/TASKS.md
+!.cursor/rules/
+!.cursor/references/
+.firecrawl/
 Thumbs.db
 
 # uploads locales (si se generan en runtime)

@@ -1,9 +1,9 @@
-/** Marca y enlaces del AWS Cloud Club UCB — ajusta NEXT_PUBLIC_* en .env */
+/** Marca y enlaces del AWS Student Builder Group UCB — ajusta NEXT_PUBLIC_* en .env */
 
 export const CLUB = {
-  shortName: "AWS Cloud Club UCB",
+  shortName: "AWS Student Builder Group UCB",
   fullUniversity: 'Universidad Católica Boliviana "San Pablo"',
-  heroLine1: "AWS Cloud Club",
+  heroLine1: "AWS Student Builder Group",
   tagline:
     "Únete a estudiantes universitarios en Bolivia que aprenden AWS, construyen proyectos reales en la nube y preparan su carrera en tecnología. ¡Todas las carreras son bienvenidas!",
   city: "La Paz, Bolivia",

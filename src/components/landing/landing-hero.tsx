@@ -53,10 +53,12 @@ export function LandingHero() {
             </mask>
             <g mask="url(#mask0_186_1134)">
               {/* Grid Rectangles */}
-              {Array.from({ length: 35 }, (_, i) => (
-                <React.Fragment key={`grid-rect-${i}`}>
+              {Array.from({ length: 35 }, (_, i) => {
+                const x = -20.0891 + i * 36;
+                return (
+                  <React.Fragment key={`grid-rect-x-${x.toFixed(4)}`}>
                   <rect
-                    x={-20.0891 + i * 36}
+                    x={x}
                     y="9.2"
                     width="35.6"
                     height="35.6"
@@ -66,7 +68,7 @@ export function LandingHero() {
                     strokeDasharray="2 2"
                   />
                   <rect
-                    x={-20.0891 + i * 36}
+                    x={x}
                     y="45.2"
                     width="35.6"
                     height="35.6"
@@ -76,7 +78,7 @@ export function LandingHero() {
                     strokeDasharray="2 2"
                   />
                   <rect
-                    x={-20.0891 + i * 36}
+                    x={x}
                     y="81.2"
                     width="35.6"
                     height="35.6"
@@ -86,7 +88,7 @@ export function LandingHero() {
                     strokeDasharray="2 2"
                   />
                   <rect
-                    x={-20.0891 + i * 36}
+                    x={x}
                     y="117.2"
                     width="35.6"
                     height="35.6"
@@ -96,7 +98,7 @@ export function LandingHero() {
                     strokeDasharray="2 2"
                   />
                   <rect
-                    x={-20.0891 + i * 36}
+                    x={x}
                     y="153.2"
                     width="35.6"
                     height="35.6"
@@ -106,7 +108,7 @@ export function LandingHero() {
                     strokeDasharray="2 2"
                   />
                   <rect
-                    x={-20.0891 + i * 36}
+                    x={x}
                     y="189.2"
                     width="35.6"
                     height="35.6"
@@ -116,7 +118,7 @@ export function LandingHero() {
                     strokeDasharray="2 2"
                   />
                   <rect
-                    x={-20.0891 + i * 36}
+                    x={x}
                     y="225.2"
                     width="35.6"
                     height="35.6"
@@ -126,7 +128,7 @@ export function LandingHero() {
                     strokeDasharray="2 2"
                   />
                   <rect
-                    x={-20.0891 + i * 36}
+                    x={x}
                     y="261.2"
                     width="35.6"
                     height="35.6"
@@ -136,7 +138,7 @@ export function LandingHero() {
                     strokeDasharray="2 2"
                   />
                   <rect
-                    x={-20.0891 + i * 36}
+                    x={x}
                     y="297.2"
                     width="35.6"
                     height="35.6"
@@ -146,7 +148,7 @@ export function LandingHero() {
                     strokeDasharray="2 2"
                   />
                   <rect
-                    x={-20.0891 + i * 36}
+                    x={x}
                     y="333.2"
                     width="35.6"
                     height="35.6"
@@ -276,7 +278,8 @@ export function LandingHero() {
                     strokeDasharray="2 2"
                   />
                 </React.Fragment>
-              ))}
+                );
+              })}
               {/* Specific Rectangles with fill */}
               <rect
                 x="699.711"
@@ -584,15 +587,15 @@ export function LandingHero() {
         <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-1.5 rounded-full border border-white/10">
           <span className="text-white text-sm font-medium">Excellent</span>
           <div className="flex gap-1">
-            {Array.from({ length: 5 }, (_, i) => (
+            {["1", "2", "3", "4", "5"].map((id, idx) => (
               <svg
-                key={`star-rating-${i}`}
+                key={`star-rating-${id}`}
                 className="w-4 h-4 fill-primary"
                 viewBox="0 0 20 20"
                 role="img"
-                aria-label={`${i + 1} star`}
+                aria-label={`${idx + 1} star`}
               >
-                <title>{`${i + 1} star`}</title>
+                <title>{`${idx + 1} star`}</title>
                 <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
               </svg>
             ))}

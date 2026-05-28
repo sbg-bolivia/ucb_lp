@@ -1,0 +1,44 @@
+---
+description: Contexto UI del AWS Cloud Club UCB — rediseño inspirado en awsud.group
+globs:
+  - src/components/club-landing/**
+  - src/app/(public)/**
+  - src/components/dashboard/**
+  - src/app/(authenticated)/dashboard/**
+alwaysApply: false
+---
+
+# Club UI — Reglas de implementación
+
+## Referencias obligatorias
+
+Antes de cambiar landing o admin, leer:
+
+- `.cursor/PROJECT.md`
+- `.cursor/references/awsud-group.md` (inspiración principal)
+- `.cursor/references/design-inspiration.md`
+
+## Estilo visual
+
+- Layout público: **sidebar fija** en desktop (estilo awsud.group), no solo top navbar.
+- Tema: **dark por defecto** en marketing; acento **púrpura/violeta**; decoración grid + pixel assets.
+- Etiquetas de sección: fuente mono con prefijo `#` (ej. `# eventos`).
+- Breadcrumbs: `home / sección` en texto pequeño mono.
+- **No usar emojis** como iconos; usar Lucide o archivos en `public/logo`, `public/icons`.
+
+## Código existente
+
+- Tokens: `src/components/club-landing/club-theme.ts`
+- Shell actual: `club-marketing-shell.tsx`, `club-landing-navbar.tsx`
+- Marca: `src/lib/club-brand.ts`
+- Rutas: `src/constants/club-routes.ts`
+
+## Admin
+
+- Reutilizar misma paleta en `AppSidebar` y páginas `club-equipo`, `club-eventos`.
+- No eliminar RBAC ni flujos tRPC existentes.
+
+## Alcance
+
+- Cambios mínimos y enfocados; no reescribir plantilla T3 completa.
+- Contenido del club (UCB La Paz) ≠ contenido UD/UPB (no copiar textos ajenos).

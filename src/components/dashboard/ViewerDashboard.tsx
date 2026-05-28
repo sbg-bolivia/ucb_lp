@@ -111,7 +111,7 @@ export default function ViewerDashboard({ user }: ViewerDashboardProps) {
         href: "/settings",
       },
     ],
-    []
+    [t]
   );
 
   const recentActivity = useMemo(

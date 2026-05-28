@@ -58,8 +58,7 @@ export function ClubHero() {
           transition={{ duration: 0.65, ease: clubEase }}
         >
           <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-violet-200 bg-white/80 px-4 py-2 text-xs font-medium text-[#5c27c4] shadow-sm backdrop-blur-sm dark:border-white/15 dark:bg-zinc-900/70 dark:text-violet-200 sm:text-sm">
-            <span aria-hidden>☁️</span>
-            <span>AWS Cloud Clubs · {CLUB.city}</span>
+            <span>AWS Student Builder Groups · {CLUB.city}</span>
           </div>
 
           <h1 className="max-w-3xl text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl md:text-6xl lg:text-[3.15rem] xl:text-6xl lg:leading-[1.08] dark:text-white">

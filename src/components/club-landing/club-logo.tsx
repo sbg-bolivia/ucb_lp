@@ -46,7 +46,7 @@ export function ClubNavLogo({
       />
       <span className="hidden min-[380px]:flex flex-col items-start leading-tight">
         <span className="text-[10px] font-bold tracking-tight text-slate-900 sm:text-[11px] dark:text-white">
-          AWS Cloud Clubs
+          AWS Student Builder Groups
         </span>
         <span className="text-[10px] font-medium uppercase tracking-wider text-slate-600 dark:text-white/75">
           UCB · La Paz

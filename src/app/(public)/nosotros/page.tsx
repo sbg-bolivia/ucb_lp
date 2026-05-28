@@ -4,7 +4,7 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = clubPageMeta(
   "Nosotros",
-  "Conoce al AWS Cloud Club UCB La Paz: misión, valores y cómo conectamos la universidad con el ecosistema cloud."
+  "Conoce al AWS Student Builder Group UCB La Paz: misión, valores y cómo conectamos la universidad con el ecosistema cloud."
 );
 
 export default function NosotrosPage() {

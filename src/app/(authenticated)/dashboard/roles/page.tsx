@@ -39,7 +39,7 @@ import {
   Users,
   X,
 } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -234,7 +234,7 @@ export default function RolesPage() {
     });
   };
 
-  const handleEdit = (role: Role) => {
+  const handleEdit = useCallback((role: Role) => {
     setEditingRole(role);
     form.reset({
       name: role.name,
@@ -243,12 +243,12 @@ export default function RolesPage() {
       isActive: role.isActive,
     });
     setIsEditDialogOpen(true);
-  };
+  }, [form]);
 
-  const handleView = (role: Role) => {
+  const handleView = useCallback((role: Role) => {
     setViewingRole(role);
     setIsViewDialogOpen(true);
-  };
+  }, []);
 
   const handleRemovePermission = (rolePermissionId: string) => {
     if (confirm("¿Estás seguro de que quieres eliminar este permiso?")) {
@@ -284,7 +284,7 @@ export default function RolesPage() {
     );
   };
 
-  const handleDelete = (role: Role) => {
+  const handleDelete = useCallback((role: Role) => {
     if (
       confirm(
         `¿Estás seguro de que quieres eliminar el rol "${role.displayName}"?`
@@ -292,7 +292,7 @@ export default function RolesPage() {
     ) {
       deleteRole.mutate({ id: role.id });
     }
-  };
+  }, [deleteRole]);
 
   const onSubmit = (data: RoleFormData) => {
     if (editingRole) {
@@ -401,7 +401,7 @@ export default function RolesPage() {
           ]
         : []),
     ],
-    [canManageRoles]
+    [canManageRoles, handleDelete, handleEdit, handleView]
   );
 
   if (error) {

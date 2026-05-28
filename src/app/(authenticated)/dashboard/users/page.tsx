@@ -31,7 +31,7 @@ import { useTranslation } from "@/hooks/useTranslation";
 import { trpc } from "@/utils/trpc";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Edit, Eye, Plus, Trash2, UserCheck, UserX, Users } from "lucide-react";
-import React, { useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -165,7 +165,7 @@ function UserDialog({
     },
   });
 
-  // Reset form when user changes (optimized to only depend on user.id to prevent loops)
+  // Reset form when user changes
   React.useEffect(() => {
     if (user?.id) {
       form.reset({
@@ -177,7 +177,7 @@ function UserDialog({
       });
       setSelectedInitialRoles([]);
     }
-  }, [user?.id, user?.email, user?.name]); // Only depend on user properties, not form object
+  }, [user?.id, user?.email, user?.name, form.reset]);
 
   const handleSubmit = (data: UserFormData | CreateUserFormData) => {
     // For new users, include selected roles
@@ -717,10 +717,10 @@ export default function UsersPage() {
     hasPrev: false,
   };
 
-  const handleEdit = (user: User) => {
+  const handleEdit = useCallback((user: User) => {
     setDialogUser(user);
     setIsDialogOpen(true);
-  };
+  }, []);
 
   const handleCreate = () => {
     setDialogUser(null);
@@ -771,7 +771,7 @@ export default function UsersPage() {
     }
   };
 
-  const handleDelete = (user: User) => {
+  const handleDelete = useCallback((user: User) => {
     if (
       confirm(
         t("confirmDeleteUser") ||
@@ -780,7 +780,7 @@ export default function UsersPage() {
     ) {
       deleteUser.mutate({ id: user.id });
     }
-  };
+  }, [deleteUser, t]);
 
   // Definir columnas de la tabla (memoized to prevent re-creation on each render)
   const columns = useMemo<TableColumn<User>[]>(
@@ -843,9 +843,9 @@ export default function UsersPage() {
   );
 
   // Función para ver detalles del usuario
-  const handleViewUser = (user: User) => {
+  const handleViewUser = useCallback((user: User) => {
     window.location.href = `/dashboard/users/${user.id}`;
-  };
+  }, []);
 
   // Definir acciones de la tabla (memoized to prevent re-creation on each render)
   const actions = useMemo<TableAction<User>[]>(
@@ -876,7 +876,7 @@ export default function UsersPage() {
           !(canManageUsers || user.id === currentUser?.id),
       },
     ],
-    [t, canManageUsers, currentUser?.id]
+    [t, canManageUsers, currentUser?.id, handleDelete, handleEdit, handleViewUser]
   );
 
   return (

@@ -23,7 +23,7 @@ export function ContactSection() {
 
   const handleWhatsApp = () => {
     const message = encodeURIComponent(
-      "Hola, me gustaría conocer más sobre el AWS Cloud Club UCB."
+      "Hola, me gustaría conocer más sobre el AWS Student Builder Group UCB."
     );
     window.open(`https://wa.me/51999999999?text=${message}`, "_blank");
   };

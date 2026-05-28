@@ -44,7 +44,7 @@ export function ClubLandingFooter() {
       <div className="mx-auto grid max-w-6xl gap-10 sm:grid-cols-2 lg:grid-cols-3">
         <div className="space-y-3 text-sm text-slate-600 dark:text-zinc-400">
           <p className="bg-gradient-to-r from-[#3b41ff] to-[#6a11cb] bg-clip-text text-lg font-bold text-transparent">
-            AWS Cloud Clubs
+            AWS Student Builder Groups
           </p>
           <p>
             © {year} {CLUB.shortName}. Todos los derechos reservados.

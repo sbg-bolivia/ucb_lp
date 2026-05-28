@@ -18,7 +18,8 @@ export const defaultMetadata: Metadata = {
   description: defaultDescription,
   keywords: [
     "AWS",
-    "AWS Cloud Club",
+    "AWS Student Builder Group",
+    "AWS SBG",
     "UCB",
     "Universidad Católica Boliviana",
     "San Pablo",
