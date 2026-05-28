@@ -61,11 +61,11 @@ export function ClubActivities() {
       id="actividades"
       className={`relative px-4 py-20 sm:px-6 sm:py-28 ${clubTheme.sectionTint}`}
     >
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-violet-300/60 to-transparent" />
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#00C8FF]/55 to-transparent" />
 
       <div className="relative mx-auto max-w-7xl">
         <motion.div className="mx-auto max-w-3xl text-center" {...fadeUpProps}>
-          <p className="text-sm font-bold uppercase tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-[#3b41ff] to-[#6a11cb]">
+          <p className="text-sm font-bold uppercase tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-[#00C8FF] via-[#7E2CFF] to-[#A855F7]">
             Qué hacemos
           </p>
           <h2
@@ -97,10 +97,10 @@ export function ClubActivities() {
               className={`group relative overflow-hidden ${clubTheme.card} ${clubTheme.cardHover} p-8 sm:p-9`}
             >
               <div
-                className="pointer-events-none absolute -right-6 -top-6 h-36 w-36 rounded-full bg-gradient-to-br from-[#3b41ff]/15 to-[#6a11cb]/10 blur-2xl transition-opacity group-hover:opacity-100"
+                className="pointer-events-none absolute -right-6 -top-6 h-36 w-36 rounded-full bg-gradient-to-br from-[#00C8FF]/16 to-[#7E2CFF]/14 blur-2xl transition-opacity group-hover:opacity-100"
                 aria-hidden
               />
-              <div className="relative flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-[#3b41ff] to-[#6a11cb] text-white shadow-md">
+              <div className={`relative flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br ${clubTheme.gradientButton} text-white shadow-md`}>
                 <b.icon className="h-6 w-6" strokeWidth={1.5} />
               </div>
               <h3
@@ -144,7 +144,7 @@ export function ClubActivities() {
           )}
           <Link
             href="/unete"
-            className="inline-flex items-center rounded-full border-2 border-[#3b41ff] bg-white px-6 py-3 text-sm font-semibold text-[#3b41ff] shadow-sm transition hover:bg-violet-50 active:scale-[0.98] dark:border-violet-400 dark:bg-zinc-900/80 dark:text-violet-200 dark:hover:bg-zinc-800"
+            className="inline-flex items-center rounded-full border border-white/15 bg-white/80 px-6 py-3 text-sm font-semibold text-[#0b1524] shadow-sm transition hover:bg-white/90 active:scale-[0.98] dark:bg-white/5 dark:text-zinc-100 dark:hover:bg-white/10"
           >
             WhatsApp, TikTok y más redes
           </Link>

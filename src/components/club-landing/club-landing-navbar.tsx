@@ -36,12 +36,11 @@ function MeetupGlyph({ className }: { className?: string }) {
 
 const NAV_LINKS = [
   { href: "/", label: "Inicio" },
-  { href: "/nosotros", label: "Nosotros" },
-  { href: "/beneficios", label: "Beneficios" },
+  { href: "/nosotros", label: "Sobre nosotros" },
   { href: "/eventos", label: "Eventos" },
-  { href: "/equipo", label: "Equipo" },
-  { href: "/unete", label: "Únete" },
-  { href: "/contacto", label: "Contacto" },
+  { href: "/beneficios", label: "Proyectos" },
+  { href: "/equipo", label: "Comunidad" },
+  { href: "/contacto", label: "Recursos" },
 ] as const;
 
 export function ClubLandingNavbar() {
@@ -70,9 +69,9 @@ export function ClubLandingNavbar() {
   const closeSheet = () => setOpen(false);
 
   return (
-    <header className={`fixed top-0 left-0 right-0 z-50 ${clubTheme.navBar}`}>
+    <header className="fixed top-0 left-0 right-0 z-50 border-b border-white/10 bg-[#0C0D12]/85 backdrop-blur-xl">
       <div
-        className="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-[#3b41ff]/25"
+        className="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-[#00C8FF]/30 to-transparent"
         aria-hidden
       />
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-3 px-4 sm:gap-4 sm:px-6 lg:px-8">
@@ -112,7 +111,7 @@ export function ClubLandingNavbar() {
             ) : (
               <Users className="h-4 w-4 shrink-0" />
             )}
-            {isAuthenticated ? "Panel" : "Únete (Meetup)"}
+            {isAuthenticated ? "Panel" : "Únete ahora"}
           </Button>
 
           <Sheet open={open} onOpenChange={setOpen}>

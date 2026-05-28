@@ -18,7 +18,7 @@ export function generateOrganizationSchema() {
     alternateName: CLUB.fullUniversity,
     description: CLUB.tagline,
     url: siteUrl,
-    logo: `${siteUrl}/logo.png`,
+    logo: `${siteUrl}/logo/AWS%20SBG%20UCB%20-%20La%20Paz%20-%20Negro.png`,
     email: CLUB.email,
     address: {
       "@type": "PostalAddress",
@@ -42,7 +42,7 @@ export function generateWebSiteSchema() {
       name: CLUB.shortName,
       logo: {
         "@type": "ImageObject",
-        url: `${siteUrl}/logo.png`,
+        url: `${siteUrl}/logo/AWS%20SBG%20UCB%20-%20La%20Paz%20-%20Negro.png`,
       },
     },
   };

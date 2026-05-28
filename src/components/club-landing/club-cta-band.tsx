@@ -1,130 +1,105 @@
 "use client";
 
+import { useAuthContext } from "@/AuthContext";
+import { Button } from "@/components/ui/button";
 import { useClubLinks } from "@/hooks/useClubLinks";
 import { clubEase, fadeUpProps } from "@/lib/club-motion";
-import { CLUB } from "@/lib/club-brand";
-import { Instagram, Linkedin, MessageCircle } from "lucide-react";
-import { motion } from "motion/react";
+import { ArrowRight, Check } from "lucide-react";
 import Link from "next/link";
+import { motion } from "motion/react";
+import { useRouter } from "next/navigation";
 
-import { TiktokGlyph } from "./club-social-icons";
+import { ClubPortalVisual } from "./club-portal-visual";
 import { clubTheme } from "./club-theme";
 
-function MeetupMark({ className }: { className?: string }) {
-  return (
-    <span
-      className={`inline-flex h-6 w-6 items-center justify-center rounded bg-white text-[11px] font-bold text-[#F05663] ${className}`}
-      aria-hidden
-    >
-      m
-    </span>
-  );
-}
+const perks = [
+  "Comunidad activa de builders",
+  "Aprendizaje práctico en AWS",
+  "Proyectos para tu portafolio",
+  "Eventos y mentorías exclusivas",
+] as const;
 
 export function ClubCtaBand() {
-  const L = useClubLinks();
+  const { isAuthenticated } = useAuthContext();
+  const router = useRouter();
+  const links = useClubLinks();
+
+  const onJoin = () => {
+    if (isAuthenticated) router.push("/dashboard");
+    else if (links.meetupUrl)
+      window.open(links.meetupUrl, "_blank", "noopener,noreferrer");
+    else router.push("/unete");
+  };
 
   return (
     <section
       id="cta"
-      className={`relative px-4 py-16 sm:px-6 sm:py-24 ${clubTheme.sectionSoft}`}
+      className="relative overflow-hidden border-t border-white/5 bg-[#050608] px-4 py-20 sm:px-6 sm:py-28"
       aria-labelledby="cta-heading"
     >
-      <motion.div
-        className={`mx-auto max-w-5xl rounded-[2rem] p-10 text-center shadow-2xl shadow-[#3b41ff]/25 sm:p-14 md:p-16 ${clubTheme.gradientCta}`}
-        {...fadeUpProps}
-        transition={{ duration: 0.6, ease: clubEase }}
-      >
-        <h2
-          id="cta-heading"
-          className="text-2xl font-bold text-white sm:text-3xl md:text-4xl"
-        >
-          Únete a nuestras redes — empieza por Meetup
-        </h2>
-        <p className="mx-auto mt-4 max-w-2xl text-sm text-white/95 sm:text-base">
-          En el {CLUB.shortName}, el canal principal de eventos e inscripciones
-          es <strong className="text-white">Meetup</strong>. Ahí publicamos
-          fechas, lugares y materiales. También estamos en WhatsApp, TikTok y
-          más.
-        </p>
+      <div className="pointer-events-none absolute inset-0 club-aurora opacity-50" aria-hidden />
 
-        <div className="mt-10 flex flex-col items-stretch justify-center gap-4 sm:flex-row sm:flex-wrap sm:justify-center sm:gap-4">
-          {L.meetupUrl ? (
-            <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }}>
-              <Link
-                href={L.meetupUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={`inline-flex w-full items-center justify-center gap-3 rounded-full px-8 py-4 text-base font-bold text-white shadow-xl sm:w-auto ${clubTheme.meetupHighlight}`}
+      <div className="relative mx-auto max-w-7xl">
+        <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
+          <motion.div {...fadeUpProps}>
+            <h2
+              id="cta-heading"
+              className="text-3xl font-bold tracking-tight text-white sm:text-4xl md:text-5xl"
+            >
+              ¿Listo para construir el futuro?
+            </h2>
+            <p className="mt-4 max-w-lg text-lg text-zinc-400">
+              Únete al capítulo de La Paz y empieza a shippear en la nube con una
+              comunidad que te impulsa.
+            </p>
+
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+              <Button
+                type="button"
+                onClick={onJoin}
+                className={`h-12 rounded-full bg-gradient-to-r px-8 font-semibold text-white sm:h-14 ${clubTheme.gradientButton}`}
               >
-                <MeetupMark />
-                Unirse en Meetup
-              </Link>
-            </motion.div>
-          ) : null}
+                Únete ahora
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
+              <Button
+                asChild
+                variant="outline"
+                className="h-12 rounded-full border-white/20 bg-transparent text-white hover:bg-white/5 sm:h-14"
+              >
+                <Link href="/beneficios">Explorar proyectos</Link>
+              </Button>
+            </div>
+          </motion.div>
 
-          {L.whatsappUrl ? (
-            <Link
-              href={L.whatsappUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center justify-center gap-2 rounded-full border-2 border-white/90 bg-white/10 px-6 py-3 text-sm font-semibold text-white backdrop-blur-sm transition hover:bg-white/20"
-            >
-              <MessageCircle className="h-5 w-5" />
-              WhatsApp
-            </Link>
-          ) : null}
-
-          {L.tiktokUrl ? (
-            <Link
-              href={L.tiktokUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center justify-center gap-2 rounded-full border-2 border-white/90 bg-transparent px-6 py-3 text-sm font-semibold text-white transition hover:bg-white/10"
-            >
-              <TiktokGlyph className="h-5 w-5" />
-              TikTok
-            </Link>
-          ) : null}
-
-          {L.linkedinUrl ? (
-            <Link
-              href={L.linkedinUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center justify-center gap-2 rounded-full border-2 border-white/90 bg-transparent px-6 py-3 text-sm font-semibold text-white transition hover:bg-white/10"
-            >
-              <Linkedin className="h-5 w-5" />
-              LinkedIn
-            </Link>
-          ) : null}
-
-          {L.instagramUrl ? (
-            <Link
-              href={L.instagramUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center justify-center gap-2 rounded-full border-2 border-white/90 bg-transparent px-6 py-3 text-sm font-semibold text-white transition hover:bg-white/10"
-            >
-              <Instagram className="h-5 w-5" />
-              Instagram
-            </Link>
-          ) : null}
+          <motion.ul
+            className="space-y-4"
+            initial={{ opacity: 0, x: 16 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, ease: clubEase }}
+          >
+            {perks.map((p) => (
+              <li key={p} className="flex items-start gap-3 text-zinc-300">
+                <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#00C8FF] to-[#7E2CFF] text-white">
+                  <Check className="h-3.5 w-3.5" strokeWidth={3} />
+                </span>
+                <span className="text-base">{p}</span>
+              </li>
+            ))}
+          </motion.ul>
         </div>
 
-        {!L.meetupUrl && !L.whatsappUrl ? (
-          <p className="mt-6 text-xs text-white/90">
-            ¿Dudas? Escríbenos en{" "}
-            <Link
-              href="/contacto"
-              className="font-semibold underline underline-offset-2"
-            >
-              contacto
-            </Link>{" "}
-            o visita el QR de redes.
-          </p>
-        ) : null}
-      </motion.div>
+        <motion.div
+          className="mt-16 flex justify-center"
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, ease: clubEase }}
+        >
+          <ClubPortalVisual variant="cta" />
+        </motion.div>
+      </div>
     </section>
   );
 }

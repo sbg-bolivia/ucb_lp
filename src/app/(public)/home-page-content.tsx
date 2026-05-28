@@ -1,18 +1,22 @@
 "use client";
 
-import { ClubActivities } from "@/components/club-landing/club-activities";
 import { ClubCtaBand } from "@/components/club-landing/club-cta-band";
 import { ClubHero } from "@/components/club-landing/club-hero";
-import { ClubHomeHighlights } from "@/components/club-landing/club-home-highlights";
-import { ClubHomeLandingExtras } from "@/components/club-landing/club-home-landing-extras";
+import { ClubHomeBenefits } from "@/components/club-landing/club-home-benefits";
+import { ClubHomeCommunity } from "@/components/club-landing/club-home-community";
+import { ClubHomeEvents } from "@/components/club-landing/club-home-events";
+import { ClubHomeProjects } from "@/components/club-landing/club-home-projects";
+import { ClubHomeStats } from "@/components/club-landing/club-home-stats";
 
 export function HomePageContent() {
   return (
     <>
       <ClubHero />
-      <ClubHomeLandingExtras />
-      <ClubHomeHighlights />
-      <ClubActivities />
+      <ClubHomeStats />
+      <ClubHomeEvents />
+      <ClubHomeProjects />
+      <ClubHomeCommunity />
+      <ClubHomeBenefits />
       <ClubCtaBand />
     </>
   );

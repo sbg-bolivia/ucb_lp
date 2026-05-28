@@ -93,7 +93,9 @@ export function ClubCoreTeam() {
   const { data: tenant } = trpc.companyInfo.get.useQuery();
 
   const members = useMemo(() => {
-    const fromDb = tenant ? parseCoreTeamJson(tenant.coreTeam) : null;
+    const fromDb = tenant
+      ? parseCoreTeamJson((tenant as { coreTeam?: unknown }).coreTeam)
+      : null;
     if (fromDb && fromDb.length > 0) return fromDb;
     return CORE_TEAM_MEMBERS;
   }, [tenant]);

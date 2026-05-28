@@ -42,9 +42,9 @@ export const defaultMetadata: Metadata = {
     canonical: "/",
   },
   icons: {
-    icon: "/logo.png",
-    shortcut: "/logo.png",
-    apple: "/logo.png",
+    icon: "/logo/AWS SBG UCB - La Paz - Negro.png",
+    shortcut: "/logo/AWS SBG UCB - La Paz - Negro.png",
+    apple: "/logo/AWS SBG UCB - La Paz - Negro.png",
   },
   openGraph: {
     type: "website",
@@ -55,7 +55,7 @@ export const defaultMetadata: Metadata = {
     siteName: CLUB.shortName,
     images: [
       {
-        url: "/logo.png",
+        url: "/logo/AWS SBG UCB - La Paz - Negro.png",
         width: 1200,
         height: 630,
         alt: `${CLUB.shortName} — ${CLUB.fullUniversity}`,
@@ -66,7 +66,7 @@ export const defaultMetadata: Metadata = {
     card: "summary_large_image",
     title: defaultTitle,
     description: defaultDescription,
-    images: ["/logo.png"],
+    images: ["/logo/AWS SBG UCB - La Paz - Negro.png"],
   },
   robots: {
     index: true,
@@ -129,7 +129,7 @@ export const homePageMetadata: Metadata = {
     siteName: CLUB.shortName,
     images: [
       {
-        url: "/logo.png",
+        url: "/logo/AWS SBG UCB - La Paz - Negro.png",
         width: 1200,
         height: 630,
         alt: `${CLUB.shortName} — ${CLUB.fullUniversity}`,
@@ -140,6 +140,6 @@ export const homePageMetadata: Metadata = {
     card: "summary_large_image",
     title: defaultTitle,
     description: defaultDescription,
-    images: ["/logo.png"],
+    images: ["/logo/AWS SBG UCB - La Paz - Negro.png"],
   },
 };
