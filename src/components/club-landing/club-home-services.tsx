@@ -32,7 +32,7 @@ const Icon0 = services[0].icon;
 const Icon1 = services[1].icon;
 const Icon2 = services[2].icon;
 
-const containerVariants = {
+const containerVariants: import("motion/react").Variants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
@@ -43,7 +43,7 @@ const containerVariants = {
   },
 };
 
-const cardVariants = {
+const cardVariants: import("motion/react").Variants = {
   hidden: { opacity: 0, scale: 0.9, filter: "blur(15px)" },
   visible: { 
     opacity: 1, 
