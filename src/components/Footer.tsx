@@ -142,7 +142,11 @@ export function Footer() {
           {/* Company Info */}
           <div className="md:col-span-2 space-y-4">
             <div className="flex items-center gap-3 mb-4">
-              <img src="/logo.png" alt={CLUB.shortName} className="h-10 w-auto" />
+              <img
+                src="/logo.png"
+                alt={CLUB.shortName}
+                className="h-10 w-auto"
+              />
               <span className="text-2xl font-semibold text-white">
                 {CLUB.shortName}
               </span>

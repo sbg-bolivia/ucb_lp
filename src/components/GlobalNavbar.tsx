@@ -1,6 +1,8 @@
 "use client";
 
 import { useAuthContext } from "@/AuthContext";
+import { ClubNavLogo } from "@/components/club-landing/club-logo";
+import { ClubThemeToggle } from "@/components/club-landing/club-theme-toggle";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -18,11 +20,9 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { ClubNavLogo } from "@/components/club-landing/club-logo";
-import { ClubThemeToggle } from "@/components/club-landing/club-theme-toggle";
 import { useTranslation } from "@/hooks/useTranslation";
-import { SHOW_PUBLIC_LOGIN } from "@/lib/public-auth";
 import { useUser } from "@/hooks/useUser";
+import { SHOW_PUBLIC_LOGIN } from "@/lib/public-auth";
 import { getInitials } from "@/lib/utils/avatar";
 import { LayoutDashboard, LogOut, Menu, Settings, User } from "lucide-react";
 import Link from "next/link";

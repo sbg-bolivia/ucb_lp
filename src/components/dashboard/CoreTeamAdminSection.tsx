@@ -11,8 +11,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
-  parseCoreTeamJson,
   type CoreTeamMember,
+  parseCoreTeamJson,
 } from "@/lib/club-core-team-schema";
 import { trpc } from "@/utils/trpc";
 import { Save, Users } from "lucide-react";
@@ -81,9 +81,9 @@ export function CoreTeamAdminSection() {
           Core team (página pública)
         </CardTitle>
         <CardDescription>
-          Fotos (URL), nombres, cargos y enlaces a LinkedIn, Instagram y
-          GitHub. Si no guardas ningún miembro válido, el sitio usa los datos
-          por defecto del código.
+          Fotos (URL), nombres, cargos y enlaces a LinkedIn, Instagram y GitHub.
+          Si no guardas ningún miembro válido, el sitio usa los datos por
+          defecto del código.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">

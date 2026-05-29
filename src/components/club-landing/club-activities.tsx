@@ -100,7 +100,9 @@ export function ClubActivities() {
                 className="pointer-events-none absolute -right-6 -top-6 h-36 w-36 rounded-full bg-gradient-to-br from-[#00C8FF]/16 to-[#7E2CFF]/14 blur-2xl transition-opacity group-hover:opacity-100"
                 aria-hidden
               />
-              <div className={`relative flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br ${clubTheme.gradientButton} text-white shadow-md`}>
+              <div
+                className={`relative flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br ${clubTheme.gradientButton} text-white shadow-md`}
+              >
                 <b.icon className="h-6 w-6" strokeWidth={1.5} />
               </div>
               <h3

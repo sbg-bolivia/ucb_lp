@@ -24,7 +24,7 @@
     "db:clean": "docker-compose down -v",
     "db:logs": "docker-compose logs -f",
     "dev": "npm-run-all db:start dev:wait dev:push dev:next",
-    "dev:wait": "wait-on tcp:5432 -t 10000",
+    "dev:wait": "wait-on tcp:5435 -t 10000",
     "dev:push": "prisma db push",
     "dev:next": "next dev --turbo",
     "postinstall": "prisma generate",

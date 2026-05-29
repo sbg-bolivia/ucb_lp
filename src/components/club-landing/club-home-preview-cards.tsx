@@ -3,17 +3,16 @@
 import { useAuthContext } from "@/AuthContext";
 import { Button } from "@/components/ui/button";
 import { useClubLinks } from "@/hooks/useClubLinks";
-import { clubEase, fadeUpProps, staggerContainer, staggerItem } from "@/lib/club-motion";
 import {
-  ArrowRight,
-  Calendar,
-  Code2,
-  Rocket,
-  Users,
-} from "lucide-react";
+  clubEase,
+  fadeUpProps,
+  staggerContainer,
+  staggerItem,
+} from "@/lib/club-motion";
+import { ArrowRight, Calendar, Code2, Rocket, Users } from "lucide-react";
+import { motion } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
-import { motion } from "motion/react";
 import { useRouter } from "next/navigation";
 
 import { clubTheme } from "./club-theme";
@@ -30,7 +29,9 @@ const cards = [
         <p className="text-[11px] font-semibold uppercase tracking-wider text-[#00C8FF]">
           24 MAY · Presencial
         </p>
-        <p className="mt-1 text-sm font-bold text-white">AWSome Community Day</p>
+        <p className="mt-1 text-sm font-bold text-white">
+          AWSome Community Day
+        </p>
         <p className="mt-2 text-xs text-zinc-400">
           Charlas, networking y labs con la comunidad AWS en La Paz.
         </p>
@@ -123,8 +124,8 @@ const cards = [
     content: (
       <>
         <p className="text-xs leading-relaxed text-zinc-400">
-          Lleva tus ideas al siguiente nivel con el respaldo de AWS y mentores del
-          club.
+          Lleva tus ideas al siguiente nivel con el respaldo de AWS y mentores
+          del club.
         </p>
         <JoinCta />
       </>
@@ -171,7 +172,10 @@ export function ClubHomePreviewCards() {
             <motion.article
               key={card.id}
               variants={staggerItem}
-              whileHover={{ y: -6, transition: { duration: 0.25, ease: clubEase } }}
+              whileHover={{
+                y: -6,
+                transition: { duration: 0.25, ease: clubEase },
+              }}
               className={`group relative overflow-hidden rounded-2xl border border-white/10 bg-[#12131a]/80 p-5 backdrop-blur-sm ${clubTheme.cardHover}`}
             >
               <div

@@ -771,16 +771,19 @@ export default function UsersPage() {
     }
   };
 
-  const handleDelete = useCallback((user: User) => {
-    if (
-      confirm(
-        t("confirmDeleteUser") ||
-          "¿Estás seguro de que quieres eliminar este usuario?"
-      )
-    ) {
-      deleteUser.mutate({ id: user.id });
-    }
-  }, [deleteUser, t]);
+  const handleDelete = useCallback(
+    (user: User) => {
+      if (
+        confirm(
+          t("confirmDeleteUser") ||
+            "¿Estás seguro de que quieres eliminar este usuario?"
+        )
+      ) {
+        deleteUser.mutate({ id: user.id });
+      }
+    },
+    [deleteUser, t]
+  );
 
   // Definir columnas de la tabla (memoized to prevent re-creation on each render)
   const columns = useMemo<TableColumn<User>[]>(
@@ -876,7 +879,14 @@ export default function UsersPage() {
           !(canManageUsers || user.id === currentUser?.id),
       },
     ],
-    [t, canManageUsers, currentUser?.id, handleDelete, handleEdit, handleViewUser]
+    [
+      t,
+      canManageUsers,
+      currentUser?.id,
+      handleDelete,
+      handleEdit,
+      handleViewUser,
+    ]
   );
 
   return (

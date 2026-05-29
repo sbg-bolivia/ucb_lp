@@ -1,17 +1,12 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import {
-  clubEase,
-  staggerContainer,
-  staggerItem,
-} from "@/lib/club-motion";
 import { Calendar, MapPin, Video } from "lucide-react";
+import { motion } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
-import { motion } from "motion/react";
-
 import { ClubSectionHeader } from "./club-section-header";
+import { clubTheme } from "./club-theme";
 
 const events = [
   {
@@ -21,8 +16,7 @@ const events = [
     mode: "Presencial",
     location: "UCB Sede La Paz",
     time: "09:00 – 18:00",
-    image:
-      "https://images.unsplash.com/photo-1540575467067-178ab98d8357?auto=format&fit=crop&w=900&q=80",
+    image: "https://images.unsplash.com/photo-1540575467067-178ab98d8357?auto=format&fit=crop&w=900&q=80",
     accent: "from-[#00C8FF]/10",
   },
   {
@@ -32,16 +26,36 @@ const events = [
     mode: "Online",
     location: "Zoom",
     time: "18:30 – 20:30",
-    image:
-      "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=900&q=80",
+    image: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=900&q=80",
     accent: "from-[#7E2CFF]/10",
     lambda: true,
   },
 ] as const;
 
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.15,
+      delayChildren: 0.1,
+    },
+  },
+};
+
+const cardVariants = {
+  hidden: { opacity: 0, scale: 0.95, filter: "blur(15px)" },
+  visible: { 
+    opacity: 1, 
+    scale: 1, 
+    filter: "blur(0px)",
+    transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] }
+  },
+};
+
 export function ClubHomeEvents() {
   return (
-    <section className="border-t border-slate-100 bg-white px-4 py-16 dark:border-white/5 dark:bg-[#0C0D12] sm:px-6 sm:py-24">
+    <section className={`bg-transparent px-4 py-16 sm:px-6 sm:py-24 ${clubTheme.pageBg}`} style={{ perspective: "1500px" }}>
       <div className="mx-auto max-w-7xl">
         <ClubSectionHeader
           eyebrow="Eventos destacados"
@@ -49,91 +63,69 @@ export function ClubHomeEvents() {
           description="Talleres presenciales y online con labs reales en AWS."
         />
 
-        <motion.div
-          className="mt-12 grid gap-6 lg:grid-cols-2"
-          variants={staggerContainer}
+        <motion.div 
+          className="mt-16 grid gap-12 lg:gap-16"
+          variants={containerVariants}
           initial="hidden"
-          whileInView="show"
-          viewport={{ once: true, margin: "-40px" }}
+          whileInView="visible"
+          viewport={{ once: true, margin: "-100px" }}
         >
-          {events.map((ev) => (
+          {events.map((event) => (
             <motion.article
-              key={ev.id}
-              variants={staggerItem}
-              whileHover={{ y: -4, transition: { duration: 0.25, ease: clubEase } }}
-              className="club-glass group relative flex flex-col overflow-hidden rounded-3xl"
+              key={event.id}
+              variants={cardVariants}
+              className="club-glass group relative flex flex-col overflow-hidden rounded-[2rem] lg:flex-row shadow-2xl border border-white/5 bg-slate-50 dark:bg-[#0C0D12]"
             >
-              <div
-                className={`pointer-events-none absolute inset-0 bg-gradient-to-br ${ev.accent} to-transparent`}
-                aria-hidden
-              />
-              <div className="relative flex flex-1 flex-col p-6 sm:p-8">
-                <div className="flex flex-wrap items-center gap-3">
-                  <span className="rounded-full border border-[#00C8FF]/30 bg-[#00C8FF]/10 px-3 py-1 text-xs font-bold text-[#00C8FF]">
-                    {ev.date}
-                  </span>
-                  <span className="inline-flex items-center gap-1.5 text-xs font-medium text-slate-600 dark:text-zinc-400">
-                    {ev.mode === "Online" ? (
-                      <Video className="h-3.5 w-3.5" />
-                    ) : (
-                      <MapPin className="h-3.5 w-3.5" />
-                    )}
-                    {ev.mode}
-                  </span>
-                </div>
-
-                <h3 className="mt-4 text-2xl font-bold text-slate-900 dark:text-white">
-                  {ev.title}
-                </h3>
-
-                <div className="mt-3 flex flex-wrap gap-4 text-sm text-slate-600 dark:text-zinc-400">
-                  <span className="inline-flex items-center gap-1.5">
-                    <MapPin className="h-4 w-4 text-[#7E2CFF]" />
-                    {ev.location}
-                  </span>
-                  <span className="inline-flex items-center gap-1.5">
-                    <Calendar className="h-4 w-4 text-[#00C8FF]" />
-                    {ev.time}
-                  </span>
-                </div>
-
-                <div className="relative mt-6 h-40 overflow-hidden rounded-2xl border border-white/10 sm:h-48">
-                  <Image
-                    src={ev.image}
-                    alt=""
-                    fill
-                    className="object-cover transition duration-500 group-hover:scale-105"
-                    sizes="(min-width: 1024px) 50vw, 100vw"
-                  />
-                  {"lambda" in ev && ev.lambda ? (
-                    <div className="absolute right-4 top-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-[#FF9900]/90 text-lg font-black text-[#232F3E] shadow-lg">
-                      λ
-                    </div>
-                  ) : null}
-                  <div className="absolute bottom-3 left-3 flex -space-x-2">
-                    {[1, 2, 3, 4].map((n) => (
-                      <div
-                        key={n}
-                        className="h-8 w-8 overflow-hidden rounded-full border-2 border-[#12131a]"
-                      >
-                        <Image
-                          src={`https://i.pravatar.cc/64?img=${n + 20}`}
-                          alt=""
-                          width={32}
-                          height={32}
-                          className="h-full w-full object-cover"
-                        />
-                      </div>
-                    ))}
+              <div className={`absolute inset-0 bg-gradient-to-br ${event.accent} to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100`} />
+              
+              <div className="relative h-64 w-full shrink-0 overflow-hidden lg:h-auto lg:w-2/5 block">
+                <Link href={`/eventos/${event.id}`}>
+                  <div className="h-full w-full">
+                    <Image
+                      src={event.image}
+                      alt={event.title}
+                      fill
+                      className="object-cover transition-transform duration-700 group-hover:scale-110"
+                      sizes="(max-width: 1024px) 100vw, 40vw"
+                    />
                   </div>
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#0C0D12] via-transparent to-transparent opacity-60 lg:bg-gradient-to-r" />
+                  
+                  <div className="absolute left-6 top-6 flex h-16 w-16 flex-col items-center justify-center rounded-2xl bg-white/10 text-white shadow-xl backdrop-blur-md">
+                    <span className="text-xl font-bold leading-none">{event.date.split(" ")[0]}</span>
+                    <span className="mt-1 text-[10px] font-bold uppercase tracking-wider text-[#00C8FF]">
+                      {event.date.split(" ")[1]}
+                    </span>
+                  </div>
+                </Link>
+              </div>
+
+              <div className="relative flex flex-1 flex-col justify-center p-8 sm:p-10 lg:pl-12">
+                <div className="flex flex-wrap items-center gap-3">
+                  <span className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-2.5 py-1 text-xs font-medium text-zinc-300">
+                    {event.mode === "Online" ? <Video className="h-3.5 w-3.5" /> : <MapPin className="h-3.5 w-3.5" />}
+                    {event.mode}
+                  </span>
+                  <span className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-2.5 py-1 text-xs font-medium text-zinc-300">
+                    <Calendar className="h-3.5 w-3.5" />
+                    {event.time}
+                  </span>
                 </div>
 
-                <div className="mt-6 flex justify-end">
-                  <Button
-                    asChild
-                    className="rounded-full bg-gradient-to-r from-[#00C8FF] via-[#7E2CFF] to-[#A855F7] font-semibold text-white"
-                  >
-                    <Link href="/eventos">Reservar mi lugar</Link>
+                <h3 className="mt-6 text-2xl font-bold tracking-tight text-white sm:text-3xl lg:text-4xl">
+                  <Link href={`/eventos/${event.id}`} className="hover:text-[#00C8FF] transition-colors">
+                    {event.title}
+                  </Link>
+                </h3>
+                
+                <div className="mt-4 flex items-center gap-2 text-zinc-400">
+                  <MapPin className="h-4 w-4 shrink-0 text-[#7E2CFF]" />
+                  <span className="text-sm">{event.location}</span>
+                </div>
+
+                <div className="mt-10 flex flex-wrap gap-4 relative z-20">
+                  <Button asChild className="rounded-full bg-white px-8 text-black hover:bg-zinc-200">
+                    <Link href={`/eventos/${event.id}`}>Ver detalles</Link>
                   </Button>
                 </div>
               </div>

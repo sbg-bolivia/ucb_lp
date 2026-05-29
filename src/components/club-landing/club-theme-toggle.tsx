@@ -70,11 +70,7 @@ export function ClubThemeToggle() {
               aria-hidden
             />
           ) : (
-            <Sun
-              className="h-4 w-4 text-sky-600"
-              strokeWidth={2}
-              aria-hidden
-            />
+            <Sun className="h-4 w-4 text-sky-600" strokeWidth={2} aria-hidden />
           )}
         </span>
       </button>

@@ -15,11 +15,21 @@ export function HomePageContent() {
       <ClubLoader />
       <ClubHero />
       <ClubHomeStats />
-      <ClubHomeServices />
-      <ClubHomeEvents />
-      <ClubHomeProjects />
-      <ClubHomeCommunity />
-      <ClubCtaBand />
+      <div style={{ contentVisibility: 'auto', containIntrinsicSize: '800px' }}>
+        <ClubHomeServices />
+      </div>
+      <div style={{ contentVisibility: 'auto', containIntrinsicSize: '800px' }}>
+        <ClubHomeEvents />
+      </div>
+      <div style={{ contentVisibility: 'auto', containIntrinsicSize: '800px' }}>
+        <ClubHomeProjects />
+      </div>
+      <div style={{ contentVisibility: 'auto', containIntrinsicSize: '800px' }}>
+        <ClubHomeCommunity />
+      </div>
+      <div style={{ contentVisibility: 'auto', containIntrinsicSize: '400px' }}>
+        <ClubCtaBand />
+      </div>
     </>
   );
 }

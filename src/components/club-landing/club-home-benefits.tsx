@@ -1,13 +1,7 @@
 "use client";
 
 import { clubEase, staggerContainer, staggerItem } from "@/lib/club-motion";
-import {
-  Award,
-  CalendarDays,
-  Cloud,
-  Network,
-  Rocket,
-} from "lucide-react";
+import { Award, CalendarDays, Cloud, Network, Rocket } from "lucide-react";
 import { motion } from "motion/react";
 
 import { ClubSectionHeader } from "./club-section-header";
@@ -61,14 +55,19 @@ export function ClubHomeBenefits() {
             <motion.div
               key={b.title}
               variants={staggerItem}
-              whileHover={{ y: -4, transition: { duration: 0.25, ease: clubEase } }}
+              whileHover={{
+                y: -4,
+                transition: { duration: 0.25, ease: clubEase },
+              }}
               className="club-glass flex flex-col items-center rounded-2xl p-6 text-center"
             >
               <span className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-[#00C8FF]/20 to-[#7E2CFF]/20 text-[#00C8FF] shadow-[0_0_24px_rgba(0,200,255,0.15)]">
                 <b.icon className="h-6 w-6" strokeWidth={1.75} />
               </span>
               <h3 className="text-sm font-bold text-white">{b.title}</h3>
-              <p className="mt-2 text-xs leading-relaxed text-zinc-400">{b.text}</p>
+              <p className="mt-2 text-xs leading-relaxed text-zinc-400">
+                {b.text}
+              </p>
             </motion.div>
           ))}
         </motion.div>
@@ -76,3 +75,4 @@ export function ClubHomeBenefits() {
     </section>
   );
 }
+

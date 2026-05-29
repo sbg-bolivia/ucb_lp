@@ -2,9 +2,9 @@
 
 import { CLUB } from "@/lib/club-brand";
 import { CLUB_LOGO } from "@/lib/club-brand-assets";
+import { useTheme } from "next-themes";
 import Image from "next/image";
 import Link from "next/link";
-import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 
 type ClubNavLogoProps = {

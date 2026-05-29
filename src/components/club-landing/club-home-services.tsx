@@ -1,8 +1,8 @@
 "use client";
 
-import { clubEase, staggerContainer, staggerItem } from "@/lib/club-motion";
-import { BookOpen, Code2, Users } from "lucide-react";
 import { motion } from "motion/react";
+import { BookOpen, Code2, Users } from "lucide-react";
+import { clubTheme } from "./club-theme";
 
 const services = [
   {
@@ -28,56 +28,104 @@ const services = [
   },
 ] as const;
 
+const Icon0 = services[0].icon;
+const Icon1 = services[1].icon;
+const Icon2 = services[2].icon;
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.15,
+      delayChildren: 0.1,
+    },
+  },
+};
+
+const cardVariants = {
+  hidden: { opacity: 0, scale: 0.9, filter: "blur(15px)" },
+  visible: { 
+    opacity: 1, 
+    scale: 1, 
+    filter: "blur(0px)",
+    transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] }
+  },
+};
+
 export function ClubHomeServices() {
   return (
-    <section className="relative border-t border-slate-100 bg-slate-50 px-4 py-16 dark:border-white/5 dark:bg-[#0C0D12] sm:px-6 sm:py-24">
-      <div className="mx-auto max-w-7xl">
+    <section className={`relative px-4 py-24 sm:px-6 sm:py-32 overflow-hidden ${clubTheme.pageBg}`}>
+      <div className="mx-auto max-w-7xl flex flex-col items-center">
+        
         <motion.header
-          className="text-center"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-40px" }}
-          transition={{ duration: 0.55, ease: clubEase }}
+          className="text-center mb-16"
+          initial={{ opacity: 0, filter: "blur(10px)" }}
+          whileInView={{ opacity: 1, filter: "blur(0px)" }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
         >
-          <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[#A855F7]">
+          <p className="text-sm font-bold uppercase tracking-[0.3em] text-[#A855F7]">
             Qué hacemos
           </p>
-          <h2 className="mt-3 text-3xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-4xl md:text-5xl">
+          <h2 className="mt-4 text-4xl font-extrabold tracking-tighter text-slate-900 dark:text-white sm:text-5xl md:text-6xl">
             Aprender. Construir. Impactar.
           </h2>
         </motion.header>
 
-        <motion.div
-          className="mt-14 grid gap-6 md:grid-cols-3"
-          variants={staggerContainer}
+        <motion.div 
+          className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full"
+          variants={containerVariants}
           initial="hidden"
-          whileInView="show"
-          viewport={{ once: true, margin: "-40px" }}
+          whileInView="visible"
+          viewport={{ once: true, margin: "-50px" }}
         >
-          {services.map((s) => (
-            <motion.article
-              key={s.title}
-              variants={staggerItem}
-              whileHover={{ y: -6, transition: { duration: 0.25, ease: clubEase } }}
-              className="club-glass group relative overflow-hidden rounded-3xl p-8"
-            >
-              <div
-                className={`pointer-events-none absolute -right-10 -top-10 h-32 w-32 rounded-full bg-gradient-to-br ${s.accent} blur-2xl transition-opacity duration-300 group-hover:opacity-100`}
-                aria-hidden
-              />
-              <span
-                className={`relative flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br ${s.accent} ${s.iconColor} shadow-[0_0_24px_rgba(126,44,255,0.18)]`}
-              >
-                <s.icon className="h-7 w-7" strokeWidth={1.75} />
-              </span>
-              <h3 className="relative mt-6 text-xl font-bold text-slate-900 dark:text-white">
-                {s.title}
-              </h3>
-              <p className="relative mt-3 text-sm leading-relaxed text-slate-600 dark:text-zinc-400">
-                {s.text}
-              </p>
-            </motion.article>
-          ))}
+          
+          {/* Card 1 */}
+          <motion.article
+            variants={cardVariants}
+            className="club-glass group relative flex flex-col justify-between p-8 overflow-hidden shadow-2xl rounded-3xl border border-white/5 bg-slate-50 dark:bg-[#0C0D12]"
+          >
+            <div className={`pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full bg-gradient-to-br ${services[0].accent} blur-2xl transition-opacity group-hover:opacity-100 opacity-50`} />
+            <span className={`relative flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br ${services[0].accent} ${services[0].iconColor} mb-6`}>
+              <Icon0 className="h-6 w-6" strokeWidth={2} />
+            </span>
+            <div>
+              <h3 className="text-2xl font-bold text-slate-900 dark:text-white">{services[0].title}</h3>
+              <p className="mt-3 text-base text-slate-600 dark:text-zinc-400">{services[0].text}</p>
+            </div>
+          </motion.article>
+
+          {/* Card 2 */}
+          <motion.article
+            variants={cardVariants}
+            className="club-glass group relative flex flex-col justify-between p-8 overflow-hidden shadow-2xl rounded-3xl border border-white/5 bg-slate-50 dark:bg-[#0C0D12]"
+          >
+            <div className={`pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full bg-gradient-to-br ${services[1].accent} blur-2xl transition-opacity group-hover:opacity-100 opacity-50`} />
+            <span className={`relative flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br ${services[1].accent} ${services[1].iconColor} mb-6`}>
+              <Icon1 className="h-6 w-6" strokeWidth={2} />
+            </span>
+            <div>
+              <h3 className="text-2xl font-bold text-slate-900 dark:text-white">{services[1].title}</h3>
+              <p className="mt-3 text-base text-slate-600 dark:text-zinc-400">{services[1].text}</p>
+            </div>
+          </motion.article>
+
+          {/* Card 3 */}
+          <motion.article
+            variants={cardVariants}
+            className="club-glass group relative flex flex-col justify-between p-8 overflow-hidden shadow-2xl rounded-3xl border border-white/5 bg-slate-50 dark:bg-[#0C0D12]"
+          >
+            <div className={`pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full bg-gradient-to-br ${services[2].accent} blur-2xl transition-opacity group-hover:opacity-100 opacity-50`} />
+            <span className={`relative flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br ${services[2].accent} ${services[2].iconColor} mb-6`}>
+              <Icon2 className="h-6 w-6" strokeWidth={2} />
+            </span>
+            <div>
+              <h3 className="text-2xl font-bold text-slate-900 dark:text-white">{services[2].title}</h3>
+              <p className="mt-3 text-base text-slate-600 dark:text-zinc-400">{services[2].text}</p>
+            </div>
+          </motion.article>
+
         </motion.div>
       </div>
     </section>

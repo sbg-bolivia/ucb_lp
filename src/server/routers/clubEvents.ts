@@ -121,7 +121,10 @@ export const clubEventsRouter = router({
         where: { id, tenantId: ctx.user.tenantId },
       });
       if (!existing) {
-        throw new TRPCError({ code: "NOT_FOUND", message: "Evento no encontrado" });
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Evento no encontrado",
+        });
       }
 
       const data: Record<string, unknown> = {};
@@ -162,7 +165,10 @@ export const clubEventsRouter = router({
         where: { id: input.id, tenantId: ctx.user.tenantId },
       });
       if (!existing) {
-        throw new TRPCError({ code: "NOT_FOUND", message: "Evento no encontrado" });
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Evento no encontrado",
+        });
       }
 
       await prisma.clubEvent.delete({ where: { id: input.id } });

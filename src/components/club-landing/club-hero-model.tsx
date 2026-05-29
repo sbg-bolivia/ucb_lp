@@ -20,12 +20,9 @@ function Model({ autoRotate }: { autoRotate: boolean }) {
     const size = box.getSize(new THREE.Vector3());
     const center = box.getCenter(new THREE.Vector3());
     const maxDim = Math.max(size.x, size.y, size.z) || 1;
-    const scale = 4.7 / maxDim;
-    clone.position.set(
-      -center.x * scale,
-      -center.y * scale,
-      -center.z * scale
-    );
+    // Escala nativa inmensa desde el motor 3D para que ocupe todo el espacio sin romper el DOM
+    const scale = 7.5 / maxDim;
+    clone.position.set(-center.x * scale, -center.y * scale, -center.z * scale);
     clone.scale.setScalar(scale);
     clone.traverse((obj) => {
       const mesh = obj as THREE.Mesh;
@@ -62,7 +59,11 @@ function StageRings() {
     if (ringsRef.current) ringsRef.current.rotation.z += delta * 0.15;
   });
   return (
-    <group ref={ringsRef} position={[0, -2.5, 0]} rotation={[Math.PI / 2, 0, 0]}>
+    <group
+      ref={ringsRef}
+      position={[0, -2.5, 0]}
+      rotation={[Math.PI / 2, 0, 0]}
+    >
       {[2.1, 2.9, 3.7].map((r, i) => (
         <mesh key={r}>
           <torusGeometry args={[r, 0.012, 16, 96]} />

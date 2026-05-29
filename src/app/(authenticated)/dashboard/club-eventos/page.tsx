@@ -21,10 +21,7 @@ import {
 } from "@/components/ui/table";
 import { Textarea } from "@/components/ui/textarea";
 import { useTranslation } from "@/hooks/useTranslation";
-import {
-  parseDatetimeLocal,
-  toDatetimeLocalValue,
-} from "@/lib/datetime-local";
+import { parseDatetimeLocal, toDatetimeLocalValue } from "@/lib/datetime-local";
 import { trpc } from "@/utils/trpc";
 import { Calendar, Pencil, Plus, Trash2 } from "lucide-react";
 import { useMemo, useState } from "react";

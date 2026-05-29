@@ -1,14 +1,15 @@
 "use client";
 
 import { useClubLinks } from "@/hooks/useClubLinks";
-import { clubEase, fadeUpProps, staggerContainer, staggerItem } from "@/lib/club-motion";
+import { fadeUpProps } from "@/lib/club-motion";
 import { Instagram, Linkedin, MessageCircle } from "lucide-react";
+import { motion } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
-import { motion } from "motion/react";
 
 import { ClubSectionHeader } from "./club-section-header";
 import { TiktokGlyph } from "./club-social-icons";
+import { clubTheme } from "./club-theme";
 
 const members = Array.from({ length: 12 }, (_, i) => i + 1);
 
@@ -25,10 +26,10 @@ export function ClubHomeCommunity() {
   );
 
   return (
-    <section className="border-t border-slate-100 bg-white px-4 py-16 dark:border-white/5 dark:bg-[#0C0D12] sm:px-6 sm:py-24">
+    <section className="bg-transparent px-4 py-16 sm:px-6 sm:py-24">
       <div className="mx-auto max-w-7xl">
-        <div className="grid gap-12 lg:grid-cols-2 lg:gap-16">
-          <div>
+        <div className="grid gap-12 lg:grid-cols-2 lg:gap-16 items-center">
+          <div className="flex flex-col justify-center">
             <ClubSectionHeader
               eyebrow="Nuestra comunidad"
               title="Más que código, conectamos personas"
@@ -46,7 +47,7 @@ export function ClubHomeCommunity() {
                   href={s.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex h-11 w-11 items-center justify-center rounded-full border border-[#7E2CFF]/30 bg-[#7E2CFF]/10 text-[#A855F7] transition hover:scale-110 hover:bg-[#7E2CFF]/20"
+                  className="flex h-11 w-11 items-center justify-center rounded-full border border-white/[0.05] bg-white/[0.02] text-[#A855F7] transition-all hover:scale-110 hover:bg-[#7E2CFF]/10 hover:border-[#7E2CFF]/20"
                   aria-label={s.label}
                 >
                   <s.icon className="h-5 w-5" />
@@ -57,7 +58,7 @@ export function ClubHomeCommunity() {
                   href={L.tiktokUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex h-11 w-11 items-center justify-center rounded-full border border-[#7E2CFF]/30 bg-[#7E2CFF]/10 transition hover:scale-110"
+                  className="flex h-11 w-11 items-center justify-center rounded-full border border-white/[0.05] bg-white/[0.02] transition-all hover:scale-110 hover:bg-[#7E2CFF]/10 hover:border-[#7E2CFF]/20"
                   aria-label="TikTok"
                 >
                   <TiktokGlyph className="h-5 w-5" />
@@ -65,85 +66,124 @@ export function ClubHomeCommunity() {
               ) : null}
             </motion.div>
 
-            <motion.div className="mt-10 flex flex-wrap gap-8" {...fadeUpProps}>
-              <div>
-                <p className="text-4xl font-bold text-slate-900 dark:text-white">120+</p>
-                <p className="text-sm text-slate-600 dark:text-zinc-400">miembros activos</p>
-              </div>
-              <div>
-                <p className="text-4xl font-bold text-slate-900 dark:text-white">6+</p>
-                <p className="text-sm text-slate-600 dark:text-zinc-400">universidades</p>
-              </div>
-              <div>
-                <p className="text-4xl font-bold text-slate-900 dark:text-white">3</p>
-                <p className="text-sm text-slate-600 dark:text-zinc-400">ciudades</p>
-              </div>
-            </motion.div>
-          </div>
-
-          <motion.div
-            className="club-glass rounded-3xl p-6 sm:p-8"
-            initial={{ opacity: 0, x: 20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.55, ease: clubEase }}
-          >
-            <p className="text-sm font-semibold text-[#00C8FF]">Nuestra comunidad</p>
             <motion.div
-              className="mt-4 grid grid-cols-4 gap-3 sm:grid-cols-6"
-              variants={staggerContainer}
+              className="mt-12 flex flex-wrap gap-10"
               initial="hidden"
               whileInView="show"
               viewport={{ once: true }}
+              variants={{
+                hidden: {},
+                show: {
+                  transition: {
+                    staggerChildren: 0.1,
+                  },
+                },
+              }}
             >
-              {members.map((n) => (
+              {[
+                {
+                  val: "120+",
+                  lbl: "miembros activos",
+                  color: "text-[#00C8FF]",
+                },
+                { val: "6+", lbl: "universidades", color: "text-[#7E2CFF]" },
+                { val: "3", lbl: "ciudades", color: "text-[#A855F7]" },
+              ].map((item) => (
                 <motion.div
-                  key={n}
-                  variants={staggerItem}
-                  className="aspect-square overflow-hidden rounded-full border-2 border-[#7E2CFF]/30"
+                  key={item.lbl}
+                  variants={{
+                    hidden: { opacity: 0, y: 15 },
+                    show: {
+                      opacity: 1,
+                      y: 0,
+                      transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] },
+                    },
+                  }}
                 >
-                  <Image
-                    src={`https://i.pravatar.cc/128?img=${n + 30}`}
-                    alt=""
-                    width={64}
-                    height={64}
-                    className="h-full w-full object-cover"
-                  />
+                  <p className={`text-4xl font-bold tracking-tight sm:text-5xl font-sans ${clubTheme.textHeading}`}>
+                    {item.val}
+                  </p>
+                  <p
+                    className={`mt-1 text-[10px] font-semibold uppercase tracking-widest ${item.color}`}
+                  >
+                    {item.lbl}
+                  </p>
                 </motion.div>
               ))}
             </motion.div>
+          </div>
 
-            <blockquote className="club-glass mt-8 rounded-2xl border-l-2 border-[#7E2CFF] p-5">
-              <p className="text-sm italic leading-relaxed text-slate-700 dark:text-zinc-300">
-                “Entré sin saber nada de cloud y en tres meses ya tenía un proyecto en
-                producción. La comunidad te empuja a shippear.”
-              </p>
-              <footer className="mt-4 flex items-center gap-3">
-                <Image
-                  src="https://i.pravatar.cc/64?img=47"
-                  alt=""
-                  width={40}
-                  height={40}
-                  className="h-10 w-10 rounded-full"
-                />
-                <div>
-                  <p className="text-sm font-bold text-slate-900 dark:text-white">Camila R.</p>
-                  <p className="text-xs text-slate-500 dark:text-zinc-500">
-                    Miembro · Ing. de Sistemas
-                  </p>
-                </div>
-              </footer>
+          {/* Right Column: Premium Apple-style Testimonial block */}
+          <div
+            className={`flex flex-col justify-between p-8 sm:p-10 ${clubTheme.card}`}
+          >
+            {/* Large Quote Marks Icon / Indicator */}
+            <span className="text-6xl text-[#00C8FF]/20 font-serif leading-none select-none">
+              “
+            </span>
+
+            <blockquote className="mt-2 text-lg sm:text-xl font-medium text-zinc-100 leading-relaxed text-left">
+              Entré sin saber nada de cloud y en tres meses ya tenía un proyecto
+              en producción. La comunidad te empuja a shippear y aprender
+              rápido.
             </blockquote>
 
-            <Link
-              href="/equipo"
-              className="mt-6 inline-block text-sm font-semibold text-[#00C8FF] hover:underline"
-            >
-              Conoce al equipo →
-            </Link>
-          </motion.div>
+            <div className="mt-8 flex items-center gap-4 text-left">
+              <Image
+                src="https://i.pravatar.cc/128?img=47"
+                alt="Camila R."
+                width={48}
+                height={48}
+                className="rounded-full border border-white/[0.05]"
+              />
+              <div>
+                <cite className={`not-italic text-sm font-bold block ${clubTheme.textHeading}`}>
+                  Camila R.
+                </cite>
+                <span className="text-[10px] font-semibold text-[#00C8FF] uppercase tracking-wider block mt-0.5">
+                  Estudiante y Builder Cloud
+                </span>
+              </div>
+            </div>
+
+            {/* Micro Team list at bottom */}
+            <div className="mt-8 border-t border-white/[0.03] pt-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div className="flex items-center gap-3 text-left">
+                <div className="flex -space-x-2">
+                  {members.slice(0, 5).map((n) => (
+                    <div
+                      key={n}
+                      className="h-8 w-8 overflow-hidden rounded-full border border-[#050608]"
+                    >
+                      <Image
+                        src={`https://i.pravatar.cc/128?img=${n + 30}`}
+                        alt=""
+                        width={32}
+                        height={32}
+                        className="h-full w-full object-cover"
+                      />
+                    </div>
+                  ))}
+                </div>
+                <span className="text-[10px] font-semibold text-zinc-500 uppercase tracking-widest">
+                  +120 Builders
+                </span>
+              </div>
+
+              <Link
+                href="/equipo"
+                className="inline-flex items-center gap-1 text-xs font-bold text-[#00C8FF] hover:underline uppercase tracking-wider group/team"
+              >
+                Conoce al equipo
+                <span className="inline-block transition-transform duration-200 group-hover/team:translate-x-0.5">
+                  →
+                </span>
+              </Link>
+            </div>
+          </div>
         </div>
       </div>
     </section>
   );
 }
+

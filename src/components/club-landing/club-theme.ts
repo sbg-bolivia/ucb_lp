@@ -9,30 +9,28 @@
  */
 export const clubTheme = {
   pageBg:
-    "bg-[#cfe8f6] text-slate-900 dark:bg-[#0C0D12] dark:text-white",
+    "bg-[#f5f5f7] text-[#1d1d1f] dark:bg-[#050608] dark:text-zinc-100 selection:bg-cyan-500/10",
   navBar:
-    "border-b border-sky-300/50 bg-white/80 backdrop-blur-xl supports-[backdrop-filter]:bg-white/72 dark:border-white/10 dark:bg-[#0C0D12]/80 dark:supports-[backdrop-filter]:bg-[#0C0D12]/70",
+    "border-b border-black/[0.04] bg-white/70 backdrop-blur-xl dark:border-white/[0.02] dark:bg-[#050608]/65",
   navLinkIdle:
-    "text-slate-700 hover:bg-sky-100/90 hover:text-[#1e3a8a] dark:text-zinc-300 dark:hover:bg-white/5 dark:hover:text-white",
+    "text-slate-500 hover:text-black dark:text-zinc-400 dark:hover:text-white transition-all duration-300",
   navLinkActive:
-    "bg-[#7E2CFF] text-white shadow-md shadow-[#7E2CFF]/25 dark:shadow-[#7E2CFF]/20",
-  card:
-    "rounded-3xl border border-sky-200/90 bg-white/92 shadow-md shadow-sky-900/[0.06] dark:border-white/10 dark:bg-[#12131a]/70 dark:shadow-black/40",
+    "bg-black/5 text-black border border-black/5 dark:bg-white/10 dark:text-white dark:border-white/5",
+  card: "rounded-[2.5rem] bg-white shadow-[0_20px_50px_-12px_rgba(0,0,0,0.06)] border border-transparent dark:border-white/[0.03] dark:bg-white/[0.01] dark:shadow-[inset_0_1px_1px_rgba(255,255,255,0.01)]",
   cardHover:
-    "transition-all duration-300 hover:border-[#00C8FF]/35 hover:shadow-lg hover:shadow-[#7E2CFF]/10 hover:-translate-y-0.5 dark:hover:border-[#7E2CFF]/40 dark:hover:shadow-[#7E2CFF]/15",
-  textMuted: "text-slate-600 dark:text-zinc-400",
-  textHeading: "text-slate-900 dark:text-white",
-  accentLine: "bg-[#00C8FF]",
-  /** Capa sobre imagen hero: dark + halo cyan/purple. */
-  gradientHeroOverlay:
-    "from-[#0C0D12]/90 via-[#0C0D12]/85 to-[#0C0D12]/92",
-  /** Botones primarios: cyan → purple. */
+    "transition-all duration-400 hover:shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1)] hover:scale-[1.01] dark:hover:border-white/[0.06] dark:hover:bg-white/[0.02] dark:hover:shadow-[inset_0_1px_1px_rgba(255,255,255,0.02)]",
+  textMuted: "text-slate-500 dark:text-zinc-400",
+  textHeading: "text-[#1d1d1f] dark:text-white",
+  accentLine: "bg-black dark:bg-white",
+  /** Capa sobre imagen hero: dark + halo. Mantenemos oscuro en hero para contraste del 3D */
+  gradientHeroOverlay: "from-[#050608]/98 via-transparent to-[#050608]/98",
+  /** Botones primarios: clean solid black or gradient button */
   gradientButton: "from-[#00C8FF] via-[#7E2CFF] to-[#A855F7]",
-  /** Banda CTA: gradiente suave. */
+  /** Banda CTA: clean translucent */
   gradientCta:
-    "bg-gradient-to-r from-[#00C8FF]/15 via-[#7E2CFF]/15 to-[#A855F7]/15 border border-white/10",
+    "bg-gradient-to-br from-[#f5f5f7]/50 to-[#f5f5f7]/30 dark:from-white/[0.01] dark:to-white/[0.005] border border-black/[0.03] dark:border-white/[0.02] shadow-[inset_0_1px_0px_rgba(255,255,255,0.01)]",
   meetupHighlight:
-    "bg-[#F05663] hover:bg-[#e04552] text-white shadow-lg shadow-rose-500/30 ring-2 ring-white/40 dark:ring-white/20",
-  sectionSoft: "bg-sky-50/75 dark:bg-zinc-900/45",
-  sectionTint: "bg-[#d4e9f7]/80 dark:bg-zinc-900/55",
+    "bg-[#F05663] hover:bg-[#e04552] text-white shadow-md ring-1 ring-white/10",
+  sectionSoft: "bg-transparent",
+  sectionTint: "bg-transparent",
 } as const;

@@ -20,10 +20,7 @@ export function ClubContactStrip() {
     >
       <div className="mx-auto max-w-7xl">
         <div className="grid gap-12 lg:grid-cols-2 lg:items-center lg:gap-16">
-          <motion.div
-            className="text-center lg:text-left"
-            {...fadeUpProps}
-          >
+          <motion.div className="text-center lg:text-left" {...fadeUpProps}>
             <p className="text-sm font-bold uppercase tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-[#3b41ff] to-[#6a11cb]">
               Contacto
             </p>
@@ -32,7 +29,9 @@ export function ClubContactStrip() {
             >
               ¿Preguntas o alianzas?
             </h2>
-            <p className={`mt-4 max-w-xl text-base sm:text-lg lg:mx-0 lg:max-w-none ${clubTheme.textMuted}`}>
+            <p
+              className={`mt-4 max-w-xl text-base sm:text-lg lg:mx-0 lg:max-w-none ${clubTheme.textMuted}`}
+            >
               Escríbenos por correo o entra al grupo de WhatsApp. El QR agrupa
               nuestros enlaces (Linktree).
             </p>
@@ -77,7 +76,10 @@ export function ClubContactStrip() {
           >
             <div className={`relative w-full max-w-sm ${clubTheme.card} p-8`}>
               <div className="mb-4 flex items-center justify-center gap-2 text-slate-600 dark:text-zinc-400">
-                <QrCode className="h-5 w-5 text-[#6a11cb] dark:text-violet-400" aria-hidden />
+                <QrCode
+                  className="h-5 w-5 text-[#6a11cb] dark:text-violet-400"
+                  aria-hidden
+                />
                 <span className="text-sm font-semibold text-slate-700 dark:text-zinc-200">
                   Redes (Linktree)
                 </span>

@@ -2,8 +2,8 @@
 
 import { CLUB_LOGO } from "@/lib/club-brand-assets";
 import { clubEase } from "@/lib/club-motion";
-import Image from "next/image";
 import { motion } from "motion/react";
+import Image from "next/image";
 import { useState } from "react";
 
 type ClubPortalVisualProps = {
@@ -12,7 +12,8 @@ type ClubPortalVisualProps = {
   className?: string;
 };
 
-const HERO_VIDEO = process.env.NEXT_PUBLIC_HERO_VIDEO_URL ?? "/hero/chip-portal.webm";
+const HERO_VIDEO =
+  process.env.NEXT_PUBLIC_HERO_VIDEO_URL ?? "/hero/chip-portal.webm";
 const SPLINE_URL = process.env.NEXT_PUBLIC_SPLINE_SCENE_URL;
 
 /**
@@ -37,13 +38,19 @@ export function ClubPortalVisual({
       className={`relative mx-auto flex items-center justify-center ${sizeClass} ${className}`}
     >
       {SPLINE_URL ? (
-        <SplineEmbed url={SPLINE_URL} className="absolute inset-0 h-full w-full" />
+        <SplineEmbed
+          url={SPLINE_URL}
+          className="absolute inset-0 h-full w-full"
+        />
       ) : null}
 
       {!SPLINE_URL && (
         <>
           {/* Haz de luz */}
-          <div className="club-portal-beams pointer-events-none absolute inset-0" aria-hidden />
+          <div
+            className="club-portal-beams pointer-events-none absolute inset-0"
+            aria-hidden
+          />
 
           {/* Anillos de suelo (perspectiva) */}
           <div
@@ -115,7 +122,11 @@ function FloatingChip({ variant }: { variant: "hero" | "cta" }) {
     <motion.div
       className={`club-portal-chip relative z-20 ${chipSize}`}
       animate={{ y: [0, -14, 0], rotateY: [0, 8, 0, -8, 0] }}
-      transition={{ duration: 6, repeat: Number.POSITIVE_INFINITY, ease: clubEase }}
+      transition={{
+        duration: 6,
+        repeat: Number.POSITIVE_INFINITY,
+        ease: clubEase,
+      }}
     >
       <div
         className="absolute inset-0 rounded-2xl bg-gradient-to-br from-[#22D3FF] via-[#4269F3] to-[#B14DFF] shadow-[0_0_50px_rgba(34,211,255,0.5),0_0_80px_rgba(177,77,255,0.35)]"

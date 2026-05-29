@@ -1,45 +1,59 @@
 "use client";
 
-import { clubEase, staggerContainer, staggerItem } from "@/lib/club-motion";
+import { motion } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
-import { motion } from "motion/react";
-
 import { ClubSectionHeader } from "./club-section-header";
+import { clubTheme } from "./club-theme";
 
 const projects = [
   {
     id: "campus-connect",
     title: "Campus Connect",
-    description:
-      "Plataforma de conexión estudiantil para eventos y recursos universitarios.",
+    description: "Plataforma de conexión estudiantil para eventos y recursos universitarios.",
     tags: ["React", "AWS Amplify", "DynamoDB"],
-    image:
-      "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=700&q=80",
+    image: "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=1200&q=80",
   },
   {
     id: "ecoride",
     title: "EcoRide",
-    description:
-      "Solución para compartir viajes de forma segura y sostenible en la ciudad.",
+    description: "Solución para compartir viajes de forma segura y sostenible en la ciudad.",
     tags: ["AWS Lambda", "API Gateway", "S3"],
-    image:
-      "https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?auto=format&fit=crop&w=700&q=80",
+    image: "https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?auto=format&fit=crop&w=1200&q=80",
   },
   {
     id: "studybuddy",
     title: "StudyBuddy",
-    description:
-      "App móvil que ayuda a estudiantes a organizar su aprendizaje con IA.",
+    description: "App móvil que ayuda a estudiantes a organizar su aprendizaje con IA.",
     tags: ["Flutter", "AWS Cognito", "S3"],
-    image:
-      "https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?auto=format&fit=crop&w=700&q=80",
+    image: "https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?auto=format&fit=crop&w=1200&q=80",
   },
 ] as const;
 
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.15,
+      delayChildren: 0.1,
+    },
+  },
+};
+
+const cardVariants = {
+  hidden: { opacity: 0, scale: 0.9, filter: "blur(15px)" },
+  visible: { 
+    opacity: 1, 
+    scale: 1, 
+    filter: "blur(0px)",
+    transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] }
+  },
+};
+
 export function ClubHomeProjects() {
   return (
-    <section className="border-t border-slate-100 bg-slate-50 px-4 py-16 dark:border-white/5 dark:bg-[#0a0b10] sm:px-6 sm:py-24">
+    <section className={`bg-transparent px-4 py-16 sm:px-6 sm:py-24 ${clubTheme.pageBg}`}>
       <div className="mx-auto max-w-7xl">
         <ClubSectionHeader
           eyebrow="Proyectos destacados"
@@ -47,54 +61,50 @@ export function ClubHomeProjects() {
           description="Productos reales que nuestros miembros construyen y despliegan en la nube."
         />
 
-        <motion.div
-          className="mt-12 grid gap-6 md:grid-cols-3"
-          variants={staggerContainer}
+        <motion.div 
+          className="mt-16 grid gap-8 md:grid-cols-3"
+          variants={containerVariants}
           initial="hidden"
-          whileInView="show"
-          viewport={{ once: true, margin: "-40px" }}
+          whileInView="visible"
+          viewport={{ once: true, margin: "-50px" }}
         >
-          {projects.map((p) => (
-            <motion.article
-              key={p.id}
-              variants={staggerItem}
-              whileHover={{ y: -6, transition: { duration: 0.25, ease: clubEase } }}
-              className="club-glass flex flex-col overflow-hidden rounded-3xl"
+          {projects.map((project) => (
+            <motion.div
+              key={project.id}
+              variants={cardVariants}
+              className={`club-glass group relative flex flex-col overflow-hidden rounded-3xl shadow-2xl bg-slate-50 dark:bg-[#0C0D12] ${clubTheme.cardHover}`}
             >
-              <div className="relative h-44 border-b border-white/10">
+              <Link href={`/proyectos/${project.id}`} className="relative h-56 w-full overflow-hidden block">
                 <Image
-                  src={p.image}
-                  alt=""
+                  src={project.image}
+                  alt={project.title}
                   fill
-                  className="object-cover"
-                  sizes="(min-width: 768px) 33vw, 100vw"
+                  className="object-cover transition-transform duration-700 group-hover:scale-105"
+                  sizes="(max-width: 768px) 100vw, 33vw"
                 />
-              </div>
-              <div className="flex flex-1 flex-col p-6">
-                <h3 className="text-xl font-bold text-slate-900 dark:text-white">
-                  {p.title}
-                </h3>
-                <p className="mt-2 flex-1 text-sm leading-relaxed text-slate-600 dark:text-zinc-400">
-                  {p.description}
-                </p>
-                <div className="mt-4 flex flex-wrap gap-1.5">
-                  {p.tags.map((t) => (
+                <div className="absolute inset-0 bg-gradient-to-t from-[#0C0D12] via-transparent to-transparent opacity-80" />
+              </Link>
+              <div className="flex flex-1 flex-col justify-between p-6 sm:p-8">
+                <div>
+                  <h3 className="text-xl font-bold text-slate-900 dark:text-white group-hover:text-[#00C8FF] transition-colors">
+                    <Link href={`/proyectos/${project.id}`}>{project.title}</Link>
+                  </h3>
+                  <p className="mt-3 text-sm leading-relaxed text-slate-600 dark:text-zinc-400">
+                    {project.description}
+                  </p>
+                </div>
+                <div className="mt-6 flex flex-wrap gap-2">
+                  {project.tags.map((tag) => (
                     <span
-                      key={t}
-                      className="rounded-md border border-slate-200 bg-slate-100 px-2 py-0.5 text-[10px] font-semibold text-slate-600 dark:border-white/10 dark:bg-white/5 dark:text-zinc-300"
+                      key={tag}
+                      className="inline-flex rounded-md bg-[#00C8FF]/10 px-2.5 py-1 text-xs font-semibold text-[#00C8FF] border border-[#00C8FF]/20"
                     >
-                      {t}
+                      {tag}
                     </span>
                   ))}
                 </div>
-                <Link
-                  href="/beneficios"
-                  className="mt-4 text-sm font-semibold text-[#00C8FF] hover:underline"
-                >
-                  Ver proyecto →
-                </Link>
               </div>
-            </motion.article>
+            </motion.div>
           ))}
         </motion.div>
       </div>

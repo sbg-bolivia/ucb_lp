@@ -537,7 +537,9 @@ export default function SettingsPage() {
                 </p>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="whatsappUrl">WhatsApp (invitación al grupo)</Label>
+                <Label htmlFor="whatsappUrl">
+                  WhatsApp (invitación al grupo)
+                </Label>
                 <Input
                   id="whatsappUrl"
                   value={formData.whatsappUrl}

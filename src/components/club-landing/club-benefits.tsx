@@ -121,9 +121,9 @@ export function ClubBenefits() {
             className={`mt-5 text-lg leading-relaxed sm:text-xl ${clubTheme.textMuted}`}
           >
             Beneficios pensados para acelerar tu aprendizaje, como en otros
-            capítulos de la red de Student Builder Groups. En el {CLUB.shortName} en la{" "}
-            {CLUB.fullUniversity} ponemos el foco en práctica, comunidad y
-            certificación.
+            capítulos de la red de Student Builder Groups. En el{" "}
+            {CLUB.shortName} en la {CLUB.fullUniversity} ponemos el foco en
+            práctica, comunidad y certificación.
           </p>
         </motion.div>
 

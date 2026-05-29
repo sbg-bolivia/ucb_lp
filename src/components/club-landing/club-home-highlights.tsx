@@ -1,5 +1,6 @@
 "use client";
 
+import { useClubLinks } from "@/hooks/useClubLinks";
 import { CLUB } from "@/lib/club-brand";
 import {
   clubEase,
@@ -7,7 +8,6 @@ import {
   staggerContainer,
   staggerItem,
 } from "@/lib/club-motion";
-import { useClubLinks } from "@/hooks/useClubLinks";
 import { ArrowUpRight, Cloud, Rocket, UserCircle2, Users } from "lucide-react";
 import { motion } from "motion/react";
 import Link from "next/link";
@@ -45,7 +45,9 @@ export function ClubHomeHighlights() {
   const links = useClubLinks();
 
   return (
-    <section className={`relative px-4 py-20 sm:px-6 sm:py-28 ${clubTheme.sectionTint}`}>
+    <section
+      className={`relative px-4 py-20 sm:px-6 sm:py-28 ${clubTheme.sectionTint}`}
+    >
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_100%,rgba(59,65,255,0.06),transparent)] dark:bg-[radial-gradient(ellipse_80%_60%_at_50%_100%,rgba(99,102,241,0.12),transparent)]" />
 
       <div className="relative mx-auto max-w-7xl">
@@ -88,7 +90,9 @@ export function ClubHomeHighlights() {
                 <h3 className={`text-lg font-bold ${clubTheme.textHeading}`}>
                   {item.title}
                 </h3>
-                <p className={`mt-2 flex-1 text-sm leading-relaxed ${clubTheme.textMuted}`}>
+                <p
+                  className={`mt-2 flex-1 text-sm leading-relaxed ${clubTheme.textMuted}`}
+                >
                   {item.text}
                 </p>
                 <span className="mt-4 inline-flex items-center text-sm font-semibold text-[#5c27c4] transition group-hover:text-[#3b41ff] dark:text-violet-300 dark:group-hover:text-violet-200">

@@ -5,6 +5,7 @@ import { ClubLandingFooter } from "@/components/club-landing/club-landing-footer
 import { ClubLandingNavbar } from "@/components/club-landing/club-landing-navbar";
 import { useTheme } from "next-themes";
 import { useEffect } from "react";
+import { clubTheme } from "./club-theme";
 
 export function ClubMarketingShell({
   children,
@@ -22,7 +23,8 @@ export function ClubMarketingShell({
   }, [setTheme]);
 
   return (
-    <div className="min-h-screen max-w-[100vw] overflow-x-hidden bg-white text-slate-900 antialiased selection:bg-violet-500/25 dark:bg-[#0C0D12] dark:text-white">
+    <div className={`min-h-screen max-w-[100vw] overflow-x-clip antialiased ${clubTheme.pageBg}`}>
+      <div className="club-grain" />
       <ClubCursorField className="club-cursor-field" />
       <ClubLandingNavbar />
       <main className="pt-16">{children}</main>

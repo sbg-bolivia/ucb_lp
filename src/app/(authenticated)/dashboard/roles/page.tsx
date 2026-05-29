@@ -234,16 +234,19 @@ export default function RolesPage() {
     });
   };
 
-  const handleEdit = useCallback((role: Role) => {
-    setEditingRole(role);
-    form.reset({
-      name: role.name,
-      displayName: role.displayName,
-      description: role.description || "",
-      isActive: role.isActive,
-    });
-    setIsEditDialogOpen(true);
-  }, [form]);
+  const handleEdit = useCallback(
+    (role: Role) => {
+      setEditingRole(role);
+      form.reset({
+        name: role.name,
+        displayName: role.displayName,
+        description: role.description || "",
+        isActive: role.isActive,
+      });
+      setIsEditDialogOpen(true);
+    },
+    [form]
+  );
 
   const handleView = useCallback((role: Role) => {
     setViewingRole(role);
@@ -284,15 +287,18 @@ export default function RolesPage() {
     );
   };
 
-  const handleDelete = useCallback((role: Role) => {
-    if (
-      confirm(
-        `¿Estás seguro de que quieres eliminar el rol "${role.displayName}"?`
-      )
-    ) {
-      deleteRole.mutate({ id: role.id });
-    }
-  }, [deleteRole]);
+  const handleDelete = useCallback(
+    (role: Role) => {
+      if (
+        confirm(
+          `¿Estás seguro de que quieres eliminar el rol "${role.displayName}"?`
+        )
+      ) {
+        deleteRole.mutate({ id: role.id });
+      }
+    },
+    [deleteRole]
+  );
 
   const onSubmit = (data: RoleFormData) => {
     if (editingRole) {

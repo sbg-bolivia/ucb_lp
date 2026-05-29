@@ -1,8 +1,8 @@
 "use client";
 
-import { ClubMarketingShell } from "@/components/club-landing/club-marketing-shell";
 import { Footer } from "@/components/Footer";
 import GlobalNavbar from "@/components/GlobalNavbar";
+import { ClubMarketingShell } from "@/components/club-landing/club-marketing-shell";
 import { isClubMarketingPath } from "@/constants/club-routes";
 import { usePathname } from "next/navigation";
 
