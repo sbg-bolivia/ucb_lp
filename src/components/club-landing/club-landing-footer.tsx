@@ -45,29 +45,29 @@ export function ClubLandingFooter() {
   };
 
   return (
-    <footer className="border-t border-white/5 bg-[#050608] px-4 pb-10 pt-14 sm:px-6">
+    <footer className="border-t border-slate-100 bg-white px-4 pb-10 pt-14 dark:border-white/5 dark:bg-[#050608] sm:px-6">
       <div className="mx-auto max-w-7xl">
-        <p className="mb-8 text-center text-xs font-medium uppercase tracking-[0.2em] text-zinc-500">
+        <p className="mb-8 text-center text-xs font-medium uppercase tracking-[0.2em] text-slate-500 dark:text-zinc-500">
           Construimos con las mejores tecnologías
         </p>
         <ul className="mb-14 flex flex-wrap items-center justify-center gap-x-10 gap-y-3">
           {PARTNERS.map((name) => (
             <li
               key={name}
-              className="text-sm font-semibold text-zinc-600 transition hover:text-zinc-400"
+              className="text-sm font-semibold text-slate-500 transition hover:text-slate-700 dark:text-zinc-600 dark:hover:text-zinc-400"
             >
               {name}
             </li>
           ))}
         </ul>
 
-        <div className="grid gap-10 border-t border-white/5 pt-12 sm:grid-cols-2 lg:grid-cols-5">
+        <div className="grid gap-10 border-t border-slate-200 pt-12 dark:border-white/5 sm:grid-cols-2 lg:grid-cols-5">
           <div className="space-y-4 lg:col-span-2">
             <ClubNavLogo heightClass="h-10 sm:h-11" />
-            <p className="max-w-xs text-sm text-zinc-500">
+            <p className="max-w-xs text-sm text-slate-500 dark:text-zinc-500">
               © {year} {CLUB.shortName}. Todos los derechos reservados.
             </p>
-            <p className="flex flex-wrap items-center gap-1 text-sm text-zinc-500">
+            <p className="flex flex-wrap items-center gap-1 text-sm text-slate-500 dark:text-zinc-500">
               Hecho con
               <Heart className="h-3.5 w-3.5 text-[#7E2CFF]" fill="currentColor" aria-hidden />
               por el equipo · {CLUB.fullUniversity}
@@ -75,12 +75,12 @@ export function ClubLandingFooter() {
           </div>
 
           <nav className="flex flex-col gap-2 text-sm" aria-label="Navegación">
-            <p className="mb-1 font-bold text-white">Navegación</p>
+            <p className="mb-1 font-bold text-slate-900 dark:text-white">Navegación</p>
             {NAV.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
-                className="text-zinc-400 transition hover:text-[#00C8FF]"
+                className="text-slate-600 transition hover:text-[#00C8FF] dark:text-zinc-400"
               >
                 {item.label}
               </Link>
@@ -88,12 +88,12 @@ export function ClubLandingFooter() {
           </nav>
 
           <nav className="flex flex-col gap-2 text-sm" aria-label="Comunidad">
-            <p className="mb-1 font-bold text-white">Comunidad</p>
+            <p className="mb-1 font-bold text-slate-900 dark:text-white">Comunidad</p>
             {COMMUNITY.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
-                className="text-zinc-400 transition hover:text-[#00C8FF]"
+                className="text-slate-600 transition hover:text-[#00C8FF] dark:text-zinc-400"
               >
                 {item.label}
               </Link>
@@ -103,7 +103,7 @@ export function ClubLandingFooter() {
                 href={L.meetupUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-zinc-400 transition hover:text-[#00C8FF]"
+                className="text-slate-600 transition hover:text-[#00C8FF] dark:text-zinc-400"
               >
                 Meetup
               </a>
@@ -114,7 +114,7 @@ export function ClubLandingFooter() {
                   href={L.whatsappUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="rounded-full p-2 text-zinc-400 hover:bg-white/5 hover:text-white"
+                  className="rounded-full p-2 text-slate-500 hover:bg-slate-200 hover:text-slate-900 dark:text-zinc-400 dark:hover:bg-white/5 dark:hover:text-white"
                   aria-label="WhatsApp"
                 >
                   <MessageCircle className="h-4 w-4" />
@@ -125,7 +125,7 @@ export function ClubLandingFooter() {
                   href={L.linkedinUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="rounded-full p-2 text-zinc-400 hover:bg-white/5 hover:text-white"
+                  className="rounded-full p-2 text-slate-500 hover:bg-slate-200 hover:text-slate-900 dark:text-zinc-400 dark:hover:bg-white/5 dark:hover:text-white"
                   aria-label="LinkedIn"
                 >
                   <Linkedin className="h-4 w-4" />
@@ -136,7 +136,7 @@ export function ClubLandingFooter() {
                   href={L.instagramUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="rounded-full p-2 text-zinc-400 hover:bg-white/5 hover:text-white"
+                  className="rounded-full p-2 text-slate-500 hover:bg-slate-200 hover:text-slate-900 dark:text-zinc-400 dark:hover:bg-white/5 dark:hover:text-white"
                   aria-label="Instagram"
                 >
                   <Instagram className="h-4 w-4" />
@@ -147,7 +147,7 @@ export function ClubLandingFooter() {
                   href={L.tiktokUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="rounded-full p-2 text-zinc-400 hover:bg-white/5 hover:text-white"
+                  className="rounded-full p-2 text-slate-500 hover:bg-slate-200 hover:text-slate-900 dark:text-zinc-400 dark:hover:bg-white/5 dark:hover:text-white"
                   aria-label="TikTok"
                 >
                   <TiktokGlyph className="h-4 w-4" />
@@ -157,7 +157,7 @@ export function ClubLandingFooter() {
           </nav>
 
           <nav className="flex flex-col gap-2 text-sm" aria-label="Recursos">
-            <p className="mb-1 font-bold text-white">Recursos</p>
+            <p className="mb-1 font-bold text-slate-900 dark:text-white">Recursos</p>
             {RESOURCES.map((item) =>
               "external" in item && item.external ? (
                 <a
@@ -165,7 +165,7 @@ export function ClubLandingFooter() {
                   href={item.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-zinc-400 transition hover:text-[#00C8FF]"
+                  className="text-slate-600 transition hover:text-[#00C8FF] dark:text-zinc-400"
                 >
                   {item.label}
                 </a>
@@ -173,7 +173,7 @@ export function ClubLandingFooter() {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className="text-zinc-400 transition hover:text-[#00C8FF]"
+                  className="text-slate-600 transition hover:text-[#00C8FF] dark:text-zinc-400"
                 >
                   {item.label}
                 </Link>
@@ -182,8 +182,8 @@ export function ClubLandingFooter() {
           </nav>
 
           <div>
-            <p className="mb-3 font-bold text-white">Mantente al día</p>
-            <p className="mb-4 text-sm text-zinc-500">
+            <p className="mb-3 font-bold text-slate-900 dark:text-white">Mantente al día</p>
+            <p className="mb-4 text-sm text-slate-500 dark:text-zinc-500">
               Recibe novedades de eventos y proyectos del club.
             </p>
             <form onSubmit={onNewsletter} className="flex gap-2">
@@ -192,7 +192,7 @@ export function ClubLandingFooter() {
                 placeholder="tu@email.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="border-white/10 bg-white/5 text-white placeholder:text-zinc-600"
+                className="border-slate-200 bg-white text-slate-900 placeholder:text-slate-400 dark:border-white/10 dark:bg-white/5 dark:text-white dark:placeholder:text-zinc-600"
                 required
               />
               <Button
@@ -205,14 +205,14 @@ export function ClubLandingFooter() {
           </div>
         </div>
 
-        <div className="mt-10 flex flex-wrap gap-4 border-t border-white/5 pt-8 text-xs text-zinc-600">
-          <Link href="/legal/terms" className="hover:text-zinc-400">
+        <div className="mt-10 flex flex-wrap gap-4 border-t border-slate-200 pt-8 text-xs text-slate-500 dark:border-white/5 dark:text-zinc-600">
+          <Link href="/legal/terms" className="hover:text-slate-700 dark:hover:text-zinc-400">
             Términos
           </Link>
-          <Link href="/legal/privacy" className="hover:text-zinc-400">
+          <Link href="/legal/privacy" className="hover:text-slate-700 dark:hover:text-zinc-400">
             Privacidad
           </Link>
-          <Link href="/legal/cookies" className="hover:text-zinc-400">
+          <Link href="/legal/cookies" className="hover:text-slate-700 dark:hover:text-zinc-400">
             Cookies
           </Link>
         </div>

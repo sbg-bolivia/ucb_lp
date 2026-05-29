@@ -245,9 +245,89 @@ body {
 }
 
 .club-glass {
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  background: rgba(18, 19, 26, 0.72);
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  background: rgba(255, 255, 255, 0.82);
   backdrop-filter: blur(12px);
+  box-shadow: 0 10px 30px -18px rgba(15, 23, 42, 0.25);
+}
+
+.dark .club-glass {
+  border-color: rgba(255, 255, 255, 0.1);
+  background: rgba(18, 19, 26, 0.72);
+  box-shadow: none;
+}
+
+/* Campo de partículas que sigue el cursor (three.js) — rastro sutil a
+   pantalla completa. Va por encima del contenido pero con blend "screen"
+   para que solo aporte luz, y opacidad reducida para que sea discreto. */
+.club-cursor-field {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  pointer-events: none;
+  mix-blend-mode: screen;
+  opacity: 0.7;
+}
+
+/* En modo claro lo atenuamos aún más para no saturar fondos claros. */
+html:not(.dark) .club-cursor-field {
+  opacity: 0.4;
+}
+
+/* Preloader del modelo 3D */
+@keyframes club-loader-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes club-loader-pulse {
+  0%,
+  100% {
+    opacity: 0.55;
+    transform: scale(0.96);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.04);
+  }
+}
+
+@keyframes club-loader-sheen {
+  0% {
+    transform: translateX(-120%);
+  }
+  100% {
+    transform: translateX(320%);
+  }
+}
+
+.club-loader-ring {
+  animation: club-loader-spin 1.1s linear infinite;
+}
+
+.club-loader-logo {
+  animation: club-loader-pulse 2.2s ease-in-out infinite;
+}
+
+.club-loader-sheen {
+  animation: club-loader-sheen 1.4s ease-in-out infinite;
+}
+
+/* Plataforma luminosa del modelo (decoración hero) */
+.club-stage-glow {
+  background:
+    radial-gradient(60% 50% at 50% 62%, rgba(126, 44, 255, 0.4), transparent 70%),
+    radial-gradient(45% 38% at 50% 70%, rgba(0, 200, 255, 0.28), transparent 72%);
+  filter: blur(28px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .club-loader-ring,
+  .club-loader-logo,
+  .club-loader-sheen {
+    animation: none;
+  }
 }
 @layer components {
   .animate-blob {

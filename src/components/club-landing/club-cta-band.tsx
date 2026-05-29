@@ -3,21 +3,10 @@
 import { useAuthContext } from "@/AuthContext";
 import { Button } from "@/components/ui/button";
 import { useClubLinks } from "@/hooks/useClubLinks";
-import { clubEase, fadeUpProps } from "@/lib/club-motion";
-import { ArrowRight, Check } from "lucide-react";
-import Link from "next/link";
+import { fadeUpProps } from "@/lib/club-motion";
+import { ArrowRight } from "lucide-react";
 import { motion } from "motion/react";
 import { useRouter } from "next/navigation";
-
-import { ClubPortalVisual } from "./club-portal-visual";
-import { clubTheme } from "./club-theme";
-
-const perks = [
-  "Comunidad activa de builders",
-  "Aprendizaje práctico en AWS",
-  "Proyectos para tu portafolio",
-  "Eventos y mentorías exclusivas",
-] as const;
 
 export function ClubCtaBand() {
   const { isAuthenticated } = useAuthContext();
@@ -34,72 +23,94 @@ export function ClubCtaBand() {
   return (
     <section
       id="cta"
-      className="relative overflow-hidden border-t border-white/5 bg-[#050608] px-4 py-20 sm:px-6 sm:py-28"
+      className="border-t border-slate-100 bg-slate-50 px-4 py-16 dark:border-white/5 dark:bg-[#0C0D12] sm:px-6 sm:py-24"
       aria-labelledby="cta-heading"
     >
-      <div className="pointer-events-none absolute inset-0 club-aurora opacity-50" aria-hidden />
+      <div className="mx-auto max-w-6xl">
+        <motion.div
+          {...fadeUpProps}
+          className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-[#3D1F8F] via-[#7E2CFF] to-[#A855F7] px-6 py-16 text-center shadow-[0_30px_80px_-30px_rgba(126,44,255,0.6)] sm:px-12 sm:py-20"
+        >
+          {/* Decoración: rejilla + silueta de ciudad pixel */}
+          <div
+            className="pointer-events-none absolute inset-0 opacity-30"
+            style={{
+              backgroundImage:
+                "linear-gradient(to right, rgba(255,255,255,0.18) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.18) 1px, transparent 1px)",
+              backgroundSize: "44px 44px",
+              maskImage:
+                "radial-gradient(circle at 50% 30%, black 0%, transparent 75%)",
+            }}
+            aria-hidden
+          />
+          <div
+            className="pointer-events-none absolute -left-10 top-1/2 h-64 w-64 -translate-y-1/2 rounded-full bg-[#00C8FF]/30 blur-3xl"
+            aria-hidden
+          />
+          <div
+            className="pointer-events-none absolute -right-10 top-1/3 h-64 w-64 rounded-full bg-[#A855F7]/40 blur-3xl"
+            aria-hidden
+          />
+          <CityscapeSilhouette />
 
-      <div className="relative mx-auto max-w-7xl">
-        <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
-          <motion.div {...fadeUpProps}>
+          <div className="relative">
             <h2
               id="cta-heading"
-              className="text-3xl font-bold tracking-tight text-white sm:text-4xl md:text-5xl"
+              className="mx-auto max-w-2xl text-3xl font-bold tracking-tight text-white sm:text-4xl md:text-5xl"
             >
               ¿Listo para construir el futuro?
             </h2>
-            <p className="mt-4 max-w-lg text-lg text-zinc-400">
-              Únete al capítulo de La Paz y empieza a shippear en la nube con una
-              comunidad que te impulsa.
+            <p className="mx-auto mt-4 max-w-lg text-base text-white/80 sm:text-lg">
+              Únete a nuestra comunidad y empieza tu viaje en la nube.
             </p>
 
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+            <div className="mt-9 flex justify-center">
               <Button
                 type="button"
+                size="lg"
                 onClick={onJoin}
-                className={`h-12 rounded-full bg-gradient-to-r px-8 font-semibold text-white sm:h-14 ${clubTheme.gradientButton}`}
+                className="group h-12 rounded-full bg-white px-8 text-base font-semibold text-[#3D1F8F] shadow-lg transition hover:bg-white/90 sm:h-14"
               >
-                Únete ahora
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
-              <Button
-                asChild
-                variant="outline"
-                className="h-12 rounded-full border-white/20 bg-transparent text-white hover:bg-white/5 sm:h-14"
-              >
-                <Link href="/beneficios">Explorar proyectos</Link>
+                {isAuthenticated ? "Ir al panel" : "Únete al grupo"}
+                <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
               </Button>
             </div>
-          </motion.div>
-
-          <motion.ul
-            className="space-y-4"
-            initial={{ opacity: 0, x: 16 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, ease: clubEase }}
-          >
-            {perks.map((p) => (
-              <li key={p} className="flex items-start gap-3 text-zinc-300">
-                <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#00C8FF] to-[#7E2CFF] text-white">
-                  <Check className="h-3.5 w-3.5" strokeWidth={3} />
-                </span>
-                <span className="text-base">{p}</span>
-              </li>
-            ))}
-          </motion.ul>
-        </div>
-
-        <motion.div
-          className="mt-16 flex justify-center"
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, ease: clubEase }}
-        >
-          <ClubPortalVisual variant="cta" />
+          </div>
         </motion.div>
       </div>
     </section>
+  );
+}
+
+function CityscapeSilhouette() {
+  return (
+    <svg
+      className="pointer-events-none absolute inset-x-0 bottom-0 h-24 w-full text-white/10"
+      viewBox="0 0 1200 120"
+      preserveAspectRatio="none"
+      fill="currentColor"
+      role="img"
+      aria-label="Silueta de ciudad"
+    >
+      <title>Silueta de ciudad</title>
+      <rect x="40" y="70" width="46" height="50" />
+      <rect x="96" y="50" width="34" height="70" />
+      <rect x="150" y="80" width="40" height="40" />
+      <rect x="210" y="40" width="30" height="80" />
+      <rect x="258" y="64" width="48" height="56" />
+      <rect x="330" y="54" width="36" height="66" />
+      <rect x="392" y="78" width="44" height="42" />
+      <rect x="470" y="46" width="32" height="74" />
+      <rect x="520" y="68" width="50" height="52" />
+      <rect x="600" y="36" width="34" height="84" />
+      <rect x="654" y="60" width="42" height="60" />
+      <rect x="720" y="78" width="40" height="42" />
+      <rect x="784" y="50" width="34" height="70" />
+      <rect x="842" y="70" width="48" height="50" />
+      <rect x="916" y="44" width="32" height="76" />
+      <rect x="970" y="66" width="46" height="54" />
+      <rect x="1044" y="78" width="40" height="42" />
+      <rect x="1106" y="56" width="34" height="64" />
+    </svg>
   );
 }
