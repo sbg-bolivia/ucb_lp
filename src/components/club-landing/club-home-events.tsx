@@ -41,11 +41,11 @@ const events = [
 
 export function ClubHomeEvents() {
   return (
-    <section className="border-t border-white/5 bg-[#0C0D12] px-4 py-16 sm:px-6 sm:py-24">
+    <section className="border-t border-slate-100 bg-white px-4 py-16 dark:border-white/5 dark:bg-[#0C0D12] sm:px-6 sm:py-24">
       <div className="mx-auto max-w-7xl">
         <ClubSectionHeader
-          eyebrow="Eventos"
-          title="Aprende en comunidad"
+          eyebrow="Eventos destacados"
+          title="Lo que viene"
           description="Talleres presenciales y online con labs reales en AWS."
         />
 
@@ -72,7 +72,7 @@ export function ClubHomeEvents() {
                   <span className="rounded-full border border-[#00C8FF]/30 bg-[#00C8FF]/10 px-3 py-1 text-xs font-bold text-[#00C8FF]">
                     {ev.date}
                   </span>
-                  <span className="inline-flex items-center gap-1.5 text-xs font-medium text-zinc-400">
+                  <span className="inline-flex items-center gap-1.5 text-xs font-medium text-slate-600 dark:text-zinc-400">
                     {ev.mode === "Online" ? (
                       <Video className="h-3.5 w-3.5" />
                     ) : (
@@ -82,9 +82,11 @@ export function ClubHomeEvents() {
                   </span>
                 </div>
 
-                <h3 className="mt-4 text-2xl font-bold text-white">{ev.title}</h3>
+                <h3 className="mt-4 text-2xl font-bold text-slate-900 dark:text-white">
+                  {ev.title}
+                </h3>
 
-                <div className="mt-3 flex flex-wrap gap-4 text-sm text-zinc-400">
+                <div className="mt-3 flex flex-wrap gap-4 text-sm text-slate-600 dark:text-zinc-400">
                   <span className="inline-flex items-center gap-1.5">
                     <MapPin className="h-4 w-4 text-[#7E2CFF]" />
                     {ev.location}

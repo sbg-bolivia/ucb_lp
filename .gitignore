@@ -63,3 +63,6 @@ Thumbs.db
 # uploads locales (si se generan en runtime)
 /public/uploads
 /uploads
+branch_structure.json
+temp_auto_push.bat
+temp_interactive_push.bat

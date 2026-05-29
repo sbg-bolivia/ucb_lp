@@ -25,13 +25,13 @@ export function ClubHomeCommunity() {
   );
 
   return (
-    <section className="border-t border-white/5 bg-[#0C0D12] px-4 py-16 sm:px-6 sm:py-24">
+    <section className="border-t border-slate-100 bg-white px-4 py-16 dark:border-white/5 dark:bg-[#0C0D12] sm:px-6 sm:py-24">
       <div className="mx-auto max-w-7xl">
         <div className="grid gap-12 lg:grid-cols-2 lg:gap-16">
           <div>
             <ClubSectionHeader
-              eyebrow="Comunidad"
-              title="Juntos construimos el futuro en la nube"
+              eyebrow="Nuestra comunidad"
+              title="Más que código, conectamos personas"
               description="Conecta con builders de distintas carreras, comparte aprendizajes y crece en equipo."
             />
 
@@ -67,16 +67,16 @@ export function ClubHomeCommunity() {
 
             <motion.div className="mt-10 flex flex-wrap gap-8" {...fadeUpProps}>
               <div>
-                <p className="text-4xl font-bold text-white">275+</p>
-                <p className="text-sm text-zinc-400">miembros activos</p>
+                <p className="text-4xl font-bold text-slate-900 dark:text-white">120+</p>
+                <p className="text-sm text-slate-600 dark:text-zinc-400">miembros activos</p>
               </div>
               <div>
-                <p className="text-4xl font-bold text-white">8+</p>
-                <p className="text-sm text-zinc-400">universidades</p>
+                <p className="text-4xl font-bold text-slate-900 dark:text-white">6+</p>
+                <p className="text-sm text-slate-600 dark:text-zinc-400">universidades</p>
               </div>
               <div>
-                <p className="text-4xl font-bold text-white">3</p>
-                <p className="text-sm text-zinc-400">países en la red</p>
+                <p className="text-4xl font-bold text-slate-900 dark:text-white">3</p>
+                <p className="text-sm text-slate-600 dark:text-zinc-400">ciudades</p>
               </div>
             </motion.div>
           </div>
@@ -114,7 +114,7 @@ export function ClubHomeCommunity() {
             </motion.div>
 
             <blockquote className="club-glass mt-8 rounded-2xl border-l-2 border-[#7E2CFF] p-5">
-              <p className="text-sm italic leading-relaxed text-zinc-300">
+              <p className="text-sm italic leading-relaxed text-slate-700 dark:text-zinc-300">
                 “Entré sin saber nada de cloud y en tres meses ya tenía un proyecto en
                 producción. La comunidad te empuja a shippear.”
               </p>
@@ -127,8 +127,10 @@ export function ClubHomeCommunity() {
                   className="h-10 w-10 rounded-full"
                 />
                 <div>
-                  <p className="text-sm font-bold text-white">Camila R.</p>
-                  <p className="text-xs text-zinc-500">Miembro · Ing. de Sistemas</p>
+                  <p className="text-sm font-bold text-slate-900 dark:text-white">Camila R.</p>
+                  <p className="text-xs text-slate-500 dark:text-zinc-500">
+                    Miembro · Ing. de Sistemas
+                  </p>
                 </div>
               </footer>
             </blockquote>

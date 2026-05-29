@@ -9,41 +9,41 @@ import { ClubSectionHeader } from "./club-section-header";
 
 const projects = [
   {
-    id: "ecotrack",
-    title: "EcoTrack",
+    id: "campus-connect",
+    title: "Campus Connect",
     description:
-      "Monitoreo de huella de carbono en campus con dashboards y alertas en tiempo real.",
-    tags: ["React", "Python", "AWS", "PostgreSQL"],
+      "Plataforma de conexión estudiantil para eventos y recursos universitarios.",
+    tags: ["React", "AWS Amplify", "DynamoDB"],
     image:
-      "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=700&q=80",
+      "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=700&q=80",
   },
   {
-    id: "uniconnect",
-    title: "UniConnect",
+    id: "ecoride",
+    title: "EcoRide",
     description:
-      "Red social universitaria con chat, eventos y perfiles verificados por carrera.",
-    tags: ["Next.js", "tRPC", "DynamoDB"],
+      "Solución para compartir viajes de forma segura y sostenible en la ciudad.",
+    tags: ["AWS Lambda", "API Gateway", "S3"],
     image:
-      "https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?auto=format&fit=crop&w=700&q=80",
+      "https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?auto=format&fit=crop&w=700&q=80",
   },
   {
     id: "studybuddy",
-    title: "StudyBuddy AI",
+    title: "StudyBuddy",
     description:
-      "Asistente de estudio con RAG sobre apuntes y recomendaciones de recursos AWS.",
-    tags: ["TypeScript", "Bedrock", "Lambda"],
+      "App móvil que ayuda a estudiantes a organizar su aprendizaje con IA.",
+    tags: ["Flutter", "AWS Cognito", "S3"],
     image:
-      "https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&w=700&q=80",
+      "https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?auto=format&fit=crop&w=700&q=80",
   },
 ] as const;
 
 export function ClubHomeProjects() {
   return (
-    <section className="border-t border-white/5 bg-[#0a0b10] px-4 py-16 sm:px-6 sm:py-24">
+    <section className="border-t border-slate-100 bg-slate-50 px-4 py-16 dark:border-white/5 dark:bg-[#0a0b10] sm:px-6 sm:py-24">
       <div className="mx-auto max-w-7xl">
         <ClubSectionHeader
-          eyebrow="Proyectos"
-          title="Ideas que se convierten en impacto"
+          eyebrow="Proyectos destacados"
+          title="Construyendo el futuro"
           description="Productos reales que nuestros miembros construyen y despliegan en la nube."
         />
 
@@ -71,15 +71,17 @@ export function ClubHomeProjects() {
                 />
               </div>
               <div className="flex flex-1 flex-col p-6">
-                <h3 className="text-xl font-bold text-white">{p.title}</h3>
-                <p className="mt-2 flex-1 text-sm leading-relaxed text-zinc-400">
+                <h3 className="text-xl font-bold text-slate-900 dark:text-white">
+                  {p.title}
+                </h3>
+                <p className="mt-2 flex-1 text-sm leading-relaxed text-slate-600 dark:text-zinc-400">
                   {p.description}
                 </p>
                 <div className="mt-4 flex flex-wrap gap-1.5">
                   {p.tags.map((t) => (
                     <span
                       key={t}
-                      className="rounded-md border border-white/10 bg-white/5 px-2 py-0.5 text-[10px] font-semibold text-zinc-300"
+                      className="rounded-md border border-slate-200 bg-slate-100 px-2 py-0.5 text-[10px] font-semibold text-slate-600 dark:border-white/10 dark:bg-white/5 dark:text-zinc-300"
                     >
                       {t}
                     </span>
