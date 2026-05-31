@@ -26,11 +26,14 @@ export const clubTheme = {
   gradientHeroOverlay: "from-[#050608]/98 via-transparent to-[#050608]/98",
   /** Botones primarios: clean solid black or gradient button */
   gradientButton: "from-[#00C8FF] via-[#7E2CFF] to-[#A855F7]",
-  /** Banda CTA: clean translucent */
+  /** Banda CTA: halo cyan–violet (coherente con el hero) */
   gradientCta:
-    "bg-gradient-to-br from-[#f5f5f7]/50 to-[#f5f5f7]/30 dark:from-white/[0.01] dark:to-white/[0.005] border border-black/[0.03] dark:border-white/[0.02] shadow-[inset_0_1px_0px_rgba(255,255,255,0.01)]",
+    "border border-[#00C8FF]/12 bg-gradient-to-br from-[#e8f6ff] via-white to-[#f0e8ff] shadow-[0_28px_64px_-24px_rgba(126,44,255,0.18)] dark:border-white/[0.06] dark:bg-gradient-to-br dark:from-[#0b1220] dark:via-[#0d0a18] dark:to-[#050608] dark:shadow-[0_32px_80px_-28px_rgba(0,200,255,0.2)]",
   meetupHighlight:
     "bg-[#F05663] hover:bg-[#e04552] text-white shadow-md ring-1 ring-white/10",
   sectionSoft: "bg-transparent",
   sectionTint: "bg-transparent",
+  /** Padding vertical compacto entre secciones del marketing */
+  sectionY: "px-4 py-10 sm:px-6 sm:py-14",
+  sectionYCompact: "px-4 py-8 sm:px-6 sm:py-10",
 } as const;

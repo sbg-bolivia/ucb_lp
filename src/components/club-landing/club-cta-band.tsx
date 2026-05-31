@@ -23,7 +23,7 @@ export function ClubCtaBand() {
   return (
     <section
       id="cta"
-      className="bg-transparent px-4 py-16 sm:px-6 sm:py-24"
+      className={`bg-transparent ${clubTheme.sectionY}`}
       aria-labelledby="cta-heading"
     >
       <div className="mx-auto max-w-6xl">
@@ -32,15 +32,26 @@ export function ClubCtaBand() {
           whileInView={{ opacity: 1, y: 0, scale: 1 }}
           viewport={{ once: true, margin: "-80px" }}
           transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-          className="relative overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-zinc-950/40 via-zinc-950/20 to-zinc-950/40 px-6 py-16 text-center border border-white/[0.02] sm:px-12 sm:py-20 backdrop-blur-xl"
+          className={`relative overflow-hidden rounded-[2.5rem] px-6 py-16 text-center sm:px-12 sm:py-20 ${clubTheme.gradientCta}`}
         >
-          {/* Subtle soft glowing backdrops */}
           <div
-            className="pointer-events-none absolute -left-10 top-1/2 h-64 w-64 -translate-y-1/2 rounded-full bg-[#00C8FF]/5 blur-3xl animate-pulse"
+            className="pointer-events-none absolute inset-0 club-grid opacity-[0.22] dark:opacity-[0.28]"
             aria-hidden
           />
           <div
-            className="pointer-events-none absolute -right-10 top-1/3 h-64 w-64 rounded-full bg-[#A855F7]/5 blur-3xl animate-pulse"
+            className="pointer-events-none absolute inset-0 bg-gradient-to-br from-[#00C8FF]/8 via-transparent to-[#7E2CFF]/10 dark:from-[#00C8FF]/12 dark:via-[#050608]/40 dark:to-[#A855F7]/14"
+            aria-hidden
+          />
+          <div
+            className="pointer-events-none absolute -left-16 top-1/4 h-56 w-56 rounded-full bg-[#00C8FF]/20 blur-3xl dark:bg-[#00C8FF]/25"
+            aria-hidden
+          />
+          <div
+            className="pointer-events-none absolute -right-12 bottom-0 h-64 w-64 rounded-full bg-[#A855F7]/18 blur-3xl dark:bg-[#7E2CFF]/22"
+            aria-hidden
+          />
+          <div
+            className="pointer-events-none absolute left-1/2 top-0 h-32 w-[80%] -translate-x-1/2 bg-gradient-to-b from-white/60 to-transparent dark:from-white/[0.04]"
             aria-hidden
           />
 
@@ -51,7 +62,9 @@ export function ClubCtaBand() {
             >
               ¿Listo para construir el futuro?
             </h2>
-            <p className="mx-auto mt-4 max-w-lg text-sm text-zinc-400 sm:text-base font-medium">
+            <p
+              className={`mx-auto mt-4 max-w-lg text-sm font-medium sm:text-base ${clubTheme.textMuted}`}
+            >
               Únete a nuestra comunidad y empieza tu viaje en la nube.
             </p>
 

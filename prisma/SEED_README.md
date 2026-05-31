@@ -1,100 +1,61 @@
-# Seed Completo de Base de Datos - MyApp Platform
+# Seed — AWS Student Builder Group UCB
 
-Este archivo contiene un seed completo que **elimina todos los datos existentes** y crea un sistema completo desde cero con usuarios de todos los tipos.
+El seed **borra todos los datos** y crea un entorno de desarrollo completo conectado al sitio público y al panel admin.
 
-## 📋 Datos Incluidos
+## Ejecutar
 
-### 🏢 Infraestructura Base
-- **Empresa**: Información completa de MyApp Platform
-- **Usuarios**: Usuarios de prueba con diferentes roles
-- **Roles**: Sistema RBAC completo
-
-### 👥 Usuarios de Todos los Tipos (8 usuarios)
-
-| Usuario | Email | Contraseña | Rol | Idioma | Suscripción |
-|---------|-------|------------|-----|--------|-------------|
-| **Super Admin** | `superadmin@myapp.com` | `SuperAdmin123!@#` | super_admin | EN | Premium |
-| **Admin User** | `admin@myapp.com` | `Admin123!@#` | admin | EN | Premium |
-| **Moderator User** | `moderator@myapp.com` | `Moderator123!@#` | moderator | ES | Premium |
-| **Alex User** | `user@myapp.com` | `User123!@#` | user | ES | Premium |
-| **Maria Rodriguez** | `maria@myapp.com` | `Maria123!@#` | user | ES | Premium |
-| **John Smith** | `john@myapp.com` | `John123!@#` | user | EN | Premium |
-| **Ana Silva** | `ana@myapp.com` | `Ana123!@#` | user | PT | Premium |
-| **Viewer User** | `viewer@myapp.com` | `Viewer123!@#` | viewer | EN | Free |
-
-### 🔐 Sistema RBAC
-- **5 Roles**: super_admin, admin, moderator, user, viewer
-- **Permisos**: Sistema completo de permisos granulares
-- **Jerarquía**: Super Admin > Admin > Moderator > User > Viewer
-
-## 🚀 Cómo Ejecutar el Seed
-
-### 1. Ejecutar el Seed
 ```bash
 pnpm db:seed
 ```
 
-### 2. Verificar los Datos
+O reset completo (migraciones + seed):
+
 ```bash
-pnpm db:studio
+pnpm db:reset
 ```
 
-## 📊 Datos Creados
+Requisito: `DATABASE_URL` en `.env` (ver `.env.example`).
 
-- ✅ **1 empresa** con información completa
-- ✅ **5 roles** con permisos granulares
-- ✅ **8 usuarios** (1 super admin, 1 admin, 1 moderator, 4 users, 1 viewer)
-- ✅ Sistema RBAC completo
+## Qué incluye
 
-## 👤 Usuarios de Prueba
+| Área | Contenido |
+|------|-----------|
+| **Tenant** | AWS Student Builder Group UCB con redes (Meetup, WhatsApp, TikTok, etc.) y **core team** (6 personas) |
+| **RBAC** | 5 roles + 19 permisos |
+| **Usuarios** | 7 cuentas de prueba con roles distintos |
+| **Eventos** | 5 eventos publicados → `/eventos` y `/eventos/[id]` |
+| **Proyectos** | 5 proyectos publicados → `/proyectos` y `/proyectos/[id]` |
+| **i18n** | Locales ES (default), EN, PT |
 
-### 🔑 Super Admin
-- **Email**: `superadmin@myapp.com`
-- **Contraseña**: `SuperAdmin123!@#`
-- **Permisos**: Acceso completo al sistema
+El sitio público usa el **primer tenant activo** (`companyInfo`, `clubEvents`, `clubProjects`). Este seed crea un solo tenant del club.
 
-### 👨‍💼 Admin
-- **Email**: `admin@myapp.com`
-- **Contraseña**: `Admin123!@#`
-- **Permisos**: Gestión de usuarios y configuraciones
+## Credenciales
 
-### 👨‍💻 Moderator
-- **Email**: `moderator@myapp.com`
-- **Contraseña**: `Moderator123!@#`
-- **Permisos**: Moderación y gestión limitada
+| Rol | Email | Contraseña |
+|-----|-------|------------|
+| Super Admin | `superadmin@awscloudclub.ucb` | `ClubSuper123!@#` |
+| Admin | `admin@awscloudclub.ucb` | `ClubAdmin123!@#` |
+| Moderador | `moderador@awscloudclub.ucb` | `ClubMod123!@#` |
+| Miembro | `miembro@awscloudclub.ucb` | `ClubUser123!@#` |
+| Miembro | `maria@awscloudclub.ucb` | `ClubUser123!@#` |
+| Miembro | `carlos@awscloudclub.ucb` | `ClubUser123!@#` |
+| Solo lectura | `viewer@awscloudclub.ucb` | `ClubViewer123!@#` |
 
-### 👤 Users (4 usuarios)
-- **Alex**: `user@myapp.com` / `User123!@#`
-- **Maria**: `maria@myapp.com` / `Maria123!@#`
-- **John**: `john@myapp.com` / `John123!@#`
-- **Ana**: `ana@myapp.com` / `Ana123!@#`
-- **Permisos**: Acceso a funcionalidades básicas
+## URLs de ejemplo (IDs fijos)
 
-### 👁️ Viewer
-- **Email**: `viewer@myapp.com`
-- **Contraseña**: `Viewer123!@#`
-- **Permisos**: Solo lectura
+- Evento: `/eventos/11111111-1111-4111-8111-111111111101`
+- Proyecto: `/proyectos/22222222-2222-4222-8222-222222222201`
 
-## 🔧 Personalización
+## Panel admin
 
-### Agregar Más Usuarios
-1. Modifica el array `users` en el archivo seed
-2. Ejecuta `pnpm db:seed` para aplicar cambios
+- `/dashboard` — inicio
+- `/dashboard/club-eventos` — CRUD eventos
+- `/dashboard/club-proyectos` — CRUD proyectos
+- `/dashboard/club-equipo` — core team (también en Ajustes → `coreTeam`)
+- `/dashboard/users` y `/dashboard/roles` — RBAC
 
-### Modificar Roles
-1. Edita los roles en la sección correspondiente
-2. Actualiza los permisos según sea necesario
+## Personalizar
 
-## 🧪 Testing
+Edita `prisma/seed-data.ts` (eventos, proyectos, usuarios, core team) y vuelve a ejecutar `pnpm db:seed`.
 
-### Usuarios para Testing
-- Usa `user@myapp.com` para testing de funcionalidades básicas
-- Usa `admin@myapp.com` para testing de administración
-- Usa `viewer@myapp.com` para testing de permisos de solo lectura
-- Usa `superadmin@myapp.com` para testing completo del sistema
-
-## ⚠️ Importante
-
-- Este seed **elimina todos los datos existentes**
-- Úsalo solo en desarrollo o para resetear la base de datos
-- En producción, usa migraciones incrementales
+⚠️ Solo para **desarrollo**. No ejecutes en producción sin revisar el impacto.

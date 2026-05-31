@@ -19,7 +19,7 @@ const items = [
     href: "/beneficios",
     icon: Rocket,
     title: "Beneficios",
-    text: "Certificaciones, labs, networking y más — al estilo de capítulos como AWS UD.",
+    text: "Certificaciones, labs, networking y recursos para crecer en la nube.",
   },
   {
     href: "/eventos",
@@ -58,16 +58,8 @@ export function ClubHomeHighlights() {
             ¿Por qué unirte al {CLUB.shortName}?
           </h2>
           <p className={`mt-5 text-lg ${clubTheme.textMuted}`}>
-            Inspirados en la experiencia de clubes como{" "}
-            <a
-              href="https://awsud.club/benefits"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="font-semibold text-[#3b41ff] underline-offset-2 hover:underline dark:text-violet-300"
-            >
-              AWS Student Builder Group Universidad Distrital
-            </a>
-            .
+            Aprende AWS con talleres, proyectos reales y una comunidad activa en
+            la {CLUB.fullUniversity}.
           </p>
         </motion.div>
 

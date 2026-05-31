@@ -1,0 +1,338 @@
+"use client";
+
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Textarea } from "@/components/ui/textarea";
+import { useTranslation } from "@/hooks/useTranslation";
+import { trpc } from "@/utils/trpc";
+import { FolderKanban, Pencil, Plus, Trash2 } from "lucide-react";
+import { useMemo, useState } from "react";
+import { toast } from "sonner";
+
+type FormState = {
+  title: string;
+  description: string;
+  tags: string;
+  imageUrl: string;
+  projectUrl: string;
+  isPublished: boolean;
+  sortOrder: string;
+};
+
+type ClubProjectRow = {
+  id: string;
+  tenantId: string;
+  title: string;
+  description: string | null;
+  tags: string | null;
+  imageUrl: string | null;
+  projectUrl: string | null;
+  isPublished: boolean;
+  sortOrder: number;
+};
+
+const emptyForm: FormState = {
+  title: "",
+  description: "",
+  tags: "",
+  imageUrl: "",
+  projectUrl: "",
+  isPublished: true,
+  sortOrder: "0",
+};
+
+function projectToForm(p: ClubProjectRow): FormState {
+  return {
+    title: p.title,
+    description: p.description ?? "",
+    tags: p.tags ?? "",
+    imageUrl: p.imageUrl ?? "",
+    projectUrl: p.projectUrl ?? "",
+    isPublished: p.isPublished,
+    sortOrder: String(p.sortOrder),
+  };
+}
+
+export default function ClubProyectosAdminPage() {
+  const { t } = useTranslation("dashboard");
+  const { data: projects, refetch } = trpc.clubProjects.listForAdmin.useQuery();
+  const [open, setOpen] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [form, setForm] = useState<FormState>(emptyForm);
+
+  const createMut = trpc.clubProjects.create.useMutation({
+    onSuccess: () => {
+      toast.success("Proyecto creado");
+      void refetch();
+      setOpen(false);
+      setForm(emptyForm);
+      setEditingId(null);
+    },
+    onError: (e) => toast.error(e.message),
+  });
+
+  const updateMut = trpc.clubProjects.update.useMutation({
+    onSuccess: () => {
+      toast.success("Proyecto actualizado");
+      void refetch();
+      setOpen(false);
+      setForm(emptyForm);
+      setEditingId(null);
+    },
+    onError: (e) => toast.error(e.message),
+  });
+
+  const deleteMut = trpc.clubProjects.delete.useMutation({
+    onSuccess: () => {
+      toast.success("Proyecto eliminado");
+      void refetch();
+    },
+    onError: (e) => toast.error(e.message),
+  });
+
+  const sorted = useMemo(() => projects ?? [], [projects]);
+
+  const openNew = () => {
+    setEditingId(null);
+    setForm(emptyForm);
+    setOpen(true);
+  };
+
+  const openEdit = (p: ClubProjectRow) => {
+    setEditingId(p.id);
+    setForm(projectToForm(p));
+    setOpen(true);
+  };
+
+  const submit = () => {
+    const title = form.title.trim();
+    if (!title) {
+      toast.error("El título es obligatorio");
+      return;
+    }
+    const sortOrder = Number.parseInt(form.sortOrder, 10);
+    const payload = {
+      title,
+      description: form.description.trim() || null,
+      tags: form.tags.trim() || null,
+      imageUrl: form.imageUrl.trim() || null,
+      projectUrl: form.projectUrl.trim() || null,
+      isPublished: form.isPublished,
+      sortOrder: Number.isFinite(sortOrder) ? sortOrder : 0,
+    };
+
+    if (editingId) {
+      updateMut.mutate({ id: editingId, ...payload });
+    } else {
+      createMut.mutate(payload);
+    }
+  };
+
+  const busy = createMut.isPending || updateMut.isPending;
+
+  return (
+    <div className="space-y-6">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h1 className="text-2xl font-semibold text-foreground">
+            {t("clubProjectsAdmin")}
+          </h1>
+          <p className="mt-0.5 text-sm text-muted-foreground">
+            {t("clubProjectsAdminDesc")}
+          </p>
+        </div>
+        <Button type="button" onClick={openNew}>
+          <Plus className="mr-2 h-4 w-4" />
+          Nuevo proyecto
+        </Button>
+      </div>
+
+      <div className="rounded-xl border border-border bg-card">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Título</TableHead>
+              <TableHead className="hidden md:table-cell">Tags</TableHead>
+              <TableHead>Publicado</TableHead>
+              <TableHead className="w-[120px] text-right">Acciones</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {sorted.length === 0 ? (
+              <TableRow>
+                <TableCell
+                  colSpan={4}
+                  className="py-10 text-center text-muted-foreground"
+                >
+                  No hay proyectos. Crea el primero con &quot;Nuevo proyecto&quot;.
+                </TableCell>
+              </TableRow>
+            ) : (
+              sorted.map((p) => (
+                <TableRow key={p.id}>
+                  <TableCell className="font-medium">{p.title}</TableCell>
+                  <TableCell className="hidden md:table-cell text-muted-foreground text-sm">
+                    {p.tags || "—"}
+                  </TableCell>
+                  <TableCell>{p.isPublished ? "Sí" : "No"}</TableCell>
+                  <TableCell className="text-right">
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8"
+                      onClick={() => openEdit(p)}
+                      aria-label="Editar"
+                    >
+                      <Pencil className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8 text-destructive hover:text-destructive"
+                      onClick={() => {
+                        if (
+                          confirm(
+                            `¿Eliminar el proyecto «${p.title}»? Esta acción no se puede deshacer.`
+                          )
+                        ) {
+                          deleteMut.mutate({ id: p.id });
+                        }
+                      }}
+                      aria-label="Eliminar"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))
+            )}
+          </TableBody>
+        </Table>
+      </div>
+
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent className="max-h-[min(90vh,720px)] overflow-y-auto sm:max-w-lg">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <FolderKanban className="h-5 w-5" />
+              {editingId ? "Editar proyecto" : "Nuevo proyecto"}
+            </DialogTitle>
+          </DialogHeader>
+          <div className="grid gap-4 py-2">
+            <div className="space-y-2">
+              <Label htmlFor="pr-title">Título</Label>
+              <Input
+                id="pr-title"
+                value={form.title}
+                onChange={(e) =>
+                  setForm((f) => ({ ...f, title: e.target.value }))
+                }
+                placeholder="Ej. Campus Connect"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="pr-desc">Descripción</Label>
+              <Textarea
+                id="pr-desc"
+                rows={4}
+                value={form.description}
+                onChange={(e) =>
+                  setForm((f) => ({ ...f, description: e.target.value }))
+                }
+                placeholder="Qué hace el proyecto, stack, impacto..."
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="pr-tags">Tags (separados por coma)</Label>
+              <Input
+                id="pr-tags"
+                value={form.tags}
+                onChange={(e) =>
+                  setForm((f) => ({ ...f, tags: e.target.value }))
+                }
+                placeholder="React, AWS Lambda, DynamoDB"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="pr-img">URL de imagen (opcional)</Label>
+              <Input
+                id="pr-img"
+                value={form.imageUrl}
+                onChange={(e) =>
+                  setForm((f) => ({ ...f, imageUrl: e.target.value }))
+                }
+                placeholder="/proyectos/cover.jpg o https://..."
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="pr-url">Enlace al proyecto (GitHub, demo…)</Label>
+              <Input
+                id="pr-url"
+                value={form.projectUrl}
+                onChange={(e) =>
+                  setForm((f) => ({ ...f, projectUrl: e.target.value }))
+                }
+                placeholder="https://github.com/..."
+              />
+            </div>
+            <div className="flex items-center gap-2">
+              <Checkbox
+                id="pr-pub"
+                checked={form.isPublished}
+                onCheckedChange={(c) =>
+                  setForm((f) => ({ ...f, isPublished: c === true }))
+                }
+              />
+              <Label htmlFor="pr-pub" className="font-normal cursor-pointer">
+                Publicado en la web
+              </Label>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="pr-sort">Orden (menor = primero)</Label>
+              <Input
+                id="pr-sort"
+                type="number"
+                min={0}
+                value={form.sortOrder}
+                onChange={(e) =>
+                  setForm((f) => ({ ...f, sortOrder: e.target.value }))
+                }
+              />
+            </div>
+          </div>
+          <DialogFooter className="gap-2 sm:gap-0">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setOpen(false)}
+            >
+              Cancelar
+            </Button>
+            <Button type="button" onClick={submit} disabled={busy}>
+              {editingId ? "Guardar cambios" : "Crear proyecto"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </div>
+  );
+}

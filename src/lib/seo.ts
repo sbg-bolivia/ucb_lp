@@ -42,9 +42,15 @@ export const defaultMetadata: Metadata = {
     canonical: "/",
   },
   icons: {
-    icon: "/logo/AWS SBG UCB - La Paz - Negro.png",
-    shortcut: "/logo/AWS SBG UCB - La Paz - Negro.png",
-    apple: "/logo/AWS SBG UCB - La Paz - Negro.png",
+    icon: [
+      {
+        url: "/logo/AWS SBG UCB - La Paz - Blanco.svg",
+        type: "image/svg+xml",
+      },
+      { url: "/logo/AWS SBG UCB - La Paz - Blanco.svg", sizes: "any" },
+    ],
+    shortcut: "/logo/AWS SBG UCB - La Paz - Blanco.svg",
+    apple: "/logo/AWS SBG UCB - La Paz - Blanco.svg",
   },
   openGraph: {
     type: "website",

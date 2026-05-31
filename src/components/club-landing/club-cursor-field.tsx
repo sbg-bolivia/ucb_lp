@@ -4,25 +4,18 @@ import { useEffect, useRef } from "react";
 import * as THREE from "three";
 
 /**
- * Campo de partículas enlazadas que reacciona al cursor (three.js / WebGL).
- * Inspirado en el experimento "VFX Linked Particles" de three.js, implementado
- * en WebGL clásico para máxima compatibilidad.
- *
- * Se renderiza como una capa a pantalla completa relativa a su contenedor
- * (`fixed inset-0`). El cursor deja un rastro sutil de puntos enlazados.
- *
- * Rendimiento:
- *  - Compactación de partículas "en sitio" (sin asignar arrays por frame).
- *  - Pausa el bucle de animación en reposo (sin movimiento ni partículas
- *    vivas) y lo reanuda al mover el cursor.
- *  - pixelRatio limitado y `low-power`.
+ * Ráfagas breves de partículas solo al mover el cursor (no permanente).
+ * Pensado para el hero: no opaca el resto de la página.
  */
-const MAX_PARTICLES = 240;
-const LINK_DISTANCE = 130; // px
+const MAX_PARTICLES = 100;
+const LINK_DISTANCE = 100;
 const LINK_DISTANCE_SQ = LINK_DISTANCE * LINK_DISTANCE;
 const MAX_LINKS = MAX_PARTICLES * 2;
-const LIFETIME = 1.8; // s
-const FRICTION = 0.93;
+const LIFETIME = 1.1;
+const FRICTION = 0.9;
+const BURST_MS = 700;
+const FADE_MS = 900;
+const MIN_MOVE_PX = 6;
 
 const COLOR_A = new THREE.Color("#00C8FF");
 const COLOR_B = new THREE.Color("#7E2CFF");
@@ -33,7 +26,7 @@ type Particle = {
   y: number;
   vx: number;
   vy: number;
-  life: number; // 1 -> 0
+  life: number;
   color: THREE.Color;
 };
 
@@ -53,8 +46,7 @@ function makeSpriteTexture() {
       size / 2
     );
     g.addColorStop(0, "rgba(255,255,255,1)");
-    g.addColorStop(0.25, "rgba(255,255,255,0.8)");
-    g.addColorStop(0.5, "rgba(255,255,255,0.22)");
+    g.addColorStop(0.35, "rgba(255,255,255,0.5)");
     g.addColorStop(1, "rgba(255,255,255,0)");
     ctx.fillStyle = g;
     ctx.fillRect(0, 0, size, size);
@@ -80,14 +72,14 @@ export function ClubCursorField({ className = "" }: { className?: string }) {
       powerPreference: "low-power",
     });
     renderer.setClearColor(0x000000, 0);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.25));
     renderer.setSize(width, height);
     renderer.domElement.style.width = "100%";
     renderer.domElement.style.height = "100%";
+    renderer.domElement.style.opacity = "0";
     container.appendChild(renderer.domElement);
 
     const scene = new THREE.Scene();
-    // Cámara ortográfica en píxeles del contenedor (y hacia abajo, como el DOM).
     const camera = new THREE.OrthographicCamera(
       0,
       width,
@@ -98,7 +90,6 @@ export function ClubCursorField({ className = "" }: { className?: string }) {
     );
     camera.position.z = 10;
 
-    // --- Partículas (puntos) ---
     const positions = new Float32Array(MAX_PARTICLES * 3);
     const colors = new Float32Array(MAX_PARTICLES * 3);
     const pointsGeom = new THREE.BufferGeometry();
@@ -110,7 +101,7 @@ export function ClubCursorField({ className = "" }: { className?: string }) {
 
     const sprite = makeSpriteTexture();
     const pointsMat = new THREE.PointsMaterial({
-      size: 13,
+      size: 10,
       map: sprite,
       vertexColors: true,
       transparent: true,
@@ -120,10 +111,8 @@ export function ClubCursorField({ className = "" }: { className?: string }) {
       sizeAttenuation: false,
     });
     const points = new THREE.Points(pointsGeom, pointsMat);
-    points.frustumCulled = false;
     scene.add(points);
 
-    // --- Enlaces (segmentos de línea) ---
     const linkPositions = new Float32Array(MAX_LINKS * 2 * 3);
     const linkColors = new Float32Array(MAX_LINKS * 2 * 3);
     const linksGeom = new THREE.BufferGeometry();
@@ -140,7 +129,6 @@ export function ClubCursorField({ className = "" }: { className?: string }) {
       blending: THREE.AdditiveBlending,
     });
     const links = new THREE.LineSegments(linksGeom, linksMat);
-    links.frustumCulled = false;
     scene.add(links);
 
     const particles: Particle[] = [];
@@ -152,8 +140,19 @@ export function ClubCursorField({ className = "" }: { className?: string }) {
       prevX: width / 2,
       prevY: height / 2,
     };
-    let hasMoved = false;
     let lastSpawn = 0;
+    let lastMoveAt = 0;
+    let globalFade = 0;
+
+    const isDarkMode = () =>
+      document.documentElement.classList.contains("dark");
+
+    const burstStrength = () => {
+      const elapsed = performance.now() - lastMoveAt;
+      if (elapsed > BURST_MS + FADE_MS) return 0;
+      if (elapsed <= BURST_MS) return 1;
+      return 1 - (elapsed - BURST_MS) / FADE_MS;
+    };
 
     const spawn = (x: number, y: number, count: number) => {
       for (let i = 0; i < count; i++) {
@@ -162,12 +161,12 @@ export function ClubCursorField({ className = "" }: { className?: string }) {
         const px = pointer.prevX + (x - pointer.prevX) * t;
         const py = pointer.prevY + (y - pointer.prevY) * t;
         const angle = Math.random() * Math.PI * 2;
-        const speed = 2 + Math.random() * 7;
+        const speed = 1.5 + Math.random() * 5;
         colorTick += 0.07;
         const mix = (Math.sin(colorTick) + 1) / 2;
         const color = COLOR_A.clone()
           .lerp(COLOR_B, mix)
-          .lerp(COLOR_C, Math.random() * 0.4);
+          .lerp(COLOR_C, Math.random() * 0.35);
         particles.push({
           x: px,
           y: py,
@@ -186,21 +185,29 @@ export function ClubCursorField({ className = "" }: { className?: string }) {
     const kick = () => {
       if (idle) {
         idle = false;
-        clock.getDelta(); // descarta el delta acumulado durante el reposo
+        clock.getDelta();
         raf = requestAnimationFrame(animate);
       }
     };
 
     const onPointerMove = (e: PointerEvent) => {
       const rect = container.getBoundingClientRect();
+      const nx = e.clientX - rect.left;
+      const ny = e.clientY - rect.top;
+      const dist = Math.hypot(nx - pointer.x, ny - pointer.y);
       pointer.prevX = pointer.x;
       pointer.prevY = pointer.y;
-      pointer.x = e.clientX - rect.left;
-      pointer.y = e.clientY - rect.top;
-      hasMoved = true;
-      kick();
+      pointer.x = nx;
+      pointer.y = ny;
+      if (dist >= MIN_MOVE_PX) {
+        lastMoveAt = performance.now();
+        kick();
+      }
     };
-    window.addEventListener("pointermove", onPointerMove, { passive: true });
+
+    container.addEventListener("pointermove", onPointerMove, {
+      passive: true,
+    });
 
     const applySize = () => {
       width = Math.max(1, container.clientWidth);
@@ -209,30 +216,28 @@ export function ClubCursorField({ className = "" }: { className?: string }) {
       camera.bottom = height;
       camera.updateProjectionMatrix();
       renderer.setSize(width, height);
-      renderer.domElement.style.width = "100%";
-      renderer.domElement.style.height = "100%";
     };
     const resizeObserver = new ResizeObserver(applySize);
     resizeObserver.observe(container);
 
     function animate() {
       const dt = Math.min(clock.getDelta(), 0.05);
-
       const now = performance.now();
+      const strength = burstStrength();
+      globalFade = strength;
+
       const dist = Math.hypot(
         pointer.x - pointer.prevX,
         pointer.y - pointer.prevY
       );
-      if (hasMoved && now - lastSpawn > 16) {
-        const count = Math.min(7, 2 + Math.floor(dist / 14));
+      if (strength > 0.05 && dist >= MIN_MOVE_PX && now - lastSpawn > 40) {
+        const count = Math.min(3, 1 + Math.floor(dist / 28));
         spawn(pointer.x, pointer.y, count);
         pointer.prevX = pointer.x;
         pointer.prevY = pointer.y;
         lastSpawn = now;
-        hasMoved = false;
       }
 
-      // Actualiza y compacta las partículas vivas en sitio (sin allocations).
       let n = 0;
       for (let i = 0; i < particles.length; i++) {
         const p = particles[i];
@@ -249,11 +254,11 @@ export function ClubCursorField({ className = "" }: { className?: string }) {
         positions[idx + 1] = p.y;
         positions[idx + 2] = 0;
 
-        // El brillo (color) actúa como alfa con blending aditivo.
-        const fade = p.life ** 0.9 * 0.8;
-        colors[idx] = p.color.r * fade;
-        colors[idx + 1] = p.color.g * fade;
-        colors[idx + 2] = p.color.b * fade;
+        const fade = p.life ** 0.85 * 0.5 * globalFade;
+        const boost = isDarkMode() ? 0.9 : 1.1;
+        colors[idx] = p.color.r * fade * boost;
+        colors[idx + 1] = p.color.g * fade * boost;
+        colors[idx + 2] = p.color.b * fade * boost;
 
         particles[n++] = p;
       }
@@ -264,7 +269,6 @@ export function ClubCursorField({ className = "" }: { className?: string }) {
         true;
       (pointsGeom.attributes.color as THREE.BufferAttribute).needsUpdate = true;
 
-      // Enlaces entre partículas cercanas
       let li = 0;
       for (let a = 0; a < n && li < MAX_LINKS; a++) {
         const pa = particles[a];
@@ -278,8 +282,11 @@ export function ClubCursorField({ className = "" }: { className?: string }) {
           const dy = pa.y - pb.y;
           const dSq = dx * dx + dy * dy;
           if (dSq > LINK_DISTANCE_SQ) continue;
-          const strength =
-            (1 - dSq / LINK_DISTANCE_SQ) * Math.min(pa.life, pb.life) * 0.5;
+          const linkFade =
+            (1 - dSq / LINK_DISTANCE_SQ) *
+            Math.min(pa.life, pb.life) *
+            0.28 *
+            globalFade;
           const o = li * 6;
           linkPositions[o] = pa.x;
           linkPositions[o + 1] = pa.y;
@@ -287,12 +294,12 @@ export function ClubCursorField({ className = "" }: { className?: string }) {
           linkPositions[o + 3] = pb.x;
           linkPositions[o + 4] = pb.y;
           linkPositions[o + 5] = 0;
-          linkColors[o] = pa.color.r * strength;
-          linkColors[o + 1] = pa.color.g * strength;
-          linkColors[o + 2] = pa.color.b * strength;
-          linkColors[o + 3] = pb.color.r * strength;
-          linkColors[o + 4] = pb.color.g * strength;
-          linkColors[o + 5] = pb.color.b * strength;
+          linkColors[o] = pa.color.r * linkFade;
+          linkColors[o + 1] = pa.color.g * linkFade;
+          linkColors[o + 2] = pa.color.b * linkFade;
+          linkColors[o + 3] = pb.color.r * linkFade;
+          linkColors[o + 4] = pb.color.g * linkFade;
+          linkColors[o + 5] = pb.color.b * linkFade;
           li++;
           made++;
         }
@@ -302,34 +309,24 @@ export function ClubCursorField({ className = "" }: { className?: string }) {
         true;
       (linksGeom.attributes.color as THREE.BufferAttribute).needsUpdate = true;
 
+      const layerOpacity =
+        globalFade * (isDarkMode() ? 0.38 : 0.28) * (n > 0 ? 1 : 0);
+      renderer.domElement.style.opacity = String(layerOpacity);
+
       renderer.render(scene, camera);
 
-      // Si no queda nada vivo ni hay movimiento, entra en reposo (ahorra GPU).
-      if (n === 0 && !hasMoved) {
+      if (n === 0 && strength <= 0.01) {
         idle = true;
-        return; // no se reprograma rAF; `kick()` lo reanuda al mover el cursor
+        renderer.domElement.style.opacity = "0";
+        return;
       }
       raf = requestAnimationFrame(animate);
     }
 
-    const onVisibility = () => {
-      if (document.visibilityState === "visible") kick();
-      else if (raf) {
-        cancelAnimationFrame(raf);
-        idle = true;
-      }
-    };
-    document.addEventListener("visibilitychange", onVisibility);
-
-    // Render inicial (limpio) + arranque del bucle.
-    kick();
-
     return () => {
       if (raf) cancelAnimationFrame(raf);
-      idle = true;
-      window.removeEventListener("pointermove", onPointerMove);
+      container.removeEventListener("pointermove", onPointerMove);
       resizeObserver.disconnect();
-      document.removeEventListener("visibilitychange", onVisibility);
       sprite.dispose();
       pointsGeom.dispose();
       pointsMat.dispose();

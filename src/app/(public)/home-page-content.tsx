@@ -1,13 +1,70 @@
 "use client";
 
-import { ClubCtaBand } from "@/components/club-landing/club-cta-band";
+import dynamic from "next/dynamic";
 import { ClubHero } from "@/components/club-landing/club-hero";
-import { ClubHomeCommunity } from "@/components/club-landing/club-home-community";
-import { ClubHomeEvents } from "@/components/club-landing/club-home-events";
-import { ClubHomeProjects } from "@/components/club-landing/club-home-projects";
-import { ClubHomeServices } from "@/components/club-landing/club-home-services";
 import { ClubHomeStats } from "@/components/club-landing/club-home-stats";
-import { ClubLoader } from "@/components/club-landing/club-loader";
+
+const ClubLoader = dynamic(
+  () =>
+    import("@/components/club-landing/club-loader").then((m) => m.ClubLoader),
+  { ssr: false }
+);
+
+const ClubHomeServices = dynamic(
+  () =>
+    import("@/components/club-landing/club-home-services").then(
+      (m) => m.ClubHomeServices
+    ),
+  { loading: () => <SectionPlaceholder /> }
+);
+
+const ClubHomeEvents = dynamic(
+  () =>
+    import("@/components/club-landing/club-home-events").then(
+      (m) => m.ClubHomeEvents
+    ),
+  { loading: () => <SectionPlaceholder /> }
+);
+
+const ClubHomeProjects = dynamic(
+  () =>
+    import("@/components/club-landing/club-home-projects").then(
+      (m) => m.ClubHomeProjects
+    ),
+  { loading: () => <SectionPlaceholder /> }
+);
+
+const ClubHomeCommunity = dynamic(
+  () =>
+    import("@/components/club-landing/club-home-community").then(
+      (m) => m.ClubHomeCommunity
+    ),
+  { loading: () => <SectionPlaceholder /> }
+);
+
+const ClubCtaBand = dynamic(
+  () =>
+    import("@/components/club-landing/club-cta-band").then(
+      (m) => m.ClubCtaBand
+    ),
+  { loading: () => <SectionPlaceholder short /> }
+);
+
+function SectionPlaceholder({ short }: { short?: boolean }) {
+  return (
+    <div
+      className={`mx-auto max-w-7xl animate-pulse px-4 sm:px-6 ${short ? "py-12" : "py-16 sm:py-20"}`}
+      aria-hidden
+    >
+      <div className="mx-auto h-8 max-w-md rounded-full bg-black/5 dark:bg-white/10" />
+      <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="h-40 rounded-3xl bg-black/5 dark:bg-white/[0.04]" />
+        <div className="h-40 rounded-3xl bg-black/5 dark:bg-white/[0.04]" />
+        <div className="hidden h-40 rounded-3xl bg-black/5 dark:bg-white/[0.04] lg:block" />
+      </div>
+    </div>
+  );
+}
 
 export function HomePageContent() {
   return (
@@ -15,19 +72,19 @@ export function HomePageContent() {
       <ClubLoader />
       <ClubHero />
       <ClubHomeStats />
-      <div style={{ contentVisibility: 'auto', containIntrinsicSize: '800px' }}>
+      <div style={{ contentVisibility: "auto", containIntrinsicSize: "800px" }}>
         <ClubHomeServices />
       </div>
-      <div style={{ contentVisibility: 'auto', containIntrinsicSize: '800px' }}>
+      <div style={{ contentVisibility: "auto", containIntrinsicSize: "800px" }}>
         <ClubHomeEvents />
       </div>
-      <div style={{ contentVisibility: 'auto', containIntrinsicSize: '800px' }}>
+      <div style={{ contentVisibility: "auto", containIntrinsicSize: "800px" }}>
         <ClubHomeProjects />
       </div>
-      <div style={{ contentVisibility: 'auto', containIntrinsicSize: '800px' }}>
+      <div style={{ contentVisibility: "auto", containIntrinsicSize: "800px" }}>
         <ClubHomeCommunity />
       </div>
-      <div style={{ contentVisibility: 'auto', containIntrinsicSize: '400px' }}>
+      <div style={{ contentVisibility: "auto", containIntrinsicSize: "400px" }}>
         <ClubCtaBand />
       </div>
     </>

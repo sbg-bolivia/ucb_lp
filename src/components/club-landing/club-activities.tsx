@@ -59,7 +59,7 @@ export function ClubActivities() {
   return (
     <section
       id="actividades"
-      className={`relative px-4 py-20 sm:px-6 sm:py-28 ${clubTheme.sectionTint}`}
+      className={`relative ${clubTheme.sectionY} ${clubTheme.sectionTint}`}
     >
       <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#00C8FF]/55 to-transparent" />
 

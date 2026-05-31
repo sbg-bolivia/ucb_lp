@@ -32,6 +32,7 @@ import { cn } from "@/lib/utils";
 import {
   Calendar,
   ChevronDown,
+  FolderKanban,
   LayoutDashboard,
   LogOut,
   Plus,
@@ -101,6 +102,12 @@ export function AppSidebar() {
           href: "/dashboard/club-eventos",
           icon: Calendar,
           description: t("clubEventsAdminDesc"),
+        },
+        {
+          title: t("clubProjectsAdmin"),
+          href: "/dashboard/club-proyectos",
+          icon: FolderKanban,
+          description: t("clubProjectsAdminDesc"),
         },
         {
           title: t("settings2"),

@@ -12,19 +12,17 @@ const optionalUrl = z
   .nullable()
   .transform((v) => (v?.trim() ? v.trim() : null));
 
-const clubEventCreateSchema = z.object({
+const clubProjectCreateSchema = z.object({
   title: z.string().min(1).max(200).trim(),
   description: z.string().max(20000).optional().nullable(),
-  startsAt: z.union([z.coerce.date(), z.null()]).optional(),
-  endsAt: z.union([z.coerce.date(), z.null()]).optional(),
-  location: z.string().max(500).optional().nullable(),
+  tags: z.string().max(500).optional().nullable(),
   imageUrl: optionalUrl,
-  externalUrl: optionalUrl,
+  projectUrl: optionalUrl,
   isPublished: z.boolean().optional(),
   sortOrder: z.number().int().min(0).max(9999).optional(),
 });
 
-const clubEventUpdateSchema = clubEventCreateSchema
+const clubProjectUpdateSchema = clubProjectCreateSchema
   .partial()
   .extend({ id: z.string().uuid() });
 
@@ -36,15 +34,14 @@ async function getFirstActiveTenantId(): Promise<string | null> {
   return t?.id ?? null;
 }
 
-export const clubEventsRouter = router({
-  /** Eventos publicados del tenant por defecto (sitio público). */
+export const clubProjectsRouter = router({
   listPublic: publicProcedure.query(async () => {
     const tenantId = await getFirstActiveTenantId();
     if (!tenantId) return [];
 
-    return prisma.clubEvent.findMany({
+    return prisma.clubProject.findMany({
       where: { tenantId, isPublished: true },
-      orderBy: [{ sortOrder: "asc" }, { startsAt: "desc" }],
+      orderBy: [{ sortOrder: "asc" }, { createdAt: "desc" }],
     });
   }),
 
@@ -54,7 +51,7 @@ export const clubEventsRouter = router({
       const tenantId = await getFirstActiveTenantId();
       if (!tenantId) return null;
 
-      return prisma.clubEvent.findFirst({
+      return prisma.clubProject.findFirst({
         where: { id: input.id, tenantId, isPublished: true },
       });
     }),
@@ -73,14 +70,14 @@ export const clubEventsRouter = router({
       throw new TRPCError({ code: "FORBIDDEN", message: "Sin permiso" });
     }
 
-    return prisma.clubEvent.findMany({
+    return prisma.clubProject.findMany({
       where: { tenantId: ctx.user.tenantId },
-      orderBy: [{ sortOrder: "asc" }, { startsAt: "desc" }],
+      orderBy: [{ sortOrder: "asc" }, { createdAt: "desc" }],
     });
   }),
 
   create: protectedProcedure
-    .input(clubEventCreateSchema)
+    .input(clubProjectCreateSchema)
     .mutation(async ({ ctx, input }) => {
       if (!ctx.user.tenantId) {
         throw new TRPCError({ code: "BAD_REQUEST", message: "Sin tenant" });
@@ -95,16 +92,14 @@ export const clubEventsRouter = router({
         throw new TRPCError({ code: "FORBIDDEN", message: "Sin permiso" });
       }
 
-      return prisma.clubEvent.create({
+      return prisma.clubProject.create({
         data: {
           tenantId: ctx.user.tenantId,
           title: input.title,
           description: input.description ?? null,
-          startsAt: input.startsAt ?? null,
-          endsAt: input.endsAt ?? null,
-          location: input.location?.trim() || null,
+          tags: input.tags?.trim() || null,
           imageUrl: input.imageUrl ?? null,
-          externalUrl: input.externalUrl ?? null,
+          projectUrl: input.projectUrl ?? null,
           isPublished: input.isPublished ?? true,
           sortOrder: input.sortOrder ?? 0,
         },
@@ -112,7 +107,7 @@ export const clubEventsRouter = router({
     }),
 
   update: protectedProcedure
-    .input(clubEventUpdateSchema)
+    .input(clubProjectUpdateSchema)
     .mutation(async ({ ctx, input }) => {
       if (!ctx.user.tenantId) {
         throw new TRPCError({ code: "BAD_REQUEST", message: "Sin tenant" });
@@ -128,32 +123,27 @@ export const clubEventsRouter = router({
       }
 
       const { id, ...patch } = input;
-      const existing = await prisma.clubEvent.findFirst({
+      const existing = await prisma.clubProject.findFirst({
         where: { id, tenantId: ctx.user.tenantId },
       });
       if (!existing) {
         throw new TRPCError({
           code: "NOT_FOUND",
-          message: "Evento no encontrado",
+          message: "Proyecto no encontrado",
         });
       }
 
       const data: Record<string, unknown> = {};
       if (patch.title !== undefined) data.title = patch.title;
-      if (patch.description !== undefined) data.description = patch.description;
-      if (patch.startsAt !== undefined) data.startsAt = patch.startsAt;
-      if (patch.endsAt !== undefined) data.endsAt = patch.endsAt;
-      if (patch.location !== undefined)
-        data.location = patch.location?.trim() || null;
+      if (patch.description !== undefined)
+        data.description = patch.description;
+      if (patch.tags !== undefined) data.tags = patch.tags?.trim() || null;
       if (patch.imageUrl !== undefined) data.imageUrl = patch.imageUrl;
-      if (patch.externalUrl !== undefined) data.externalUrl = patch.externalUrl;
+      if (patch.projectUrl !== undefined) data.projectUrl = patch.projectUrl;
       if (patch.isPublished !== undefined) data.isPublished = patch.isPublished;
       if (patch.sortOrder !== undefined) data.sortOrder = patch.sortOrder;
 
-      return prisma.clubEvent.update({
-        where: { id },
-        data,
-      });
+      return prisma.clubProject.update({ where: { id }, data });
     }),
 
   delete: protectedProcedure
@@ -172,17 +162,17 @@ export const clubEventsRouter = router({
         throw new TRPCError({ code: "FORBIDDEN", message: "Sin permiso" });
       }
 
-      const existing = await prisma.clubEvent.findFirst({
+      const existing = await prisma.clubProject.findFirst({
         where: { id: input.id, tenantId: ctx.user.tenantId },
       });
       if (!existing) {
         throw new TRPCError({
           code: "NOT_FOUND",
-          message: "Evento no encontrado",
+          message: "Proyecto no encontrado",
         });
       }
 
-      await prisma.clubEvent.delete({ where: { id: input.id } });
+      await prisma.clubProject.delete({ where: { id: input.id } });
       return { ok: true as const };
     }),
 });

@@ -11,7 +11,7 @@ const stats = [
 
 export function ClubHomeStats() {
   return (
-    <section className="relative z-30 -mt-16 bg-transparent px-4 py-10 sm:px-6 sm:py-12 pointer-events-none">
+    <section className="relative z-30 -mt-12 bg-transparent px-4 py-6 sm:px-6 sm:py-8 pointer-events-none">
       <div className="mx-auto max-w-6xl pointer-events-auto">
         <div
           className="parallax-stats club-glass grid grid-cols-2 gap-2 rounded-3xl p-2 sm:gap-3 lg:grid-cols-4 shadow-[0_8px_30px_rgb(0,0,0,0.4)] backdrop-blur-xl border border-white/10"

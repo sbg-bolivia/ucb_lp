@@ -1,5 +1,6 @@
 import { router } from "../trpc";
 import { clubEventsRouter } from "./clubEvents";
+import { clubProjectsRouter } from "./clubProjects";
 import { companyInfoRouter } from "./companyInfo";
 import { rbacRouter } from "./rbac";
 import { translationRouter } from "./translation";
@@ -10,6 +11,7 @@ export const appRouter = router({
   rbac: rbacRouter,
   companyInfo: companyInfoRouter,
   clubEvents: clubEventsRouter,
+  clubProjects: clubProjectsRouter,
   translation: translationRouter,
 });
 

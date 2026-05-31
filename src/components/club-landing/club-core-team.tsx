@@ -112,7 +112,7 @@ export function ClubCoreTeam() {
   return (
     <section
       id="equipo"
-      className={`relative px-4 py-20 sm:px-6 sm:py-28 ${clubTheme.sectionSoft}`}
+      className={`relative ${clubTheme.sectionY} ${clubTheme.sectionSoft}`}
     >
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_70%_40%_at_50%_0%,rgba(59,65,255,0.07),transparent)]" />
 

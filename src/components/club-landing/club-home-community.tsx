@@ -8,8 +8,8 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { ClubSectionHeader } from "./club-section-header";
-import { TiktokGlyph } from "./club-social-icons";
 import { clubTheme } from "./club-theme";
+import { TiktokGlyph } from "./club-social-icons";
 
 const members = Array.from({ length: 12 }, (_, i) => i + 1);
 
@@ -26,7 +26,7 @@ export function ClubHomeCommunity() {
   );
 
   return (
-    <section className="bg-transparent px-4 py-16 sm:px-6 sm:py-24">
+    <section className={`bg-transparent ${clubTheme.sectionY}`}>
       <div className="mx-auto max-w-7xl">
         <div className="grid gap-12 lg:grid-cols-2 lg:gap-16 items-center">
           <div className="flex flex-col justify-center">
@@ -47,7 +47,7 @@ export function ClubHomeCommunity() {
                   href={s.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex h-11 w-11 items-center justify-center rounded-full border border-white/[0.05] bg-white/[0.02] text-[#A855F7] transition-all hover:scale-110 hover:bg-[#7E2CFF]/10 hover:border-[#7E2CFF]/20"
+                  className="flex h-11 w-11 items-center justify-center rounded-full border border-black/[0.08] bg-black/[0.03] text-[#7E2CFF] transition-all hover:scale-110 hover:border-[#7E2CFF]/20 hover:bg-[#7E2CFF]/10 dark:border-white/[0.05] dark:bg-white/[0.02] dark:text-[#A855F7]"
                   aria-label={s.label}
                 >
                   <s.icon className="h-5 w-5" />
@@ -58,7 +58,7 @@ export function ClubHomeCommunity() {
                   href={L.tiktokUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex h-11 w-11 items-center justify-center rounded-full border border-white/[0.05] bg-white/[0.02] transition-all hover:scale-110 hover:bg-[#7E2CFF]/10 hover:border-[#7E2CFF]/20"
+                  className="flex h-11 w-11 items-center justify-center rounded-full border border-black/[0.08] bg-black/[0.03] transition-all hover:scale-110 hover:border-[#7E2CFF]/20 hover:bg-[#7E2CFF]/10 dark:border-white/[0.05] dark:bg-white/[0.02]"
                   aria-label="TikTok"
                 >
                   <TiktokGlyph className="h-5 w-5" />
@@ -122,7 +122,7 @@ export function ClubHomeCommunity() {
               “
             </span>
 
-            <blockquote className="mt-2 text-lg sm:text-xl font-medium text-zinc-100 leading-relaxed text-left">
+            <blockquote className={`mt-2 text-lg sm:text-xl font-medium leading-relaxed text-left ${clubTheme.textHeading}`}>
               Entré sin saber nada de cloud y en tres meses ya tenía un proyecto
               en producción. La comunidad te empuja a shippear y aprender
               rápido.

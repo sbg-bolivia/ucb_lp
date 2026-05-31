@@ -218,6 +218,8 @@
   "clubPublicTeamDesc": "Core team on the site: photos, names and links (/equipo page).",
   "clubEventsAdmin": "Club events",
   "clubEventsAdminDesc": "Create, edit and delete events shown on the public site.",
+  "clubProjectsAdmin": "Club projects",
+  "clubProjectsAdminDesc": "Create, edit and delete projects shown on the public site.",
   "feedbackDialog": {
     "title": "Suggestions & Bug Reports",
     "description": "Help us improve the platform by sending your suggestions or reporting bugs.",

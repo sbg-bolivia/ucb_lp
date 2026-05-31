@@ -118,7 +118,12 @@ export function ClubPublishedEvents() {
                 <h3
                   className={`mt-3 text-xl font-bold ${clubTheme.textHeading}`}
                 >
-                  {ev.title}
+                  <Link
+                    href={`/eventos/${ev.id}`}
+                    className="hover:text-[#00C8FF] transition-colors"
+                  >
+                    {ev.title}
+                  </Link>
                 </h3>
                 {ev.description ? (
                   <p
@@ -138,6 +143,12 @@ export function ClubPublishedEvents() {
                   </p>
                 ) : null}
                 <div className="mt-4 flex flex-wrap gap-2">
+                  <Link
+                    href={`/eventos/${ev.id}`}
+                    className="inline-flex items-center gap-1.5 rounded-full border border-black/10 px-4 py-2 text-xs font-semibold transition hover:border-[#00C8FF]/40 sm:text-sm dark:border-white/10"
+                  >
+                    Ver detalles
+                  </Link>
                   {ev.externalUrl?.trim() ? (
                     <a
                       href={ev.externalUrl}

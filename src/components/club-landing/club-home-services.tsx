@@ -55,11 +55,11 @@ const cardVariants: import("motion/react").Variants = {
 
 export function ClubHomeServices() {
   return (
-    <section className={`relative px-4 py-24 sm:px-6 sm:py-32 overflow-hidden ${clubTheme.pageBg}`}>
+    <section className={`relative overflow-hidden ${clubTheme.sectionY} ${clubTheme.pageBg}`}>
       <div className="mx-auto max-w-7xl flex flex-col items-center">
         
         <motion.header
-          className="text-center mb-16"
+          className="text-center mb-10"
           initial={{ opacity: 0, filter: "blur(10px)" }}
           whileInView={{ opacity: 1, filter: "blur(0px)" }}
           viewport={{ once: true, margin: "-100px" }}

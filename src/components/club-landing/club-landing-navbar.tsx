@@ -37,7 +37,7 @@ function MeetupGlyph({ className }: { className?: string }) {
 const NAV_LINKS = [
   { href: "/", label: "Inicio" },
   { href: "/eventos", label: "Eventos" },
-  { href: "/beneficios", label: "Proyectos" },
+  { href: "/proyectos", label: "Proyectos" },
   { href: "/equipo", label: "Comunidad" },
   { href: "/nosotros", label: "Sobre nosotros" },
 ] as const;
@@ -85,7 +85,9 @@ export function ClubLandingNavbar() {
           aria-label="Principal"
         >
           {NAV_LINKS.map((l) => {
-            const active = pathname === l.href;
+            const active =
+              pathname === l.href ||
+              (l.href !== "/" && pathname.startsWith(`${l.href}/`));
             return (
               <Link
                 key={l.href}

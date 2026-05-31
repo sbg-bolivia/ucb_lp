@@ -25,31 +25,22 @@ export function ClubLoader() {
     if (!visible) return;
     const done = startedRef.current && !active && progress >= 100;
     if (done) {
-      const t = window.setTimeout(() => setVisible(false), 500);
+      const t = window.setTimeout(() => setVisible(false), 280);
       return () => window.clearTimeout(t);
     }
   }, [active, progress, visible]);
 
-  // Si nada empieza a cargar (no hay 3D) o tarda demasiado, ocultar igual.
+  // Si nada empieza a cargar (no hay 3D) o tarda demasiado, ocultar pronto.
   useEffect(() => {
     const idle = window.setTimeout(() => {
       if (!startedRef.current) setVisible(false);
-    }, 1800);
-    const safety = window.setTimeout(() => setVisible(false), 12000);
+    }, 700);
+    const safety = window.setTimeout(() => setVisible(false), 3500);
     return () => {
       window.clearTimeout(idle);
       window.clearTimeout(safety);
     };
   }, []);
-
-  // Bloquea el scroll mientras el loader está visible.
-  useEffect(() => {
-    if (typeof document === "undefined") return;
-    document.body.style.overflow = visible ? "hidden" : "";
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, [visible]);
 
   const pct = Math.min(100, Math.round(progress));
 
