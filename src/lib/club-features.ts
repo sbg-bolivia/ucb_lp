@@ -7,9 +7,9 @@ export const CLUB_FEATURES = {
   /** Sincronización automática con Meetup API (requiere Meetup Pro) */
   meetupSync: false,
   /** Catálogo público de servicios AWS (/servicios) */
-  awsServices: false,
+  awsServices: true,
   /** Mapa de otras comunidades AWS en /nosotros */
-  awsCommunitiesMap: false,
+  awsCommunitiesMap: true,
 } as const;
 
 export type ClubFeature = keyof typeof CLUB_FEATURES;

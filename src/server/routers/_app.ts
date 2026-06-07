@@ -1,4 +1,6 @@
 import { router } from "../trpc";
+import { awsCommunitiesRouter } from "./awsCommunities";
+import { awsServicesRouter } from "./awsServices";
 import { clubEventsRouter } from "./clubEvents";
 import { clubProjectsRouter } from "./clubProjects";
 import { companyInfoRouter } from "./companyInfo";
@@ -12,6 +14,8 @@ export const appRouter = router({
   companyInfo: companyInfoRouter,
   clubEvents: clubEventsRouter,
   clubProjects: clubProjectsRouter,
+  awsServices: awsServicesRouter,
+  awsCommunities: awsCommunitiesRouter,
   translation: translationRouter,
 });
 

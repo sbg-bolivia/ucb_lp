@@ -7,6 +7,7 @@ import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import {
   AWS_COMMUNITIES_SEED,
+  AWS_SERVICES_SEED,
   CLUB_EVENT_IDS,
   CLUB_PROJECT_IDS,
   CLUB_TENANT_ID,
@@ -512,6 +513,26 @@ async function main() {
   console.log("🚀 Proyectos del club...");
   await seedClubProjects(clubTenant.id);
 
+  console.log("☁️ Catálogo de servicios AWS...");
+  for (const svc of AWS_SERVICES_SEED) {
+    const { cards, ...serviceData } = svc;
+    await prisma.awsService.create({
+      data: {
+        ...serviceData,
+        tenantId: clubTenant.id,
+        cards: {
+          create: cards.map((card) => ({
+            cardType: card.cardType,
+            title: card.title,
+            content: card.content,
+            sortOrder: card.sortOrder,
+            isPublished: true,
+          })),
+        },
+      },
+    });
+  }
+
   console.log("🌎 Otras comunidades AWS (Bolivia)...");
   for (const c of AWS_COMMUNITIES_SEED) {
     await prisma.awsCommunity.create({
@@ -544,6 +565,9 @@ async function main() {
   const communityCount = await prisma.awsCommunity.count({
     where: { tenantId: clubTenant.id },
   });
+  const serviceCount = await prisma.awsService.count({
+    where: { tenantId: clubTenant.id, isPublished: true },
+  });
 
   console.log(`
 ✅ Seed completado
@@ -556,6 +580,7 @@ async function main() {
 - Eventos publicados: ${eventCount}
 - Proyectos publicados: ${projectCount}
 - Comunidades AWS: ${communityCount}
+- Servicios AWS publicados: ${serviceCount}
 - Core team: ${CORE_TEAM_SEED.length} miembros
 
 🌐 Sitio público (primer tenant activo)
@@ -563,6 +588,8 @@ async function main() {
 - Eventos: /eventos · ejemplo: /eventos/${CLUB_EVENT_IDS.workshopIntro}
 - Proyectos: ocultos (CLUB_FEATURES.projects = false)
 - Equipo: /equipo
+- Servicios AWS: /servicios
+- Mapa comunidades: /nosotros
 - Comunidad enlazada vía Meetup, WhatsApp y TikTok en el tenant
 
 🔐 Credenciales (desarrollo)

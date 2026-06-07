@@ -1,4 +1,5 @@
 import { ClubAboutBanner } from "@/components/club-landing/club-about-banner";
+import { ClubAwsCommunitiesSection } from "@/components/club-landing/club-aws-communities-section";
 import { clubPageMeta } from "@/lib/club-page-meta";
 import type { Metadata } from "next";
 
@@ -12,6 +13,7 @@ export default function NosotrosPage() {
     <>
       <h1 className="sr-only">Nosotros</h1>
       <ClubAboutBanner />
+      <ClubAwsCommunitiesSection />
     </>
   );
 }

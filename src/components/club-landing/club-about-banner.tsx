@@ -105,7 +105,7 @@ export function ClubAboutBanner() {
                 className="mx-auto h-auto w-full max-w-xs object-contain sm:max-w-sm"
               />
               <p className={`mt-8 text-center text-sm ${clubTheme.textMuted}`}>
-                Capítulo estudiantil vinculado a la red global de Student
+                Comunidad estudiantil vinculada a la red global de Student
                 Builder Groups y al aprendizaje con Amazon Web Services.
               </p>
             </div>

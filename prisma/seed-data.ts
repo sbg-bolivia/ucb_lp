@@ -241,3 +241,132 @@ export const AWS_COMMUNITIES_SEED = [
     sortOrder: 4,
   },
 ] as const;
+
+export const AWS_SERVICE_IDS = {
+  ec2: "33333333-3333-4333-8333-333333333301",
+  s3: "33333333-3333-4333-8333-333333333302",
+  lambda: "33333333-3333-4333-8333-333333333303",
+} as const;
+
+/** Catálogo curado de servicios AWS (estilo awsud.group) */
+export const AWS_SERVICES_SEED = [
+  {
+    id: AWS_SERVICE_IDS.ec2,
+    slug: "ec2",
+    name: "Amazon EC2",
+    category: "COMPUTE" as const,
+    shortDescription:
+      "Servidores virtuales escalables en la nube para ejecutar aplicaciones y cargas de trabajo.",
+    technicalExplanation:
+      "Elastic Compute Cloud (EC2) te permite lanzar instancias virtuales con distintos tamaños (tipos de instancia), sistemas operativos y redes. Pagas por segundo o por hora según el tipo de instancia y el tiempo de uso.",
+    whenToUse:
+      "Cuando necesitas control total del servidor, aplicaciones legacy, cargas predecibles o GPUs para entrenamiento.",
+    whenNotToUse:
+      "Para APIs simples sin estado, sitios estáticos o tareas event-driven — ahí Lambda o Amplify suelen ser más baratos y simples.",
+    officialDocsUrl: "https://docs.aws.amazon.com/ec2/",
+    difficultyLevel: "BEGINNER" as const,
+    isPopular: true,
+    isPublished: true,
+    sortOrder: 0,
+    cards: [
+      {
+        cardType: "USE_CASE" as const,
+        title: "Laboratorio del club",
+        content:
+          "En el workshop de primeros pasos levantamos una instancia t2.micro (free tier), nos conectamos por SSH y desplegamos una app Node simple.",
+        sortOrder: 0,
+      },
+      {
+        cardType: "TIP" as const,
+        title: "Free tier",
+        content:
+          "Las cuentas nuevas incluyen 750 h/mes de t2.micro o t3.micro durante 12 meses en ciertas regiones. Apaga instancias que no uses.",
+        sortOrder: 1,
+      },
+      {
+        cardType: "WARNING" as const,
+        title: "Costos ocultos",
+        content:
+          "Volúmenes EBS, IPs elásticas sin usar y snapshots pueden generar cargos aunque la instancia esté detenida.",
+        sortOrder: 2,
+      },
+    ],
+  },
+  {
+    id: AWS_SERVICE_IDS.s3,
+    slug: "s3",
+    name: "Amazon S3",
+    category: "STORAGE" as const,
+    shortDescription:
+      "Almacenamiento de objetos duradero para archivos, backups, assets web y datos de aplicaciones.",
+    technicalExplanation:
+      "Simple Storage Service (S3) guarda objetos (archivos) en buckets con alta durabilidad. Ideal para contenido estático, logs, data lakes y como origen de CloudFront.",
+    whenToUse:
+      "Imágenes de eventos, videos promocionales, exports, backups y cualquier archivo que deba persistir y escalar.",
+    whenNotToUse:
+      "No uses S3 como base de datos relacional ni para archivos que requieran edición concurrente tipo disco de servidor.",
+    officialDocsUrl: "https://docs.aws.amazon.com/s3/",
+    difficultyLevel: "BEGINNER" as const,
+    isPopular: true,
+    isPublished: true,
+    sortOrder: 1,
+    cards: [
+      {
+        cardType: "USE_CASE" as const,
+        title: "Assets del sitio",
+        content:
+          "Banners de eventos, fotos del core team y videos promocionales del SBG pueden vivir en un bucket S3 con acceso público vía CloudFront.",
+        sortOrder: 0,
+      },
+      {
+        cardType: "LAB" as const,
+        title: "Sube tu primer objeto",
+        content:
+          "Crea un bucket, activa bloqueo público por defecto, sube un archivo desde la consola y genera una URL prefirmada para compartirlo.",
+        sortOrder: 1,
+      },
+    ],
+  },
+  {
+    id: AWS_SERVICE_IDS.lambda,
+    slug: "lambda",
+    name: "AWS Lambda",
+    category: "COMPUTE" as const,
+    shortDescription:
+      "Ejecuta código sin aprovisionar servidores; paga solo por las invocaciones y el tiempo de cómputo.",
+    technicalExplanation:
+      "Lambda corre funciones en respuesta a eventos (HTTP vía API Gateway, S3, DynamoDB, cron, etc.). Escala automáticamente y encaja en arquitecturas serverless.",
+    whenToUse:
+      "APIs ligeras, webhooks, procesamiento de archivos, tareas programadas y backends de MVPs del club.",
+    whenNotToUse:
+      "Procesos de larga duración (>15 min), cargas que necesitan GPU constante o conexiones persistentes WebSocket pesadas.",
+    officialDocsUrl: "https://docs.aws.amazon.com/lambda/",
+    difficultyLevel: "INTERMEDIATE" as const,
+    isPopular: true,
+    isPublished: true,
+    sortOrder: 2,
+    cards: [
+      {
+        cardType: "USE_CASE" as const,
+        title: "API de registro a eventos",
+        content:
+          "Un endpoint POST que guarda inscripciones en DynamoDB y envía confirmación por SES — patrón típico en buildathons del club.",
+        sortOrder: 0,
+      },
+      {
+        cardType: "ARCHITECTURE" as const,
+        title: "Patrón serverless",
+        content:
+          "API Gateway → Lambda → DynamoDB. Añade Cognito si necesitas auth y CloudWatch para logs y alarmas.",
+        sortOrder: 1,
+      },
+      {
+        cardType: "PRICING" as const,
+        title: "Capa gratuita",
+        content:
+          "1 millón de solicitudes gratis al mes y 400 000 GB-segundos de cómputo. Suficiente para demos y proyectos estudiantiles.",
+        sortOrder: 2,
+      },
+    ],
+  },
+] as const;
