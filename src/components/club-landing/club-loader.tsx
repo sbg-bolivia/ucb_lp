@@ -42,6 +42,14 @@ export function ClubLoader() {
     };
   }, []);
 
+  useEffect(() => {
+    if (typeof document === "undefined") return;
+    document.body.style.overflow = visible ? "hidden" : "";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [visible]);
+
   const pct = Math.min(100, Math.round(progress));
 
   return (
