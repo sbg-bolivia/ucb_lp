@@ -1,18 +1,18 @@
 "use client";
 
-import { ClubCursorField } from "@/components/club-landing/club-cursor-field";
 import { ClubLandingFooter } from "@/components/club-landing/club-landing-footer";
 import { ClubLandingNavbar } from "@/components/club-landing/club-landing-navbar";
 import { useTheme } from "next-themes";
 import { useEffect } from "react";
+import { clubTheme } from "./club-theme";
 
 export function ClubMarketingShell({
   children,
 }: { children: React.ReactNode }) {
   const { setTheme } = useTheme();
 
-  // El landing es "dark-first" (como la referencia). Si el usuario aún no eligió
-  // tema, arrancamos en oscuro; el toggle queda totalmente funcional después.
+  // El landing respeta la preferencia del usuario; si no hay tema guardado,
+  // arrancamos en oscuro como default de marketing.
   useEffect(() => {
     try {
       if (!window.localStorage.getItem("theme")) setTheme("dark");
@@ -22,10 +22,10 @@ export function ClubMarketingShell({
   }, [setTheme]);
 
   return (
-    <div className="min-h-screen max-w-[100vw] overflow-x-hidden bg-white text-slate-900 antialiased selection:bg-violet-500/25 dark:bg-[#0C0D12] dark:text-white">
-      <ClubCursorField className="club-cursor-field" />
+    <div className={`min-h-screen antialiased ${clubTheme.pageBg}`}>
+      <div className="club-grain" />
       <ClubLandingNavbar />
-      <main className="pt-16">{children}</main>
+      <main className="overflow-x-clip pt-16">{children}</main>
       <ClubLandingFooter />
     </div>
   );

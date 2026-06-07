@@ -21,35 +21,29 @@ import {
 } from "@/components/ui/table";
 import { Textarea } from "@/components/ui/textarea";
 import { useTranslation } from "@/hooks/useTranslation";
-import { parseDatetimeLocal, toDatetimeLocalValue } from "@/lib/datetime-local";
 import { trpc } from "@/utils/trpc";
-import { Calendar, Pencil, Plus, Trash2 } from "lucide-react";
+import { FolderKanban, Pencil, Plus, Trash2 } from "lucide-react";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
 
 type FormState = {
   title: string;
   description: string;
-  startsAt: string;
-  endsAt: string;
-  location: string;
+  tags: string;
   imageUrl: string;
-  externalUrl: string;
+  projectUrl: string;
   isPublished: boolean;
   sortOrder: string;
 };
 
-/** Fila devuelta por tRPC (fechas pueden venir como string serializado). */
-type ClubEventRow = {
+type ClubProjectRow = {
   id: string;
   tenantId: string;
   title: string;
   description: string | null;
-  startsAt: Date | string | null;
-  endsAt: Date | string | null;
-  location: string | null;
+  tags: string | null;
   imageUrl: string | null;
-  externalUrl: string | null;
+  projectUrl: string | null;
   isPublished: boolean;
   sortOrder: number;
 };
@@ -57,39 +51,35 @@ type ClubEventRow = {
 const emptyForm: FormState = {
   title: "",
   description: "",
-  startsAt: "",
-  endsAt: "",
-  location: "",
+  tags: "",
   imageUrl: "",
-  externalUrl: "",
+  projectUrl: "",
   isPublished: true,
   sortOrder: "0",
 };
 
-function eventToForm(e: ClubEventRow): FormState {
+function projectToForm(p: ClubProjectRow): FormState {
   return {
-    title: e.title,
-    description: e.description ?? "",
-    startsAt: toDatetimeLocalValue(e.startsAt),
-    endsAt: toDatetimeLocalValue(e.endsAt),
-    location: e.location ?? "",
-    imageUrl: e.imageUrl ?? "",
-    externalUrl: e.externalUrl ?? "",
-    isPublished: e.isPublished,
-    sortOrder: String(e.sortOrder),
+    title: p.title,
+    description: p.description ?? "",
+    tags: p.tags ?? "",
+    imageUrl: p.imageUrl ?? "",
+    projectUrl: p.projectUrl ?? "",
+    isPublished: p.isPublished,
+    sortOrder: String(p.sortOrder),
   };
 }
 
-export default function ClubEventosAdminPage() {
+export default function ClubProyectosAdminPage() {
   const { t } = useTranslation("dashboard");
-  const { data: events, refetch } = trpc.clubEvents.listForAdmin.useQuery();
+  const { data: projects, refetch } = trpc.clubProjects.listForAdmin.useQuery();
   const [open, setOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState<FormState>(emptyForm);
 
-  const createMut = trpc.clubEvents.create.useMutation({
+  const createMut = trpc.clubProjects.create.useMutation({
     onSuccess: () => {
-      toast.success("Evento creado");
+      toast.success("Proyecto creado");
       void refetch();
       setOpen(false);
       setForm(emptyForm);
@@ -98,9 +88,9 @@ export default function ClubEventosAdminPage() {
     onError: (e) => toast.error(e.message),
   });
 
-  const updateMut = trpc.clubEvents.update.useMutation({
+  const updateMut = trpc.clubProjects.update.useMutation({
     onSuccess: () => {
-      toast.success("Evento actualizado");
+      toast.success("Proyecto actualizado");
       void refetch();
       setOpen(false);
       setForm(emptyForm);
@@ -109,15 +99,15 @@ export default function ClubEventosAdminPage() {
     onError: (e) => toast.error(e.message),
   });
 
-  const deleteMut = trpc.clubEvents.delete.useMutation({
+  const deleteMut = trpc.clubProjects.delete.useMutation({
     onSuccess: () => {
-      toast.success("Evento eliminado");
+      toast.success("Proyecto eliminado");
       void refetch();
     },
     onError: (e) => toast.error(e.message),
   });
 
-  const sorted = useMemo(() => events ?? [], [events]);
+  const sorted = useMemo(() => projects ?? [], [projects]);
 
   const openNew = () => {
     setEditingId(null);
@@ -125,9 +115,9 @@ export default function ClubEventosAdminPage() {
     setOpen(true);
   };
 
-  const openEdit = (e: ClubEventRow) => {
-    setEditingId(e.id);
-    setForm(eventToForm(e));
+  const openEdit = (p: ClubProjectRow) => {
+    setEditingId(p.id);
+    setForm(projectToForm(p));
     setOpen(true);
   };
 
@@ -141,11 +131,9 @@ export default function ClubEventosAdminPage() {
     const payload = {
       title,
       description: form.description.trim() || null,
-      startsAt: parseDatetimeLocal(form.startsAt),
-      endsAt: parseDatetimeLocal(form.endsAt),
-      location: form.location.trim() || null,
+      tags: form.tags.trim() || null,
       imageUrl: form.imageUrl.trim() || null,
-      externalUrl: form.externalUrl.trim() || null,
+      projectUrl: form.projectUrl.trim() || null,
       isPublished: form.isPublished,
       sortOrder: Number.isFinite(sortOrder) ? sortOrder : 0,
     };
@@ -164,15 +152,15 @@ export default function ClubEventosAdminPage() {
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-2xl font-semibold text-foreground">
-            {t("clubEventsAdmin")}
+            {t("clubProjectsAdmin")}
           </h1>
           <p className="mt-0.5 text-sm text-muted-foreground">
-            {t("clubEventsAdminDesc")}
+            {t("clubProjectsAdminDesc")}
           </p>
         </div>
         <Button type="button" onClick={openNew}>
           <Plus className="mr-2 h-4 w-4" />
-          Nuevo evento
+          Nuevo proyecto
         </Button>
       </div>
 
@@ -181,8 +169,7 @@ export default function ClubEventosAdminPage() {
           <TableHeader>
             <TableRow>
               <TableHead>Título</TableHead>
-              <TableHead className="hidden md:table-cell">Fecha</TableHead>
-              <TableHead className="hidden lg:table-cell">Lugar</TableHead>
+              <TableHead className="hidden md:table-cell">Tags</TableHead>
               <TableHead>Publicado</TableHead>
               <TableHead className="w-[120px] text-right">Acciones</TableHead>
             </TableRow>
@@ -191,35 +178,27 @@ export default function ClubEventosAdminPage() {
             {sorted.length === 0 ? (
               <TableRow>
                 <TableCell
-                  colSpan={5}
+                  colSpan={4}
                   className="py-10 text-center text-muted-foreground"
                 >
-                  No hay eventos. Crea el primero con &quot;Nuevo evento&quot;.
+                  No hay proyectos. Crea el primero con &quot;Nuevo proyecto&quot;.
                 </TableCell>
               </TableRow>
             ) : (
-              sorted.map((ev) => (
-                <TableRow key={ev.id}>
-                  <TableCell className="font-medium">{ev.title}</TableCell>
+              sorted.map((p) => (
+                <TableRow key={p.id}>
+                  <TableCell className="font-medium">{p.title}</TableCell>
                   <TableCell className="hidden md:table-cell text-muted-foreground text-sm">
-                    {ev.startsAt
-                      ? new Intl.DateTimeFormat("es-BO", {
-                          dateStyle: "medium",
-                          timeStyle: "short",
-                        }).format(new Date(ev.startsAt))
-                      : "—"}
+                    {p.tags || "—"}
                   </TableCell>
-                  <TableCell className="hidden lg:table-cell text-muted-foreground text-sm">
-                    {ev.location || "—"}
-                  </TableCell>
-                  <TableCell>{ev.isPublished ? "Sí" : "No"}</TableCell>
+                  <TableCell>{p.isPublished ? "Sí" : "No"}</TableCell>
                   <TableCell className="text-right">
                     <Button
                       type="button"
                       variant="ghost"
                       size="icon"
                       className="h-8 w-8"
-                      onClick={() => openEdit(ev)}
+                      onClick={() => openEdit(p)}
                       aria-label="Editar"
                     >
                       <Pencil className="h-4 w-4" />
@@ -232,10 +211,10 @@ export default function ClubEventosAdminPage() {
                       onClick={() => {
                         if (
                           confirm(
-                            `¿Eliminar el evento «${ev.title}»? Esta acción no se puede deshacer.`
+                            `¿Eliminar el proyecto «${p.title}»? Esta acción no se puede deshacer.`
                           )
                         ) {
-                          deleteMut.mutate({ id: ev.id });
+                          deleteMut.mutate({ id: p.id });
                         }
                       }}
                       aria-label="Eliminar"
@@ -254,107 +233,83 @@ export default function ClubEventosAdminPage() {
         <DialogContent className="max-h-[min(90vh,720px)] overflow-y-auto sm:max-w-lg">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
-              <Calendar className="h-5 w-5" />
-              {editingId ? "Editar evento" : "Nuevo evento"}
+              <FolderKanban className="h-5 w-5" />
+              {editingId ? "Editar proyecto" : "Nuevo proyecto"}
             </DialogTitle>
           </DialogHeader>
           <div className="grid gap-4 py-2">
             <div className="space-y-2">
-              <Label htmlFor="ev-title">Título</Label>
+              <Label htmlFor="pr-title">Título</Label>
               <Input
-                id="ev-title"
+                id="pr-title"
                 value={form.title}
                 onChange={(e) =>
                   setForm((f) => ({ ...f, title: e.target.value }))
                 }
-                placeholder="Ej. Taller: introducción a S3"
+                placeholder="Ej. Campus Connect"
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="ev-desc">Descripción</Label>
+              <Label htmlFor="pr-desc">Descripción</Label>
               <Textarea
-                id="ev-desc"
+                id="pr-desc"
                 rows={4}
                 value={form.description}
                 onChange={(e) =>
                   setForm((f) => ({ ...f, description: e.target.value }))
                 }
-                placeholder="Detalle del evento, requisitos, qué traer..."
+                placeholder="Qué hace el proyecto, stack, impacto..."
               />
             </div>
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              <div className="space-y-2">
-                <Label htmlFor="ev-start">Inicio</Label>
-                <Input
-                  id="ev-start"
-                  type="datetime-local"
-                  value={form.startsAt}
-                  onChange={(e) =>
-                    setForm((f) => ({ ...f, startsAt: e.target.value }))
-                  }
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="ev-end">Fin (opcional)</Label>
-                <Input
-                  id="ev-end"
-                  type="datetime-local"
-                  value={form.endsAt}
-                  onChange={(e) =>
-                    setForm((f) => ({ ...f, endsAt: e.target.value }))
-                  }
-                />
-              </div>
-            </div>
             <div className="space-y-2">
-              <Label htmlFor="ev-loc">Lugar</Label>
+              <Label htmlFor="pr-tags">Tags (separados por coma)</Label>
               <Input
-                id="ev-loc"
-                value={form.location}
+                id="pr-tags"
+                value={form.tags}
                 onChange={(e) =>
-                  setForm((f) => ({ ...f, location: e.target.value }))
+                  setForm((f) => ({ ...f, tags: e.target.value }))
                 }
-                placeholder="Campus, aula, enlace Zoom..."
+                placeholder="React, AWS Lambda, DynamoDB"
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="ev-img">URL de imagen (opcional)</Label>
+              <Label htmlFor="pr-img">URL de imagen (opcional)</Label>
               <Input
-                id="ev-img"
+                id="pr-img"
                 value={form.imageUrl}
                 onChange={(e) =>
                   setForm((f) => ({ ...f, imageUrl: e.target.value }))
                 }
-                placeholder="/eventos/cartel.jpg o https://..."
+                placeholder="/proyectos/cover.jpg o https://..."
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="ev-ext">Enlace externo (Meetup, etc.)</Label>
+              <Label htmlFor="pr-url">Enlace al proyecto (GitHub, demo…)</Label>
               <Input
-                id="ev-ext"
-                value={form.externalUrl}
+                id="pr-url"
+                value={form.projectUrl}
                 onChange={(e) =>
-                  setForm((f) => ({ ...f, externalUrl: e.target.value }))
+                  setForm((f) => ({ ...f, projectUrl: e.target.value }))
                 }
-                placeholder="https://..."
+                placeholder="https://github.com/..."
               />
             </div>
             <div className="flex items-center gap-2">
               <Checkbox
-                id="ev-pub"
+                id="pr-pub"
                 checked={form.isPublished}
                 onCheckedChange={(c) =>
                   setForm((f) => ({ ...f, isPublished: c === true }))
                 }
               />
-              <Label htmlFor="ev-pub" className="font-normal cursor-pointer">
+              <Label htmlFor="pr-pub" className="font-normal cursor-pointer">
                 Publicado en la web
               </Label>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="ev-sort">Orden (menor = primero)</Label>
+              <Label htmlFor="pr-sort">Orden (menor = primero)</Label>
               <Input
-                id="ev-sort"
+                id="pr-sort"
                 type="number"
                 min={0}
                 value={form.sortOrder}
@@ -373,7 +328,7 @@ export default function ClubEventosAdminPage() {
               Cancelar
             </Button>
             <Button type="button" onClick={submit} disabled={busy}>
-              {editingId ? "Guardar cambios" : "Crear evento"}
+              {editingId ? "Guardar cambios" : "Crear proyecto"}
             </Button>
           </DialogFooter>
         </DialogContent>

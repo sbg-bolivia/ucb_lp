@@ -9,7 +9,10 @@ import Link from "next/link";
 
 import { clubTheme } from "./club-theme";
 
-function formatRange(startsAt: Date | string | null, endsAt: Date | string | null) {
+function formatRange(
+  startsAt: Date | string | null,
+  endsAt: Date | string | null
+) {
   if (!startsAt) return "Fecha por confirmar";
   const s = new Date(startsAt);
   const fmt = new Intl.DateTimeFormat("es-BO", {
@@ -52,7 +55,10 @@ export function ClubPublishedEvents() {
         <p className={`mt-2 text-sm sm:text-base ${clubTheme.textMuted}`}>
           El calendario del {CLUB.shortName} se actualiza en Meetup y en este
           sitio. Mientras tanto, únete en{" "}
-          <Link href="/unete" className="font-semibold text-[#3b41ff] underline-offset-2 hover:underline dark:text-violet-300">
+          <Link
+            href="/unete"
+            className="font-semibold text-[#3b41ff] underline-offset-2 hover:underline dark:text-violet-300"
+          >
             Únete
           </Link>{" "}
           para no perderte nada.
@@ -69,7 +75,10 @@ export function ClubPublishedEvents() {
       whileInView="show"
       viewport={{ once: true, margin: "-40px" }}
     >
-      <motion.div className="mx-auto mb-10 max-w-3xl text-center" {...fadeUpProps}>
+      <motion.div
+        className="mx-auto mb-10 max-w-3xl text-center"
+        {...fadeUpProps}
+      >
         <p className="text-sm font-bold uppercase tracking-widest text-[#3b41ff] dark:text-violet-300">
           Calendario
         </p>
@@ -109,7 +118,12 @@ export function ClubPublishedEvents() {
                 <h3
                   className={`mt-3 text-xl font-bold ${clubTheme.textHeading}`}
                 >
-                  {ev.title}
+                  <Link
+                    href={`/eventos/${ev.id}`}
+                    className="hover:text-[#00C8FF] transition-colors"
+                  >
+                    {ev.title}
+                  </Link>
                 </h3>
                 {ev.description ? (
                   <p
@@ -129,6 +143,12 @@ export function ClubPublishedEvents() {
                   </p>
                 ) : null}
                 <div className="mt-4 flex flex-wrap gap-2">
+                  <Link
+                    href={`/eventos/${ev.id}`}
+                    className="inline-flex items-center gap-1.5 rounded-full border border-black/10 px-4 py-2 text-xs font-semibold transition hover:border-[#00C8FF]/40 sm:text-sm dark:border-white/10"
+                  >
+                    Ver detalles
+                  </Link>
                   {ev.externalUrl?.trim() ? (
                     <a
                       href={ev.externalUrl}

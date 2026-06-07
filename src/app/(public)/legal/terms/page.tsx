@@ -1,4 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { CLUB } from "@/lib/club-brand";
 
 export default function TermsPage() {
   return (
@@ -19,13 +20,9 @@ export default function TermsPage() {
           </CardHeader>
           <CardContent className="space-y-4">
             <p className="text-muted-foreground">
-              Al acceder y utilizar MyApp, usted acepta estar sujeto a estos
-              términos y condiciones de uso. Si no está de acuerdo con alguna
-              parte de estos términos, no debe utilizar nuestro servicio.
-            </p>
-            <p className="text-muted-foreground">
-              Estos términos se aplican a todos los visitantes, usuarios y otras
-              personas que accedan o utilicen el servicio.
+              Al acceder y utilizar el sitio web de {CLUB.shortName}, usted
+              acepta estos términos y condiciones. Si no está de acuerdo, no
+              debe utilizar nuestros servicios en línea.
             </p>
           </CardContent>
         </Card>
@@ -36,16 +33,16 @@ export default function TermsPage() {
           </CardHeader>
           <CardContent className="space-y-4">
             <p className="text-muted-foreground">
-              MyApp es una plataforma moderna de gestión que permite a los
-              usuarios gestionar contenido, usuarios y configuraciones, y
-              utilizar herramientas de análisis y automatización.
+              {CLUB.shortName} es una comunidad estudiantil en la{" "}
+              {CLUB.fullUniversity} dedicada a aprender AWS, construir proyectos
+              en la nube y participar en eventos del grupo. Este sitio publica
+              información del club y ofrece un panel interno para miembros del
+              equipo organizador.
             </p>
             <ul className="list-disc list-inside space-y-2 text-muted-foreground">
-              <li>Gestión de usuarios y roles</li>
-              <li>Configuración de permisos y acceso</li>
-              <li>Herramientas de análisis y reportes</li>
-              <li>Automatización de procesos</li>
-              <li>API para integraciones personalizadas</li>
+              <li>Información pública sobre eventos, proyectos y equipo</li>
+              <li>Enlaces para unirse a la comunidad</li>
+              <li>Panel de administración para voluntarios autorizados</li>
             </ul>
           </CardContent>
         </Card>
@@ -56,116 +53,58 @@ export default function TermsPage() {
           </CardHeader>
           <CardContent className="space-y-4">
             <p className="text-muted-foreground">
-              Para utilizar nuestros servicios, debe crear una cuenta
-              proporcionando información precisa y actualizada. Es responsable
-              de:
+              El acceso al panel administrativo requiere una cuenta autorizada.
+              Usted es responsable de mantener la confidencialidad de sus
+              credenciales y de toda actividad realizada con su cuenta.
             </p>
-            <ul className="list-disc list-inside space-y-2 text-muted-foreground">
-              <li>Mantener la confidencialidad de su contraseña</li>
-              <li>Notificar inmediatamente cualquier uso no autorizado</li>
-              <li>Proporcionar información de contacto actualizada</li>
-              <li>Ser responsable de todas las actividades en su cuenta</li>
-            </ul>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader>
-            <CardTitle>4. Suscripciones y Pagos</CardTitle>
+            <CardTitle>4. Uso Aceptable</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <p className="text-muted-foreground">
-              Nuestros servicios están disponibles mediante planes de
-              suscripción:
+              Usted se compromete a utilizar el sitio de forma respetuosa y a no:
             </p>
             <ul className="list-disc list-inside space-y-2 text-muted-foreground">
-              <li>Los pagos se procesan mensualmente</li>
-              <li>Puede cancelar su suscripción en cualquier momento</li>
-              <li>No ofrecemos reembolsos por períodos parciales</li>
-              <li>Los precios pueden cambiar con notificación previa</li>
+              <li>Publicar contenido ofensivo, ilegal o engañoso</li>
+              <li>Intentar acceder sin autorización a áreas restringidas</li>
+              <li>Interferir con el funcionamiento del sitio</li>
+              <li>Usar el sitio para fines ajenos a la comunidad del club</li>
             </ul>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader>
-            <CardTitle>5. Uso Aceptable</CardTitle>
+            <CardTitle>5. Limitación de Responsabilidad</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <p className="text-muted-foreground">
-              Usted se compromete a no utilizar el servicio para:
+              El sitio se ofrece &quot;tal como está&quot;. {CLUB.shortName} no
+              garantiza disponibilidad continua ni ausencia de errores. Las
+              actividades del club son de carácter formativo y comunitario.
             </p>
-            <ul className="list-disc list-inside space-y-2 text-muted-foreground">
-              <li>Actividades ilegales o fraudulentas</li>
-              <li>Interferir con el funcionamiento del servicio</li>
-              <li>Intentar acceder a cuentas de otros usuarios</li>
-              <li>Distribuir malware o contenido malicioso</li>
-              <li>Violar derechos de propiedad intelectual</li>
-            </ul>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader>
-            <CardTitle>6. Limitación de Responsabilidad</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <p className="text-muted-foreground">
-              MyApp se proporciona "tal como está" sin garantías de ningún tipo.
-              No somos responsables por:
-            </p>
-            <ul className="list-disc list-inside space-y-2 text-muted-foreground">
-              <li>Pérdidas derivadas del uso de la plataforma</li>
-              <li>Interrupciones del servicio</li>
-              <li>Pérdida de datos</li>
-              <li>Decisiones basadas en nuestros análisis</li>
-            </ul>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>7. Modificaciones</CardTitle>
+            <CardTitle>6. Contacto</CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-muted-foreground">
-              Nos reservamos el derecho de modificar estos términos en cualquier
-              momento. Las modificaciones entrarán en vigor inmediatamente
-              después de su publicación. Su uso continuado del servicio
-              constituye aceptación de los términos modificados.
+              Si tiene preguntas sobre estos términos, escríbanos a{" "}
+              <a
+                href={`mailto:${CLUB.email}`}
+                className="text-primary hover:underline"
+              >
+                {CLUB.email}
+              </a>
+              .
             </p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>8. Contacto</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-muted-foreground">
-              Si tiene preguntas sobre estos términos y condiciones, puede
-              contactarnos en:
-            </p>
-            <div className="mt-4 space-y-2">
-              <p className="text-muted-foreground">
-                Email:{" "}
-                <a
-                  href="mailto:legal@myapp.com"
-                  className="text-primary hover:underline"
-                >
-                  legal@myapp.com
-                </a>
-              </p>
-              <p className="text-muted-foreground">
-                Teléfono:{" "}
-                <a
-                  href="tel:+1234567890"
-                  className="text-primary hover:underline"
-                >
-                  +1 (234) 567-890
-                </a>
-              </p>
-            </div>
           </CardContent>
         </Card>
       </div>

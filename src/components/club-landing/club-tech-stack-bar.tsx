@@ -17,10 +17,7 @@ const STACK = [
 export function ClubTechStackBar() {
   return (
     <section className="border-t border-white/5 bg-[#0a0b10] px-4 py-8 sm:px-6">
-      <motion.div
-        className="mx-auto max-w-7xl"
-        {...fadeUpProps}
-      >
+      <motion.div className="mx-auto max-w-7xl" {...fadeUpProps}>
         <p className="mb-6 text-center text-xs font-medium uppercase tracking-[0.18em] text-zinc-500">
           Construimos con las mejores tecnologías
         </p>

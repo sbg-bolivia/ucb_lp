@@ -28,10 +28,7 @@ export function useClubLinks(): ClubLinks {
   const { data: tenant } = trpc.companyInfo.get.useQuery();
 
   return useMemo(() => {
-    const meetupUrl = pickUrl(
-      tenant?.meetupUrl,
-      CLUB_LINK_DEFAULTS.meetupUrl
-    );
+    const meetupUrl = pickUrl(tenant?.meetupUrl, CLUB_LINK_DEFAULTS.meetupUrl);
     const whatsappUrl = pickUrl(
       tenant?.whatsappUrl,
       CLUB_LINK_DEFAULTS.whatsappUrl

@@ -3,10 +3,10 @@
 import { useAuthContext } from "@/AuthContext";
 import { Button } from "@/components/ui/button";
 import { useClubLinks } from "@/hooks/useClubLinks";
-import { fadeUpProps } from "@/lib/club-motion";
 import { ArrowRight } from "lucide-react";
 import { motion } from "motion/react";
 import { useRouter } from "next/navigation";
+import { clubTheme } from "./club-theme";
 
 export function ClubCtaBand() {
   const { isAuthenticated } = useAuthContext();
@@ -23,44 +23,48 @@ export function ClubCtaBand() {
   return (
     <section
       id="cta"
-      className="border-t border-slate-100 bg-slate-50 px-4 py-16 dark:border-white/5 dark:bg-[#0C0D12] sm:px-6 sm:py-24"
+      className={`bg-transparent ${clubTheme.sectionY}`}
       aria-labelledby="cta-heading"
     >
       <div className="mx-auto max-w-6xl">
         <motion.div
-          {...fadeUpProps}
-          className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-[#3D1F8F] via-[#7E2CFF] to-[#A855F7] px-6 py-16 text-center shadow-[0_30px_80px_-30px_rgba(126,44,255,0.6)] sm:px-12 sm:py-20"
+          initial={{ opacity: 0, y: 30, scale: 0.98 }}
+          whileInView={{ opacity: 1, y: 0, scale: 1 }}
+          viewport={{ once: true, margin: "-80px" }}
+          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          className={`relative overflow-hidden rounded-[2.5rem] px-6 py-16 text-center sm:px-12 sm:py-20 ${clubTheme.gradientCta}`}
         >
-          {/* Decoración: rejilla + silueta de ciudad pixel */}
           <div
-            className="pointer-events-none absolute inset-0 opacity-30"
-            style={{
-              backgroundImage:
-                "linear-gradient(to right, rgba(255,255,255,0.18) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.18) 1px, transparent 1px)",
-              backgroundSize: "44px 44px",
-              maskImage:
-                "radial-gradient(circle at 50% 30%, black 0%, transparent 75%)",
-            }}
+            className="pointer-events-none absolute inset-0 club-grid opacity-[0.22] dark:opacity-[0.28]"
             aria-hidden
           />
           <div
-            className="pointer-events-none absolute -left-10 top-1/2 h-64 w-64 -translate-y-1/2 rounded-full bg-[#00C8FF]/30 blur-3xl"
+            className="pointer-events-none absolute inset-0 bg-gradient-to-br from-[#00C8FF]/8 via-transparent to-[#7E2CFF]/10 dark:from-[#00C8FF]/12 dark:via-[#050608]/40 dark:to-[#A855F7]/14"
             aria-hidden
           />
           <div
-            className="pointer-events-none absolute -right-10 top-1/3 h-64 w-64 rounded-full bg-[#A855F7]/40 blur-3xl"
+            className="pointer-events-none absolute -left-16 top-1/4 h-56 w-56 rounded-full bg-[#00C8FF]/20 blur-3xl dark:bg-[#00C8FF]/25"
             aria-hidden
           />
-          <CityscapeSilhouette />
+          <div
+            className="pointer-events-none absolute -right-12 bottom-0 h-64 w-64 rounded-full bg-[#A855F7]/18 blur-3xl dark:bg-[#7E2CFF]/22"
+            aria-hidden
+          />
+          <div
+            className="pointer-events-none absolute left-1/2 top-0 h-32 w-[80%] -translate-x-1/2 bg-gradient-to-b from-white/60 to-transparent dark:from-white/[0.04]"
+            aria-hidden
+          />
 
-          <div className="relative">
+          <div className="relative z-10">
             <h2
               id="cta-heading"
-              className="mx-auto max-w-2xl text-3xl font-bold tracking-tight text-white sm:text-4xl md:text-5xl"
+              className={`mx-auto max-w-2xl text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl ${clubTheme.textHeading}`}
             >
               ¿Listo para construir el futuro?
             </h2>
-            <p className="mx-auto mt-4 max-w-lg text-base text-white/80 sm:text-lg">
+            <p
+              className={`mx-auto mt-4 max-w-lg text-sm font-medium sm:text-base ${clubTheme.textMuted}`}
+            >
               Únete a nuestra comunidad y empieza tu viaje en la nube.
             </p>
 
@@ -69,7 +73,7 @@ export function ClubCtaBand() {
                 type="button"
                 size="lg"
                 onClick={onJoin}
-                className="group h-12 rounded-full bg-white px-8 text-base font-semibold text-[#3D1F8F] shadow-lg transition hover:bg-white/90 sm:h-14"
+                className={`group h-12 rounded-full px-8 text-xs font-bold text-white shadow-[0_4px_20px_rgba(126,44,255,0.15)] transition duration-350 hover:-translate-y-0.5 hover:shadow-[0_4px_25px_rgba(126,44,255,0.35)] bg-gradient-to-r ${clubTheme.gradientButton} active:scale-[0.98] sm:h-14 sm:text-sm`}
               >
                 {isAuthenticated ? "Ir al panel" : "Únete al grupo"}
                 <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
@@ -82,35 +86,3 @@ export function ClubCtaBand() {
   );
 }
 
-function CityscapeSilhouette() {
-  return (
-    <svg
-      className="pointer-events-none absolute inset-x-0 bottom-0 h-24 w-full text-white/10"
-      viewBox="0 0 1200 120"
-      preserveAspectRatio="none"
-      fill="currentColor"
-      role="img"
-      aria-label="Silueta de ciudad"
-    >
-      <title>Silueta de ciudad</title>
-      <rect x="40" y="70" width="46" height="50" />
-      <rect x="96" y="50" width="34" height="70" />
-      <rect x="150" y="80" width="40" height="40" />
-      <rect x="210" y="40" width="30" height="80" />
-      <rect x="258" y="64" width="48" height="56" />
-      <rect x="330" y="54" width="36" height="66" />
-      <rect x="392" y="78" width="44" height="42" />
-      <rect x="470" y="46" width="32" height="74" />
-      <rect x="520" y="68" width="50" height="52" />
-      <rect x="600" y="36" width="34" height="84" />
-      <rect x="654" y="60" width="42" height="60" />
-      <rect x="720" y="78" width="40" height="42" />
-      <rect x="784" y="50" width="34" height="70" />
-      <rect x="842" y="70" width="48" height="50" />
-      <rect x="916" y="44" width="32" height="76" />
-      <rect x="970" y="66" width="46" height="54" />
-      <rect x="1044" y="78" width="40" height="42" />
-      <rect x="1106" y="56" width="34" height="64" />
-    </svg>
-  );
-}

@@ -2,6 +2,8 @@
 
 export const CLUB = {
   shortName: "AWS Student Builder Group UCB",
+  /** Texto junto al logo en la barra de navegación */
+  navTitle: "AWS Student Builder Group at UCB",
   fullUniversity: 'Universidad Católica Boliviana "San Pablo"',
   heroLine1: "AWS Student Builder Group",
   tagline:

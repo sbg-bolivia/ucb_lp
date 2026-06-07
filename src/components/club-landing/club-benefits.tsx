@@ -20,7 +20,7 @@ import Link from "next/link";
 
 import { clubTheme } from "./club-theme";
 
-/** Inspirado en la estructura de beneficios de https://awsud.club/benefits */
+/** Bloques de beneficios para miembros del club */
 const benefitBlocks = [
   {
     icon: Award,
@@ -100,7 +100,7 @@ export function ClubBenefits() {
   return (
     <section
       id="beneficios"
-      className={`relative px-4 py-20 sm:px-6 sm:py-28 ${clubTheme.sectionTint}`}
+      className={`relative ${clubTheme.sectionY} ${clubTheme.sectionTint}`}
     >
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_0%,rgba(59,65,255,0.08),transparent)]" />
 
@@ -120,10 +120,9 @@ export function ClubBenefits() {
           <p
             className={`mt-5 text-lg leading-relaxed sm:text-xl ${clubTheme.textMuted}`}
           >
-            Beneficios pensados para acelerar tu aprendizaje, como en otros
-            capítulos de la red de Student Builder Groups. En el {CLUB.shortName} en la{" "}
-            {CLUB.fullUniversity} ponemos el foco en práctica, comunidad y
-            certificación.
+            Beneficios pensados para acelerar tu aprendizaje en la nube. En el{" "}
+            {CLUB.shortName} en la {CLUB.fullUniversity} ponemos el foco en
+            práctica, comunidad y certificación.
           </p>
         </motion.div>
 

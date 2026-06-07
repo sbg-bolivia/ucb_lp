@@ -1,3 +1,4 @@
+import { getSiteUrl } from "@/lib/club-brand";
 import { prisma } from "@/lib/db";
 import { sendResetPasswordEmail, sendVerificationEmail } from "@/lib/mailer";
 import type { GoogleProfile } from "@/types/auth";
@@ -104,11 +105,7 @@ export const auth = betterAuth({
   security: {
     corsOrigin:
       process.env.NODE_ENV === "production"
-        ? [
-            process.env.SITE_URL || "https://myapp.example.com",
-            "https://myapp.example.com",
-            "https://www.myapp.example.com",
-          ]
+        ? [getSiteUrl()]
         : ["http://localhost:3000"],
   },
 

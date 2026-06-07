@@ -54,6 +54,7 @@ model Tenant {
   roles           Role[]
   translations    Translation[]
   clubEvents      ClubEvent[]
+  clubProjects    ClubProject[]
 
   @@map("tenants")
 }
@@ -78,6 +79,26 @@ model ClubEvent {
   @@index([tenantId])
   @@index([tenantId, isPublished, startsAt])
   @@map("club_events")
+}
+
+/// Proyectos del club (sitio público /proyectos); CRUD desde el dashboard.
+model ClubProject {
+  id           String    @id @default(uuid())
+  tenantId     String
+  tenant       Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  title        String
+  description  String?   @db.Text
+  tags         String?
+  imageUrl     String?
+  projectUrl   String?
+  isPublished  Boolean   @default(true)
+  sortOrder    Int       @default(0)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  @@index([tenantId])
+  @@index([tenantId, isPublished, sortOrder])
+  @@map("club_projects")
 }
 
 model User {

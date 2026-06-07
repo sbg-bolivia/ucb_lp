@@ -101,7 +101,7 @@ export default function ViewerDashboard({ user }: ViewerDashboardProps) {
         description: t("documentationDesc"),
         icon: <BookOpen className="h-6 w-6" />,
         bgColor: "bg-accent",
-        href: "/docs",
+        href: "https://docs.aws.amazon.com/",
       },
       {
         title: t("configuration"),

@@ -43,7 +43,9 @@ export function ClubAboutBanner() {
             >
               El puente entre la universidad y el ecosistema cloud
             </h2>
-            <p className={`mt-6 text-lg leading-relaxed ${clubTheme.textMuted}`}>
+            <p
+              className={`mt-6 text-lg leading-relaxed ${clubTheme.textMuted}`}
+            >
               Somos el {CLUB.shortName} en {CLUB.city}: un espacio donde
               estudiantes de cualquier carrera exploran AWS, construyen
               portafolio y se preparan para oportunidades reales en tecnología.
@@ -56,15 +58,23 @@ export function ClubAboutBanner() {
               viewport={{ once: true, margin: "-30px" }}
             >
               {pillars.map(({ icon: Icon, title, text }) => (
-                <motion.li key={title} variants={staggerItem} className="flex gap-4">
+                <motion.li
+                  key={title}
+                  variants={staggerItem}
+                  className="flex gap-4"
+                >
                   <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-[#3b41ff]/15 to-[#6a11cb]/15 text-[#5c27c4]">
                     <Icon className="h-6 w-6" strokeWidth={1.5} />
                   </span>
                   <div>
-                    <h3 className={`text-lg font-bold ${clubTheme.textHeading}`}>
+                    <h3
+                      className={`text-lg font-bold ${clubTheme.textHeading}`}
+                    >
                       {title}
                     </h3>
-                    <p className={`mt-1 text-sm leading-relaxed ${clubTheme.textMuted}`}>
+                    <p
+                      className={`mt-1 text-sm leading-relaxed ${clubTheme.textMuted}`}
+                    >
                       {text}
                     </p>
                   </div>
@@ -95,8 +105,8 @@ export function ClubAboutBanner() {
                 className="mx-auto h-auto w-full max-w-xs object-contain sm:max-w-sm"
               />
               <p className={`mt-8 text-center text-sm ${clubTheme.textMuted}`}>
-                Capítulo estudiantil vinculado a la red global de Student Builder
-                Groups y al aprendizaje con Amazon Web Services.
+                Capítulo estudiantil vinculado a la red global de Student
+                Builder Groups y al aprendizaje con Amazon Web Services.
               </p>
             </div>
           </motion.div>

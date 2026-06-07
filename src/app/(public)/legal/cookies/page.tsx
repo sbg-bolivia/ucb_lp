@@ -1,4 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { CLUB } from "@/lib/club-brand";
 
 export default function CookiesPage() {
   return (
@@ -212,10 +213,10 @@ export default function CookiesPage() {
               <p className="text-muted-foreground">
                 Email:{" "}
                 <a
-                  href="mailto:privacy@myapp.com"
+                  href={`mailto:${CLUB.email}`}
                   className="text-primary hover:underline"
                 >
-                  privacy@myapp.com
+                  {CLUB.email}
                 </a>
               </p>
               <p className="text-muted-foreground">

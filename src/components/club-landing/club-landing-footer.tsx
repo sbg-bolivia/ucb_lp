@@ -15,7 +15,7 @@ const NAV = [
   { href: "/", label: "Inicio" },
   { href: "/nosotros", label: "Sobre nosotros" },
   { href: "/eventos", label: "Eventos" },
-  { href: "/beneficios", label: "Proyectos" },
+  { href: "/proyectos", label: "Proyectos" },
   { href: "/equipo", label: "Comunidad" },
   { href: "/contacto", label: "Recursos" },
 ] as const;
@@ -26,12 +26,27 @@ const COMMUNITY = [
 ] as const;
 
 const RESOURCES = [
-  { href: "https://aws.amazon.com/education/awseducate/", label: "AWS Educate", external: true },
-  { href: "https://docs.aws.amazon.com/", label: "Documentación AWS", external: true },
+  {
+    href: "https://aws.amazon.com/education/awseducate/",
+    label: "AWS Educate",
+    external: true,
+  },
+  {
+    href: "https://docs.aws.amazon.com/",
+    label: "Documentación AWS",
+    external: true,
+  },
   { href: "/contacto", label: "Contacto" },
 ] as const;
 
-const PARTNERS = ["AWS", "GitHub", "Terraform", "Docker", "React", "Python"] as const;
+const PARTNERS = [
+  "AWS",
+  "GitHub",
+  "Terraform",
+  "Docker",
+  "React",
+  "Python",
+] as const;
 
 export function ClubLandingFooter() {
   const year = new Date().getFullYear();
@@ -69,13 +84,19 @@ export function ClubLandingFooter() {
             </p>
             <p className="flex flex-wrap items-center gap-1 text-sm text-slate-500 dark:text-zinc-500">
               Hecho con
-              <Heart className="h-3.5 w-3.5 text-[#7E2CFF]" fill="currentColor" aria-hidden />
+              <Heart
+                className="h-3.5 w-3.5 text-[#7E2CFF]"
+                fill="currentColor"
+                aria-hidden
+              />
               por el equipo · {CLUB.fullUniversity}
             </p>
           </div>
 
           <nav className="flex flex-col gap-2 text-sm" aria-label="Navegación">
-            <p className="mb-1 font-bold text-slate-900 dark:text-white">Navegación</p>
+            <p className="mb-1 font-bold text-slate-900 dark:text-white">
+              Navegación
+            </p>
             {NAV.map((item) => (
               <Link
                 key={item.href}
@@ -88,7 +109,9 @@ export function ClubLandingFooter() {
           </nav>
 
           <nav className="flex flex-col gap-2 text-sm" aria-label="Comunidad">
-            <p className="mb-1 font-bold text-slate-900 dark:text-white">Comunidad</p>
+            <p className="mb-1 font-bold text-slate-900 dark:text-white">
+              Comunidad
+            </p>
             {COMMUNITY.map((item) => (
               <Link
                 key={item.href}
@@ -157,7 +180,9 @@ export function ClubLandingFooter() {
           </nav>
 
           <nav className="flex flex-col gap-2 text-sm" aria-label="Recursos">
-            <p className="mb-1 font-bold text-slate-900 dark:text-white">Recursos</p>
+            <p className="mb-1 font-bold text-slate-900 dark:text-white">
+              Recursos
+            </p>
             {RESOURCES.map((item) =>
               "external" in item && item.external ? (
                 <a
@@ -182,7 +207,9 @@ export function ClubLandingFooter() {
           </nav>
 
           <div>
-            <p className="mb-3 font-bold text-slate-900 dark:text-white">Mantente al día</p>
+            <p className="mb-3 font-bold text-slate-900 dark:text-white">
+              Mantente al día
+            </p>
             <p className="mb-4 text-sm text-slate-500 dark:text-zinc-500">
               Recibe novedades de eventos y proyectos del club.
             </p>
@@ -206,13 +233,22 @@ export function ClubLandingFooter() {
         </div>
 
         <div className="mt-10 flex flex-wrap gap-4 border-t border-slate-200 pt-8 text-xs text-slate-500 dark:border-white/5 dark:text-zinc-600">
-          <Link href="/legal/terms" className="hover:text-slate-700 dark:hover:text-zinc-400">
+          <Link
+            href="/legal/terms"
+            className="hover:text-slate-700 dark:hover:text-zinc-400"
+          >
             Términos
           </Link>
-          <Link href="/legal/privacy" className="hover:text-slate-700 dark:hover:text-zinc-400">
+          <Link
+            href="/legal/privacy"
+            className="hover:text-slate-700 dark:hover:text-zinc-400"
+          >
             Privacidad
           </Link>
-          <Link href="/legal/cookies" className="hover:text-slate-700 dark:hover:text-zinc-400">
+          <Link
+            href="/legal/cookies"
+            className="hover:text-slate-700 dark:hover:text-zinc-400"
+          >
             Cookies
           </Link>
         </div>

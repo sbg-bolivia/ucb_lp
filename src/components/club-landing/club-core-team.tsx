@@ -75,13 +75,22 @@ function MemberCard({ member }: { member: CoreTeamMember }) {
         {member.role}
       </p>
       <div className="mt-4 flex flex-wrap justify-center gap-2">
-        <SocialLink href={member.linkedin ?? ""} label={`LinkedIn de ${member.name}`}>
+        <SocialLink
+          href={member.linkedin ?? ""}
+          label={`LinkedIn de ${member.name}`}
+        >
           <Linkedin className="h-4 w-4" />
         </SocialLink>
-        <SocialLink href={member.instagram ?? ""} label={`Instagram de ${member.name}`}>
+        <SocialLink
+          href={member.instagram ?? ""}
+          label={`Instagram de ${member.name}`}
+        >
           <Instagram className="h-4 w-4" />
         </SocialLink>
-        <SocialLink href={member.github ?? ""} label={`GitHub de ${member.name}`}>
+        <SocialLink
+          href={member.github ?? ""}
+          label={`GitHub de ${member.name}`}
+        >
           <Github className="h-4 w-4" />
         </SocialLink>
       </div>
@@ -103,12 +112,15 @@ export function ClubCoreTeam() {
   return (
     <section
       id="equipo"
-      className={`relative px-4 py-20 sm:px-6 sm:py-28 ${clubTheme.sectionSoft}`}
+      className={`relative ${clubTheme.sectionY} ${clubTheme.sectionSoft}`}
     >
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_70%_40%_at_50%_0%,rgba(59,65,255,0.07),transparent)]" />
 
       <div className="relative mx-auto max-w-7xl">
-        <motion.div className="mx-auto mb-14 max-w-3xl text-center" {...fadeUpProps}>
+        <motion.div
+          className="mx-auto mb-14 max-w-3xl text-center"
+          {...fadeUpProps}
+        >
           <p className="text-sm font-bold uppercase tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-[#3b41ff] to-[#6a11cb]">
             Core team
           </p>

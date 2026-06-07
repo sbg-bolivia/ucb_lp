@@ -1,5 +1,5 @@
 {
-  "name": "modern-app-template",
+  "name": "aws-student-builder-group-ucb",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -24,7 +24,7 @@
     "db:clean": "docker-compose down -v",
     "db:logs": "docker-compose logs -f",
     "dev": "npm-run-all db:start dev:wait dev:push dev:next",
-    "dev:wait": "wait-on tcp:5432 -t 10000",
+    "dev:wait": "wait-on tcp:5435 -t 10000",
     "dev:push": "prisma db push",
     "dev:next": "next dev --turbo",
     "postinstall": "prisma generate",
@@ -117,5 +117,8 @@
   "ct3aMetadata": {
     "initVersion": "7.39.3"
   },
-  "packageManager": "pnpm@10.13.1"
+  "packageManager": "pnpm@10.13.1",
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
+  }
 }

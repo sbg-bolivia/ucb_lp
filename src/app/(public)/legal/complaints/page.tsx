@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { CLUB } from "@/lib/club-brand";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -84,9 +85,8 @@ export default function ComplaintsPage() {
           </CardHeader>
           <CardContent className="space-y-4">
             <p className="text-muted-foreground">
-              De acuerdo con la normativa peruana, MyApp mantiene un Libro de
-              Reclamaciones para registrar y resolver las quejas de nuestros
-              usuarios.
+              {CLUB.shortName} mantiene un Libro de Reclamaciones para registrar
+              y dar seguimiento a consultas o quejas de la comunidad.
             </p>
             <div className="bg-blue-50 p-4 rounded-lg">
               <h4 className="font-semibold text-blue-900 mb-2">
@@ -303,10 +303,10 @@ export default function ComplaintsPage() {
                 </h4>
                 <p className="text-muted-foreground">
                   <a
-                    href="mailto:reclamos@myapp.com"
+                    href={`mailto:${CLUB.email}`}
                     className="text-primary hover:underline"
                   >
-                    reclamos@myapp.com
+                    {CLUB.email}
                   </a>
                 </p>
               </div>
