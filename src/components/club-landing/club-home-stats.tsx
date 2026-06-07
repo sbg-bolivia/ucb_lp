@@ -2,12 +2,18 @@
 
 import { Calendar, Cloud, Code2, Users } from "lucide-react";
 
-const stats = [
-  { icon: Users, value: "120+", label: "Miembros activos" },
-  { icon: Calendar, value: "25+", label: "Eventos realizados" },
-  { icon: Code2, value: "18+", label: "Proyectos construidos" },
-  { icon: Cloud, value: "4", label: "Años de impacto" },
-] as const;
+import { isClubFeatureEnabled } from "@/lib/club-features";
+
+function getStats() {
+  return [
+    { icon: Users, value: "120+", label: "Miembros activos" },
+    { icon: Calendar, value: "25+", label: "Eventos realizados" },
+    isClubFeatureEnabled("projects")
+      ? { icon: Code2, value: "18+", label: "Proyectos construidos" }
+      : { icon: Code2, value: "15+", label: "Talleres AWS" },
+    { icon: Cloud, value: "4", label: "Años de impacto" },
+  ] as const;
+}
 
 export function ClubHomeStats() {
   return (
@@ -16,7 +22,7 @@ export function ClubHomeStats() {
         <div
           className="parallax-stats club-glass grid grid-cols-2 gap-2 rounded-3xl p-2 sm:gap-3 lg:grid-cols-4 shadow-[0_8px_30px_rgb(0,0,0,0.4)] backdrop-blur-xl border border-white/10"
         >
-          {stats.map((s) => (
+          {getStats().map((s) => (
             <div
               key={s.label}
               className="flex items-center gap-3 rounded-2xl px-4 py-5 text-left sm:px-5 hover:bg-white/5 transition-colors"

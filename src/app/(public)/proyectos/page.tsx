@@ -1,7 +1,9 @@
+import { isClubFeatureEnabled } from "@/lib/club-features";
 import { ClubPublishedProjects } from "@/components/club-landing/club-published-projects";
 import { clubTheme } from "@/components/club-landing/club-theme";
 import { clubPageMeta } from "@/lib/club-page-meta";
 import type { Metadata } from "next";
+import { redirect } from "next/navigation";
 
 export const metadata: Metadata = clubPageMeta(
   "Proyectos",
@@ -9,6 +11,10 @@ export const metadata: Metadata = clubPageMeta(
 );
 
 export default function ProyectosPage() {
+  if (!isClubFeatureEnabled("projects")) {
+    redirect("/eventos");
+  }
+
   return (
     <>
       <h1 className="sr-only">Proyectos del club</h1>

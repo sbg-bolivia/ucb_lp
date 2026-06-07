@@ -26,6 +26,7 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { useRBAC } from "@/hooks/useRBAC";
+import { isClubFeatureEnabled } from "@/lib/club-features";
 import { useTranslation } from "@/hooks/useTranslation";
 import { useUser } from "@/hooks/useUser";
 import { cn } from "@/lib/utils";
@@ -103,12 +104,16 @@ export function AppSidebar() {
           icon: Calendar,
           description: t("clubEventsAdminDesc"),
         },
-        {
-          title: t("clubProjectsAdmin"),
-          href: "/dashboard/club-proyectos",
-          icon: FolderKanban,
-          description: t("clubProjectsAdminDesc"),
-        },
+        ...(isClubFeatureEnabled("projects")
+          ? [
+              {
+                title: t("clubProjectsAdmin"),
+                href: "/dashboard/club-proyectos",
+                icon: FolderKanban,
+                description: t("clubProjectsAdminDesc"),
+              },
+            ]
+          : []),
         {
           title: t("settings2"),
           href: "/dashboard/settings",

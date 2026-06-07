@@ -19,6 +19,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
 import { useCallback, useEffect, useState } from "react";
+import { isClubFeatureEnabled } from "@/lib/club-features";
+
 import { clubTheme } from "./club-theme";
 import { ClubCursorField } from "./club-cursor-field";
 
@@ -326,9 +328,18 @@ export function ClubHero() {
                         : "border-white/20 bg-transparent text-white hover:bg-white/5"
                     }`}
                   >
-                    <Link href="/proyectos" className="inline-flex items-center">
+                    <Link
+                      href={
+                        isClubFeatureEnabled("projects")
+                          ? "/proyectos"
+                          : "/eventos"
+                      }
+                      className="inline-flex items-center"
+                    >
                       <Code2 className="mr-2 h-4 w-4" />
-                      Explorar proyectos
+                      {isClubFeatureEnabled("projects")
+                        ? "Explorar proyectos"
+                        : "Ver eventos"}
                     </Link>
                   </Button>
                 </div>

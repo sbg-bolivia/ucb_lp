@@ -44,8 +44,12 @@ model Tenant {
   privacyUrl      String?
   cookiesUrl      String?
   complaintsUrl   String?
-  /// Miembros del core team para la página pública /equipo (JSON array)
+  /// Legacy JSON — migrar a CoreTeamMember cuando el admin esté listo
   coreTeam        Json?
+  tagline         String?
+  mission         String?      @db.Text
+  vision          String?      @db.Text
+  heroVideoUrl    String?
   isActive        Boolean      @default(true)
   createdAt       DateTime     @default(now())
   updatedAt       DateTime     @updatedAt
@@ -53,35 +57,195 @@ model Tenant {
   permissions     Permission[]
   roles           Role[]
   translations    Translation[]
-  clubEvents      ClubEvent[]
-  clubProjects    ClubProject[]
+  clubEvents       ClubEvent[]
+  clubProjects     ClubProject[]
+  siteBanners      SiteBanner[]
+  coreTeamMembers  CoreTeamMember[]
+  awsCommunities   AwsCommunity[]
+  awsServices      AwsService[]
 
   @@map("tenants")
 }
 
-/// Eventos del club (sitio público /eventos); CRUD desde el dashboard.
+/// Eventos del club (sitio público /eventos); CRUD manual desde el dashboard.
 model ClubEvent {
-  id           String    @id @default(uuid())
-  tenantId     String
-  tenant       Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  title        String
-  description  String?   @db.Text
-  startsAt     DateTime?
-  endsAt       DateTime?
-  location     String?
-  imageUrl     String?
-  externalUrl  String?
-  isPublished  Boolean   @default(true)
-  sortOrder    Int       @default(0)
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
+  id               String             @id @default(uuid())
+  tenantId         String
+  tenant           Tenant             @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  title            String
+  description      String?            @db.Text
+  startsAt         DateTime?
+  endsAt           DateTime?
+  location         String?
+  /// Banner principal (S3 o URL externa)
+  imageUrl         String?
+  /// @deprecated Usar registrationUrl — se mantiene por compatibilidad
+  externalUrl      String?
+  registrationUrl  String?
+  registrationType RegistrationType   @default(EXTERNAL)
+  source           EventSource        @default(MANUAL)
+  status           EventStatus        @default(UPCOMING)
+  isOnline         Boolean            @default(false)
+  attendeeCount    Int?
+  promoVideoUrl    String?
+  isFeatured       Boolean            @default(false)
+  /// Para sync Meetup futuro (requiere Meetup Pro)
+  meetupEventId    String?            @unique
+  lastSyncedAt     DateTime?
+  isPublished      Boolean            @default(true)
+  sortOrder        Int                @default(0)
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+  collaborations   EventCollaboration[]
 
   @@index([tenantId])
   @@index([tenantId, isPublished, startsAt])
+  @@index([tenantId, status, startsAt])
   @@map("club_events")
 }
 
-/// Proyectos del club (sitio público /proyectos); CRUD desde el dashboard.
+/// Colaboración de un evento con otra comunidad AWS (SBG, User Group, etc.)
+model EventCollaboration {
+  id          String        @id @default(uuid())
+  eventId     String
+  communityId String
+  event       ClubEvent     @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  community   AwsCommunity  @relation(fields: [communityId], references: [id], onDelete: Cascade)
+  note        String?
+  createdAt   DateTime      @default(now())
+
+  @@unique([eventId, communityId])
+  @@index([communityId])
+  @@map("event_collaborations")
+}
+
+/// Otras comunidades AWS en Bolivia (SBG, User Groups por departamento, Cloud Clubs…)
+model AwsCommunity {
+  id           String               @id @default(uuid())
+  tenantId     String
+  tenant       Tenant               @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  name         String
+  communityType AwsCommunityType    @default(USER_GROUP)
+  university   String?
+  department   String?
+  city         String
+  country      String               @default("BO")
+  latitude     Float?
+  longitude    Float?
+  description  String?              @db.Text
+  meetupUrl    String?
+  websiteUrl   String?
+  logoUrl      String?
+  isOwnGroup   Boolean              @default(false)
+  isPublished  Boolean              @default(true)
+  sortOrder    Int                  @default(0)
+  createdAt    DateTime             @default(now())
+  updatedAt    DateTime             @updatedAt
+  collaborations EventCollaboration[]
+
+  @@index([tenantId, isPublished, sortOrder])
+  @@index([tenantId, city])
+  @@map("aws_communities")
+}
+
+/// Banners promocionales del home / secciones
+model SiteBanner {
+  id          String   @id @default(uuid())
+  tenantId    String
+  tenant      Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  title       String?
+  subtitle    String?
+  imageUrl    String
+  linkUrl     String?
+  placement   BannerPlacement @default(HOME_HERO)
+  isActive    Boolean  @default(true)
+  sortOrder   Int      @default(0)
+  startsAt    DateTime?
+  endsAt      DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([tenantId, isActive, placement])
+  @@map("site_banners")
+}
+
+/// Core team normalizado (reemplaza Tenant.coreTeam JSON)
+model CoreTeamMember {
+  id           String   @id @default(uuid())
+  tenantId     String
+  tenant       Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  name         String
+  role         String
+  bio          String?  @db.Text
+  photoUrl     String?
+  linkedinUrl  String?
+  instagramUrl String?
+  githubUrl    String?
+  email        String?
+  badgeLabel   String?
+  isPublished  Boolean  @default(true)
+  sortOrder    Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([tenantId, isPublished, sortOrder])
+  @@map("core_team_members")
+}
+
+/// Catálogo de servicios AWS (/servicios) — contenido curado por el core team
+model AwsService {
+  id                   String            @id @default(uuid())
+  tenantId             String
+  tenant               Tenant            @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  slug                 String
+  name                 String
+  category             AwsServiceCategory @default(COMPUTE)
+  shortDescription     String
+  technicalExplanation String?           @db.Text
+  whenToUse            String?           @db.Text
+  whenNotToUse         String?           @db.Text
+  officialDocsUrl      String?
+  iconUrl              String?
+  coverImageUrl        String?
+  promoVideoUrl        String?
+  /// Links extra [{ "title": "...", "url": "...", "type": "docs|blog|lab" }]
+  resources            Json?
+  popularityScore      Int?
+  difficultyLevel      AwsDifficultyLevel?
+  pricingNote          String?           @db.Text
+  isPopular            Boolean           @default(false)
+  isPublished          Boolean           @default(false)
+  sortOrder            Int               @default(0)
+  createdAt            DateTime          @default(now())
+  updatedAt            DateTime          @updatedAt
+  cards                AwsServiceCard[]
+
+  @@unique([tenantId, slug])
+  @@index([tenantId, isPublished, category])
+  @@map("aws_services")
+}
+
+/// Tarjetas opcionales extra por servicio (casos de uso, tips, labs, advertencias…)
+model AwsServiceCard {
+  id          String           @id @default(uuid())
+  serviceId   String
+  service     AwsService       @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  cardType    AwsServiceCardType @default(USE_CASE)
+  title       String?
+  content     String           @db.Text
+  iconKey     String?
+  linkUrl     String?
+  linkLabel   String?
+  isPublished Boolean          @default(true)
+  sortOrder   Int              @default(0)
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+
+  @@index([serviceId, isPublished, sortOrder])
+  @@map("aws_service_cards")
+}
+
+/// Proyectos del club — ocultos por feature flag; CRUD desde el dashboard.
 model ClubProject {
   id           String    @id @default(uuid())
   tenantId     String
@@ -326,4 +490,76 @@ enum TranslationStatus {
   REVIEW
   APPROVED
   PUBLISHED
+}
+
+// ================================
+// CLUB CONTENT ENUMS
+// ================================
+
+enum EventSource {
+  MANUAL
+  MEETUP
+  COLLABORATION
+}
+
+enum EventStatus {
+  DRAFT
+  UPCOMING
+  PAST
+  CANCELLED
+}
+
+enum RegistrationType {
+  MEETUP
+  YOUTUBE
+  GOOGLE_MEET
+  ZOOM
+  TEAMS
+  EXTERNAL
+  NONE
+}
+
+enum AwsCommunityType {
+  STUDENT_BUILDER_GROUP
+  USER_GROUP
+  CLOUD_CLUB
+  COMMUNITY_DAY
+  OTHER
+}
+
+enum BannerPlacement {
+  HOME_HERO
+  HOME_SECONDARY
+  EVENTS_PAGE
+  SERVICES_PAGE
+}
+
+enum AwsServiceCategory {
+  COMPUTE
+  STORAGE
+  DATABASE
+  NETWORKING
+  SECURITY
+  ANALYTICS
+  MACHINE_LEARNING
+  INTEGRATION
+  MANAGEMENT
+  OTHER
+}
+
+enum AwsServiceCardType {
+  USE_CASE
+  TIP
+  WARNING
+  LAB
+  PRICING
+  ARCHITECTURE
+  RELATED_LINK
+  CUSTOM
+}
+
+enum AwsDifficultyLevel {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
 }

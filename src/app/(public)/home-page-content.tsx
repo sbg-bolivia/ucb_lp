@@ -3,6 +3,7 @@
 import dynamic from "next/dynamic";
 import { ClubHero } from "@/components/club-landing/club-hero";
 import { ClubHomeStats } from "@/components/club-landing/club-home-stats";
+import { isClubFeatureEnabled } from "@/lib/club-features";
 
 const ClubLoader = dynamic(
   () =>
@@ -78,9 +79,13 @@ export function HomePageContent() {
       <div style={{ contentVisibility: "auto", containIntrinsicSize: "800px" }}>
         <ClubHomeEvents />
       </div>
-      <div style={{ contentVisibility: "auto", containIntrinsicSize: "800px" }}>
-        <ClubHomeProjects />
-      </div>
+      {isClubFeatureEnabled("projects") ? (
+        <div
+          style={{ contentVisibility: "auto", containIntrinsicSize: "800px" }}
+        >
+          <ClubHomeProjects />
+        </div>
+      ) : null}
       <div style={{ contentVisibility: "auto", containIntrinsicSize: "800px" }}>
         <ClubHomeCommunity />
       </div>

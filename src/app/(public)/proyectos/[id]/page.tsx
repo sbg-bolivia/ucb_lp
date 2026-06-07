@@ -1,11 +1,13 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { isClubFeatureEnabled } from "@/lib/club-features";
 import { trpc } from "@/utils/trpc";
 import { ArrowLeft, ExternalLink } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
+import { useEffect } from "react";
 import { clubTheme } from "@/components/club-landing/club-theme";
 
 const FALLBACK_IMAGE =
@@ -20,8 +22,15 @@ function parseTags(tags: string | null | undefined): string[] {
 }
 
 export default function ProyectoDetallePage() {
+  const router = useRouter();
   const params = useParams();
   const id = typeof params.id === "string" ? params.id : "";
+
+  useEffect(() => {
+    if (!isClubFeatureEnabled("projects")) {
+      router.replace("/eventos");
+    }
+  }, [router]);
   const { data: project, isLoading } = trpc.clubProjects.getPublic.useQuery(
     { id },
     { enabled: Boolean(id) }

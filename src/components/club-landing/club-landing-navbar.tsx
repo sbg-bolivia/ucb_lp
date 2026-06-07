@@ -15,6 +15,8 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 
+import { getClubNavLinks } from "@/lib/club-nav-links";
+
 import { ClubNavLogo } from "./club-logo";
 import { clubTheme } from "./club-theme";
 import { ClubThemeToggle } from "./club-theme-toggle";
@@ -34,15 +36,8 @@ function MeetupGlyph({ className }: { className?: string }) {
   );
 }
 
-const NAV_LINKS = [
-  { href: "/", label: "Inicio" },
-  { href: "/eventos", label: "Eventos" },
-  { href: "/proyectos", label: "Proyectos" },
-  { href: "/equipo", label: "Comunidad" },
-  { href: "/nosotros", label: "Sobre nosotros" },
-] as const;
-
 export function ClubLandingNavbar() {
+  const NAV_LINKS = getClubNavLinks();
   const [open, setOpen] = useState(false);
   const { isAuthenticated } = useAuthContext();
   const router = useRouter();

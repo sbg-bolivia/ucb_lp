@@ -6,6 +6,7 @@ import {
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import {
+  AWS_COMMUNITIES_SEED,
   CLUB_EVENT_IDS,
   CLUB_PROJECT_IDS,
   CLUB_TENANT_ID,
@@ -71,6 +72,12 @@ async function clearDatabase() {
   await prisma.session.deleteMany({});
   await prisma.account.deleteMany({});
   await prisma.verification.deleteMany({});
+  await prisma.eventCollaboration.deleteMany({});
+  await prisma.awsServiceCard.deleteMany({});
+  await prisma.awsService.deleteMany({});
+  await prisma.awsCommunity.deleteMany({});
+  await prisma.siteBanner.deleteMany({});
+  await prisma.coreTeamMember.deleteMany({});
   await prisma.clubProject.deleteMany({});
   await prisma.clubEvent.deleteMany({});
   await prisma.user.deleteMany({});
@@ -505,10 +512,36 @@ async function main() {
   console.log("🚀 Proyectos del club...");
   await seedClubProjects(clubTenant.id);
 
+  console.log("🌎 Otras comunidades AWS (Bolivia)...");
+  for (const c of AWS_COMMUNITIES_SEED) {
+    await prisma.awsCommunity.create({
+      data: {
+        id: c.id,
+        tenantId: clubTenant.id,
+        name: c.name,
+        communityType: c.communityType,
+        university: "university" in c ? (c.university ?? null) : null,
+        department: c.department,
+        city: c.city,
+        latitude: c.latitude,
+        longitude: c.longitude,
+        description: c.description,
+        meetupUrl: c.meetupUrl,
+        websiteUrl: c.websiteUrl,
+        isOwnGroup: c.isOwnGroup,
+        isPublished: true,
+        sortOrder: c.sortOrder,
+      },
+    });
+  }
+
   const eventCount = await prisma.clubEvent.count({
     where: { tenantId: clubTenant.id },
   });
   const projectCount = await prisma.clubProject.count({
+    where: { tenantId: clubTenant.id },
+  });
+  const communityCount = await prisma.awsCommunity.count({
     where: { tenantId: clubTenant.id },
   });
 
@@ -522,12 +555,13 @@ async function main() {
 - Usuarios: ${users.length}
 - Eventos publicados: ${eventCount}
 - Proyectos publicados: ${projectCount}
+- Comunidades AWS: ${communityCount}
 - Core team: ${CORE_TEAM_SEED.length} miembros
 
 🌐 Sitio público (primer tenant activo)
 - Inicio: /
 - Eventos: /eventos · ejemplo: /eventos/${CLUB_EVENT_IDS.workshopIntro}
-- Proyectos: /proyectos · ejemplo: /proyectos/${CLUB_PROJECT_IDS.serverlessApi}
+- Proyectos: ocultos (CLUB_FEATURES.projects = false)
 - Equipo: /equipo
 - Comunidad enlazada vía Meetup, WhatsApp y TikTok en el tenant
 

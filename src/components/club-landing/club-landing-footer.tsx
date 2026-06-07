@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useClubLinks } from "@/hooks/useClubLinks";
 import { CLUB } from "@/lib/club-brand";
+import { getClubNavLinks } from "@/lib/club-nav-links";
 import { Heart, Instagram, Linkedin, MessageCircle } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
@@ -12,11 +13,7 @@ import { ClubNavLogo } from "./club-logo";
 import { TiktokGlyph } from "./club-social-icons";
 
 const NAV = [
-  { href: "/", label: "Inicio" },
-  { href: "/nosotros", label: "Sobre nosotros" },
-  { href: "/eventos", label: "Eventos" },
-  { href: "/proyectos", label: "Proyectos" },
-  { href: "/equipo", label: "Comunidad" },
+  ...getClubNavLinks(),
   { href: "/contacto", label: "Recursos" },
 ] as const;
 
@@ -211,7 +208,7 @@ export function ClubLandingFooter() {
               Mantente al día
             </p>
             <p className="mb-4 text-sm text-slate-500 dark:text-zinc-500">
-              Recibe novedades de eventos y proyectos del club.
+              Recibe novedades de eventos y actividades del club.
             </p>
             <form onSubmit={onNewsletter} className="flex gap-2">
               <Input
