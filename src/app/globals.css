@@ -190,59 +190,6 @@ html:not(.dark) .club-grid {
     ), linear-gradient(to bottom, rgba(0, 114, 207, 0.04) 1px, transparent 1px);
 }
 
-@keyframes club-beam-spin {
-  0% {
-    transform: translate(-50%, -50%) rotate(0deg);
-  }
-  100% {
-    transform: translate(-50%, -50%) rotate(360deg);
-  }
-}
-
-.club-portal-floor {
-  transform: perspective(520px) rotateX(68deg);
-  transform-origin: center center;
-}
-
-.club-portal-ring {
-  border-width: 1px;
-}
-
-.club-portal-beams::before,
-.club-portal-beams::after {
-  content: "";
-  position: absolute;
-  left: 50%;
-  top: 42%;
-  width: 140%;
-  height: 140%;
-  transform: translate(-50%, -50%);
-  background: conic-gradient(
-    from 0deg,
-    transparent 0deg,
-    rgba(0, 200, 255, 0.12) 40deg,
-    transparent 80deg,
-    rgba(126, 44, 255, 0.14) 140deg,
-    transparent 200deg,
-    rgba(168, 85, 247, 0.1) 260deg,
-    transparent 320deg
-  );
-  mask-image: radial-gradient(circle at 50% 50%, black 0%, transparent 62%);
-  animation: club-beam-spin 18s linear infinite;
-  pointer-events: none;
-}
-
-.club-portal-beams::after {
-  animation-duration: 26s;
-  animation-direction: reverse;
-  opacity: 0.65;
-}
-
-.club-portal-chip {
-  transform-style: preserve-3d;
-  perspective: 800px;
-}
-
 .club-glass {
   border: 1px solid rgba(226, 232, 240, 0.7);
   background: rgba(255, 255, 255, 0.55);

@@ -1,4 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { CLUB } from "@/lib/club-brand";
 
 export default function PrivacyPage() {
   return (
@@ -122,10 +123,10 @@ export default function PrivacyPage() {
             <p className="text-muted-foreground">
               Para ejercer estos derechos, contacte a:
               <a
-                href="mailto:privacy@myapp.com"
+                href={`mailto:${CLUB.email}`}
                 className="text-primary hover:underline ml-1"
               >
-                privacy@myapp.com
+                {CLUB.email}
               </a>
             </p>
           </CardContent>
@@ -188,10 +189,10 @@ export default function PrivacyPage() {
               <p className="text-muted-foreground">
                 Email:{" "}
                 <a
-                  href="mailto:privacy@myapp.com"
+                  href={`mailto:${CLUB.email}`}
                   className="text-primary hover:underline"
                 >
-                  privacy@myapp.com
+                  {CLUB.email}
                 </a>
               </p>
               <p className="text-muted-foreground">

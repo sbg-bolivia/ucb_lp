@@ -10,7 +10,11 @@ export const CLUB_MARKETING_PATHS = new Set([
   "/contacto",
 ]);
 
-const CLUB_MARKETING_PREFIXES = ["/eventos/", "/proyectos/"] as const;
+const CLUB_MARKETING_PREFIXES = [
+  "/eventos/",
+  "/proyectos/",
+  "/legal/",
+] as const;
 
 export function isClubMarketingPath(pathname: string | null): boolean {
   if (!pathname) return false;

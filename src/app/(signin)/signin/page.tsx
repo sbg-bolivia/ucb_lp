@@ -11,6 +11,9 @@ import {
 import { Input } from "@/components/ui/input";
 import { useTranslation } from "@/hooks/useTranslation";
 import { authClient } from "@/lib/auth-client";
+import { CLUB } from "@/lib/club-brand";
+import { CLUB_LOGO } from "@/lib/club-brand-assets";
+import Image from "next/image";
 import { ArrowLeft, Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -123,11 +126,17 @@ export default function SignInPage() {
             {t("backToHome")}
           </Link>
 
-          <div className="mx-auto h-16 w-16 bg-gradient-to-br from-blue-600 to-blue-700 rounded-xl flex items-center justify-center shadow-lg">
-            <span className="text-white font-bold text-2xl">M</span>
+          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-xl bg-gradient-to-br from-[#7E2CFF] to-[#00C8FF] p-2 shadow-lg">
+            <Image
+              src={CLUB_LOGO.white}
+              alt={CLUB.shortName}
+              width={48}
+              height={48}
+              className="h-12 w-12 object-contain"
+            />
           </div>
           <h2 className="mt-6 text-3xl font-bold text-gray-900">
-            {t("welcomeTo")} MyApp
+            {t("welcomeTo")} {CLUB.shortName}
           </h2>
           <p className="mt-2 text-sm text-gray-600">
             {t("noAccount")}{" "}

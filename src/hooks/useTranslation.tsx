@@ -4,14 +4,10 @@ import { useEffect, useMemo, useState } from "react";
 
 import commonEn from "@/locales/en/common.json";
 import dashboardEn from "@/locales/en/dashboard.json";
-import landingEn from "@/locales/en/landing.json";
-// Import translations statically - Next.js will handle bundling
 import commonEs from "@/locales/es/common.json";
 import dashboardEs from "@/locales/es/dashboard.json";
-import landingEs from "@/locales/es/landing.json";
 import commonPt from "@/locales/pt/common.json";
 import dashboardPt from "@/locales/pt/dashboard.json";
-import landingPt from "@/locales/pt/landing.json";
 
 // Type for translations
 type TranslationRecord = Record<string, unknown>;
@@ -23,17 +19,14 @@ const translationsRegistry: Record<
 > = {
   es: {
     common: commonEs as TranslationRecord,
-    landing: landingEs as TranslationRecord,
     dashboard: dashboardEs as TranslationRecord,
   },
   en: {
     common: commonEn as TranslationRecord,
-    landing: landingEn as TranslationRecord,
     dashboard: dashboardEn as TranslationRecord,
   },
   pt: {
     common: commonPt as TranslationRecord,
-    landing: landingPt as TranslationRecord,
     dashboard: dashboardPt as TranslationRecord,
   },
 };
@@ -42,7 +35,7 @@ const translationsRegistry: Record<
  * Hook para obtener traducciones estáticas
  *
  * Uso:
- * const { t, locale, setLocale } = useTranslation("landing");
+ * const { t, locale, setLocale } = useTranslation("common");
  * const title = t("hero.title");
  *
  * @param namespace - Namespace de las traducciones (ej: "landing", "common", "dashboard")

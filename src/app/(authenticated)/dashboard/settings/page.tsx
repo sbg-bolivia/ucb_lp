@@ -13,6 +13,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useTranslation } from "@/hooks/useTranslation";
+import { CLUB, getSiteUrl } from "@/lib/club-brand";
 import { trpc } from "@/utils/trpc";
 import { Building2, Globe, Mail, Save, Settings } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -273,7 +274,7 @@ export default function SettingsPage() {
                   id="name"
                   value={formData.name}
                   onChange={(e) => handleInputChange("name", e.target.value)}
-                  placeholder="MyApp"
+                  placeholder={CLUB.shortName}
                 />
               </div>
               <div className="space-y-2">
@@ -295,7 +296,7 @@ export default function SettingsPage() {
                   onChange={(e) =>
                     handleInputChange("displayName", e.target.value)
                   }
-                  placeholder="My Application Platform"
+                  placeholder={CLUB.fullUniversity}
                 />
               </div>
             </div>
@@ -343,7 +344,7 @@ export default function SettingsPage() {
                   id="website"
                   value={formData.website}
                   onChange={(e) => handleInputChange("website", e.target.value)}
-                  placeholder="https://myapp.com"
+                  placeholder={getSiteUrl()}
                 />
               </div>
             </div>
@@ -407,7 +408,7 @@ export default function SettingsPage() {
                   type="email"
                   value={formData.email}
                   onChange={(e) => handleInputChange("email", e.target.value)}
-                  placeholder="info@myapp.com"
+                  placeholder={CLUB.email}
                 />
               </div>
               <div className="space-y-2">
@@ -475,7 +476,7 @@ export default function SettingsPage() {
                   onChange={(e) =>
                     handleInputChange("facebookUrl", e.target.value)
                   }
-                  placeholder="https://facebook.com/myapp"
+                  placeholder="https://facebook.com/..."
                 />
               </div>
               <div className="space-y-2">
@@ -486,7 +487,7 @@ export default function SettingsPage() {
                   onChange={(e) =>
                     handleInputChange("twitterUrl", e.target.value)
                   }
-                  placeholder="https://twitter.com/myapp"
+                  placeholder="https://twitter.com/..."
                 />
               </div>
               <div className="space-y-2">
@@ -497,7 +498,7 @@ export default function SettingsPage() {
                   onChange={(e) =>
                     handleInputChange("instagramUrl", e.target.value)
                   }
-                  placeholder="https://instagram.com/myapp"
+                  placeholder="https://instagram.com/..."
                 />
               </div>
               <div className="space-y-2">
@@ -508,7 +509,7 @@ export default function SettingsPage() {
                   onChange={(e) =>
                     handleInputChange("linkedinUrl", e.target.value)
                   }
-                  placeholder="https://linkedin.com/company/myapp"
+                  placeholder="https://linkedin.com/company/..."
                 />
               </div>
               <div className="space-y-2">
@@ -519,7 +520,7 @@ export default function SettingsPage() {
                   onChange={(e) =>
                     handleInputChange("youtubeUrl", e.target.value)
                   }
-                  placeholder="https://youtube.com/@myapp"
+                  placeholder="https://youtube.com/@..."
                 />
               </div>
               <div className="space-y-2 md:col-span-2">
@@ -593,7 +594,7 @@ export default function SettingsPage() {
                 id="metaTitle"
                 value={formData.metaTitle}
                 onChange={(e) => handleInputChange("metaTitle", e.target.value)}
-                placeholder="MyApp - Modern Platform"
+                placeholder={`${CLUB.shortName} — ${CLUB.city}`}
               />
             </div>
             <div className="space-y-2">
