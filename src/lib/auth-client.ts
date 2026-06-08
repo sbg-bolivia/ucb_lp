@@ -2,8 +2,5 @@ import { getSiteUrl } from "@/lib/club-brand";
 import { createAuthClient } from "better-auth/react";
 
 export const authClient = createAuthClient({
-  baseURL:
-    process.env.NODE_ENV === "production"
-      ? getSiteUrl()
-      : "http://localhost:3000",
+  baseURL: getSiteUrl(),
 });

@@ -147,7 +147,6 @@ export default function SettingsPage() {
     }
   }, [companyInfo]);
 
-  // @ts-expect-error TS2589 — profundidad de tipos Zod + tRPC en companyInfo.update
   const updateCompanyInfo = trpc.companyInfo.update.useMutation({
     onSuccess: () => {
       toast.success("Información de la empresa actualizada exitosamente");

@@ -18,15 +18,24 @@ Sitio web y panel de administración del **AWS Student Builder Group UCB** en la
 
 ```bash
 pnpm install
-pnpm dev
+cp .env.example .env   # ajusta SITE_URL y secrets
+pnpm dev             # Docker + Prisma + Next.js
 ```
-
-Variables de entorno: copia `.env.example` a `.env` y configura `DATABASE_URL`, `BETTER_AUTH_SECRET`, etc.
 
 ```bash
 pnpm db:seed   # datos demo del club
 pnpm validate  # lint + typecheck
 ```
+
+## Despliegue (AWS Amplify + RDS)
+
+1. **RDS PostgreSQL** (`db.t4g.micro` o Lightsail DB) y anota `DATABASE_URL`.
+2. **Amplify Hosting**: conecta el repo GitHub, build con `amplify.yml`.
+3. **Variables en Amplify** (mismas que `.env.example`): `DATABASE_URL`, `BETTER_AUTH_SECRET`, `SITE_URL`, `NEXT_PUBLIC_SITE_URL`, Google OAuth, SMTP.
+4. **DNS Namecheap** → CNAME del dominio `sbgbo.com` al hosting Amplify.
+5. Tras el primer deploy: `pnpm prisma migrate deploy` corre en `preBuild` si `DATABASE_URL` está configurada.
+
+Panel admin tras seed: `/dashboard/club-eventos`, `/dashboard/club-servicios`, `/dashboard/club-comunidades`.
 
 ## Estructura principal
 

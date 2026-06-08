@@ -7,6 +7,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { clubTheme } from "@/components/club-landing/club-theme";
+import { registrationButtonLabel } from "@/lib/event-labels";
 
 const FALLBACK_IMAGE =
   "https://images.unsplash.com/photo-1540575467067-178ab98d8357?auto=format&fit=crop&w=1200&q=80";
@@ -124,15 +125,15 @@ export default function EventoDetallePage() {
               </p>
             ) : null}
 
-            {event.externalUrl?.trim() ? (
+            {(event.registrationUrl ?? event.externalUrl)?.trim() ? (
               <Button asChild className="mt-8 rounded-full">
                 <a
-                  href={event.externalUrl}
+                  href={(event.registrationUrl ?? event.externalUrl) as string}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
                   <ExternalLink className="mr-2 h-4 w-4" />
-                  Inscribirse / ver más
+                  {registrationButtonLabel(event.registrationType)}
                 </a>
               </Button>
             ) : null}

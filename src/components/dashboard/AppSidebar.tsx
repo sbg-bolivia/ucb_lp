@@ -33,7 +33,9 @@ import { cn } from "@/lib/utils";
 import {
   Calendar,
   ChevronDown,
+  Cloud,
   FolderKanban,
+  Globe2,
   LayoutDashboard,
   LogOut,
   Plus,
@@ -104,6 +106,26 @@ export function AppSidebar() {
           icon: Calendar,
           description: t("clubEventsAdminDesc"),
         },
+        ...(isClubFeatureEnabled("awsServices")
+          ? [
+              {
+                title: t("clubServicesAdmin"),
+                href: "/dashboard/club-servicios",
+                icon: Cloud,
+                description: t("clubServicesAdminDesc"),
+              },
+            ]
+          : []),
+        ...(isClubFeatureEnabled("awsCommunitiesMap")
+          ? [
+              {
+                title: t("clubCommunitiesAdmin"),
+                href: "/dashboard/club-comunidades",
+                icon: Globe2,
+                description: t("clubCommunitiesAdminDesc"),
+              },
+            ]
+          : []),
         ...(isClubFeatureEnabled("projects")
           ? [
               {

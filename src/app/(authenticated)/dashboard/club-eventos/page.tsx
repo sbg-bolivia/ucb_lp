@@ -12,6 +12,13 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
   Table,
   TableBody,
   TableCell,
@@ -22,6 +29,11 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { useTranslation } from "@/hooks/useTranslation";
 import { parseDatetimeLocal, toDatetimeLocalValue } from "@/lib/datetime-local";
+import {
+  EVENT_STATUS_LABELS,
+  REGISTRATION_TYPE_LABELS,
+} from "@/lib/event-labels";
+import type { EventStatus, RegistrationType } from "@prisma/client";
 import { trpc } from "@/utils/trpc";
 import { Calendar, Pencil, Plus, Trash2 } from "lucide-react";
 import { useMemo, useState } from "react";
@@ -35,6 +47,12 @@ type FormState = {
   location: string;
   imageUrl: string;
   externalUrl: string;
+  registrationUrl: string;
+  registrationType: RegistrationType;
+  status: EventStatus;
+  isOnline: boolean;
+  isFeatured: boolean;
+  promoVideoUrl: string;
   isPublished: boolean;
   sortOrder: string;
 };
@@ -50,9 +68,20 @@ type ClubEventRow = {
   location: string | null;
   imageUrl: string | null;
   externalUrl: string | null;
+  registrationUrl: string | null;
+  registrationType: RegistrationType;
+  status: EventStatus;
+  isOnline: boolean;
+  isFeatured: boolean;
+  promoVideoUrl: string | null;
   isPublished: boolean;
   sortOrder: number;
 };
+
+const REGISTRATION_TYPES = Object.keys(
+  REGISTRATION_TYPE_LABELS
+) as RegistrationType[];
+const EVENT_STATUSES = Object.keys(EVENT_STATUS_LABELS) as EventStatus[];
 
 const emptyForm: FormState = {
   title: "",
@@ -62,6 +91,12 @@ const emptyForm: FormState = {
   location: "",
   imageUrl: "",
   externalUrl: "",
+  registrationUrl: "",
+  registrationType: "EXTERNAL",
+  status: "UPCOMING",
+  isOnline: false,
+  isFeatured: false,
+  promoVideoUrl: "",
   isPublished: true,
   sortOrder: "0",
 };
@@ -75,6 +110,12 @@ function eventToForm(e: ClubEventRow): FormState {
     location: e.location ?? "",
     imageUrl: e.imageUrl ?? "",
     externalUrl: e.externalUrl ?? "",
+    registrationUrl: e.registrationUrl ?? e.externalUrl ?? "",
+    registrationType: e.registrationType ?? "EXTERNAL",
+    status: e.status ?? "UPCOMING",
+    isOnline: e.isOnline ?? false,
+    isFeatured: e.isFeatured ?? false,
+    promoVideoUrl: e.promoVideoUrl ?? "",
     isPublished: e.isPublished,
     sortOrder: String(e.sortOrder),
   };
@@ -146,6 +187,12 @@ export default function ClubEventosAdminPage() {
       location: form.location.trim() || null,
       imageUrl: form.imageUrl.trim() || null,
       externalUrl: form.externalUrl.trim() || null,
+      registrationUrl: form.registrationUrl.trim() || null,
+      registrationType: form.registrationType,
+      status: form.status,
+      isOnline: form.isOnline,
+      isFeatured: form.isFeatured,
+      promoVideoUrl: form.promoVideoUrl.trim() || null,
       isPublished: form.isPublished,
       sortOrder: Number.isFinite(sortOrder) ? sortOrder : 0,
     };
@@ -328,8 +375,64 @@ export default function ClubEventosAdminPage() {
                 placeholder="/eventos/cartel.jpg o https://..."
               />
             </div>
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <div className="space-y-2">
+                <Label>Tipo de registro</Label>
+                <Select
+                  value={form.registrationType}
+                  onValueChange={(v) =>
+                    setForm((f) => ({
+                      ...f,
+                      registrationType: v as RegistrationType,
+                    }))
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {REGISTRATION_TYPES.map((type) => (
+                      <SelectItem key={type} value={type}>
+                        {REGISTRATION_TYPE_LABELS[type]}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <Label>Estado</Label>
+                <Select
+                  value={form.status}
+                  onValueChange={(v) =>
+                    setForm((f) => ({ ...f, status: v as EventStatus }))
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {EVENT_STATUSES.map((st) => (
+                      <SelectItem key={st} value={st}>
+                        {EVENT_STATUS_LABELS[st]}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
             <div className="space-y-2">
-              <Label htmlFor="ev-ext">Enlace externo (Meetup, etc.)</Label>
+              <Label htmlFor="ev-reg">Enlace de registro</Label>
+              <Input
+                id="ev-reg"
+                value={form.registrationUrl}
+                onChange={(e) =>
+                  setForm((f) => ({ ...f, registrationUrl: e.target.value }))
+                }
+                placeholder="Meetup, YouTube, Google Meet, Zoom..."
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="ev-ext">Enlace externo legacy (opcional)</Label>
               <Input
                 id="ev-ext"
                 value={form.externalUrl}
@@ -338,6 +441,43 @@ export default function ClubEventosAdminPage() {
                 }
                 placeholder="https://..."
               />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="ev-video">Video promocional (opcional)</Label>
+              <Input
+                id="ev-video"
+                value={form.promoVideoUrl}
+                onChange={(e) =>
+                  setForm((f) => ({ ...f, promoVideoUrl: e.target.value }))
+                }
+                placeholder="https://youtube.com/..."
+              />
+            </div>
+            <div className="flex flex-wrap gap-6">
+              <div className="flex items-center gap-2">
+                <Checkbox
+                  id="ev-online"
+                  checked={form.isOnline}
+                  onCheckedChange={(c) =>
+                    setForm((f) => ({ ...f, isOnline: c === true }))
+                  }
+                />
+                <Label htmlFor="ev-online" className="font-normal cursor-pointer">
+                  Evento en línea
+                </Label>
+              </div>
+              <div className="flex items-center gap-2">
+                <Checkbox
+                  id="ev-featured"
+                  checked={form.isFeatured}
+                  onCheckedChange={(c) =>
+                    setForm((f) => ({ ...f, isFeatured: c === true }))
+                  }
+                />
+                <Label htmlFor="ev-featured" className="font-normal cursor-pointer">
+                  Destacado
+                </Label>
+              </div>
             </div>
             <div className="flex items-center gap-2">
               <Checkbox

@@ -1,6 +1,7 @@
 "use client";
 
 import { CLUB } from "@/lib/club-brand";
+import { registrationButtonLabel } from "@/lib/event-labels";
 import { fadeUpProps, staggerContainer, staggerItem } from "@/lib/club-motion";
 import { trpc } from "@/utils/trpc";
 import { Calendar, ExternalLink, MapPin } from "lucide-react";
@@ -149,15 +150,15 @@ export function ClubPublishedEvents() {
                   >
                     Ver detalles
                   </Link>
-                  {ev.externalUrl?.trim() ? (
+                  {(ev.registrationUrl ?? ev.externalUrl)?.trim() ? (
                     <a
-                      href={ev.externalUrl}
+                      href={(ev.registrationUrl ?? ev.externalUrl) as string}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="inline-flex items-center gap-1.5 rounded-full bg-[#3b41ff] px-4 py-2 text-xs font-semibold text-white transition hover:brightness-110 sm:text-sm"
                     >
                       <ExternalLink className="h-3.5 w-3.5" />
-                      Ver más / inscribirse
+                      {registrationButtonLabel(ev.registrationType)}
                     </a>
                   ) : null}
                 </div>

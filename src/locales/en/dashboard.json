@@ -220,6 +220,10 @@
   "clubEventsAdminDesc": "Create, edit and delete events shown on the public site.",
   "clubProjectsAdmin": "Club projects",
   "clubProjectsAdminDesc": "Create, edit and delete projects shown on the public site.",
+  "clubServicesAdmin": "AWS services",
+  "clubServicesAdminDesc": "Curated AWS services catalog with optional cards for the public site.",
+  "clubCommunitiesAdmin": "AWS communities",
+  "clubCommunitiesAdminDesc": "Other AWS communities in Bolivia: map and list on the About page.",
   "feedbackDialog": {
     "title": "Suggestions & Bug Reports",
     "description": "Help us improve the platform by sending your suggestions or reporting bugs.",

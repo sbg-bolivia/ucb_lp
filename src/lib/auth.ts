@@ -103,10 +103,7 @@ export const auth = betterAuth({
   },
 
   security: {
-    corsOrigin:
-      process.env.NODE_ENV === "production"
-        ? [getSiteUrl()]
-        : ["http://localhost:3000"],
+    corsOrigin: [getSiteUrl()],
   },
 
   logger: {

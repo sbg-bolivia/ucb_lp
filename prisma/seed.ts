@@ -601,7 +601,7 @@ async function main() {
 - Carlos:      carlos@awscloudclub.ucb / ClubUser123!@#
 - Viewer:      viewer@awscloudclub.ucb / ClubViewer123!@#
 
-Panel admin: /dashboard/club-eventos · /dashboard/club-proyectos · Ajustes (core team y redes)
+Panel admin: /dashboard/club-eventos · /dashboard/club-servicios · /dashboard/club-comunidades · Ajustes
 `);
 }
 

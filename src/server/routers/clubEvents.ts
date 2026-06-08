@@ -1,3 +1,4 @@
+import { EventStatus, RegistrationType } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { prisma } from "../../lib/db";
@@ -20,6 +21,12 @@ const clubEventCreateSchema = z.object({
   location: z.string().max(500).optional().nullable(),
   imageUrl: optionalUrl,
   externalUrl: optionalUrl,
+  registrationUrl: optionalUrl,
+  registrationType: z.nativeEnum(RegistrationType).optional(),
+  status: z.nativeEnum(EventStatus).optional(),
+  isOnline: z.boolean().optional(),
+  isFeatured: z.boolean().optional(),
+  promoVideoUrl: optionalUrl,
   isPublished: z.boolean().optional(),
   sortOrder: z.number().int().min(0).max(9999).optional(),
 });
@@ -95,6 +102,9 @@ export const clubEventsRouter = router({
         throw new TRPCError({ code: "FORBIDDEN", message: "Sin permiso" });
       }
 
+      const registrationUrl =
+        input.registrationUrl ?? input.externalUrl ?? null;
+
       return prisma.clubEvent.create({
         data: {
           tenantId: ctx.user.tenantId,
@@ -104,7 +114,13 @@ export const clubEventsRouter = router({
           endsAt: input.endsAt ?? null,
           location: input.location?.trim() || null,
           imageUrl: input.imageUrl ?? null,
-          externalUrl: input.externalUrl ?? null,
+          externalUrl: input.externalUrl ?? registrationUrl,
+          registrationUrl,
+          registrationType: input.registrationType ?? "EXTERNAL",
+          status: input.status ?? "UPCOMING",
+          isOnline: input.isOnline ?? false,
+          isFeatured: input.isFeatured ?? false,
+          promoVideoUrl: input.promoVideoUrl ?? null,
           isPublished: input.isPublished ?? true,
           sortOrder: input.sortOrder ?? 0,
         },
@@ -147,6 +163,19 @@ export const clubEventsRouter = router({
         data.location = patch.location?.trim() || null;
       if (patch.imageUrl !== undefined) data.imageUrl = patch.imageUrl;
       if (patch.externalUrl !== undefined) data.externalUrl = patch.externalUrl;
+      if (patch.registrationUrl !== undefined) {
+        data.registrationUrl = patch.registrationUrl;
+        if (patch.externalUrl === undefined && patch.registrationUrl) {
+          data.externalUrl = patch.registrationUrl;
+        }
+      }
+      if (patch.registrationType !== undefined)
+        data.registrationType = patch.registrationType;
+      if (patch.status !== undefined) data.status = patch.status;
+      if (patch.isOnline !== undefined) data.isOnline = patch.isOnline;
+      if (patch.isFeatured !== undefined) data.isFeatured = patch.isFeatured;
+      if (patch.promoVideoUrl !== undefined)
+        data.promoVideoUrl = patch.promoVideoUrl;
       if (patch.isPublished !== undefined) data.isPublished = patch.isPublished;
       if (patch.sortOrder !== undefined) data.sortOrder = patch.sortOrder;
 
