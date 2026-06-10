@@ -15,7 +15,7 @@ import {
 import { useTranslation } from "@/hooks/useTranslation";
 import { useUser } from "@/hooks/useUser";
 import type { AuthUser } from "@/types/user";
-import Image from "next/image";
+import { AppLoadingSpinner } from "@/components/ui/app-loading-spinner";
 
 export default function DashboardPage() {
   const { t } = useTranslation("dashboard");
@@ -34,18 +34,8 @@ export default function DashboardPage() {
   if (isLoading) {
     return (
       <ProtectedRoute>
-        <div className="min-h-screen bg-white flex items-center justify-center">
-          <div className="text-center">
-            <div className="relative w-16 h-16 mx-auto mb-4">
-              <Image
-                src="/logo.png"
-                alt="Loading"
-                fill
-                className="object-contain animate-spin"
-                style={{ animationDuration: "2s" }}
-              />
-            </div>
-          </div>
+        <div className="flex min-h-screen items-center justify-center bg-background">
+          <AppLoadingSpinner />
         </div>
       </ProtectedRoute>
     );

@@ -2,6 +2,7 @@
 
 import dynamic from "next/dynamic";
 import { ClubHero } from "@/components/club-landing/club-hero";
+import { ClubSiteBanners } from "@/components/club-landing/club-site-banners";
 import { ClubHomeStats } from "@/components/club-landing/club-home-stats";
 import { isClubFeatureEnabled } from "@/lib/club-features";
 
@@ -72,7 +73,9 @@ export function HomePageContent() {
     <>
       <ClubLoader />
       <ClubHero />
+      <ClubSiteBanners placement="HOME_HERO" variant="hero" />
       <ClubHomeStats />
+      <ClubSiteBanners placement="HOME_SECONDARY" variant="secondary" />
       <div style={{ contentVisibility: "auto", containIntrinsicSize: "800px" }}>
         <ClubHomeServices />
       </div>

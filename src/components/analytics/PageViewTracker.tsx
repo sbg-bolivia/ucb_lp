@@ -30,6 +30,8 @@ export function PageViewTracker() {
       headers: { "Content-Type": "application/json" },
       body,
       keepalive: true,
+    }).catch(() => {
+      /* analytics opcional: no bloquear la UI si la BD no está lista */
     });
   }, [pathname]);
 

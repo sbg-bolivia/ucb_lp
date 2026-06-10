@@ -256,6 +256,75 @@ async function seedLocales() {
   }
 }
 
+async function seedSiteBanners(tenantId: string) {
+  const banners = [
+    {
+      title: "Únete al AWS Student Builder Group UCB",
+      subtitle:
+        "Talleres, labs reales y comunidad tech en la Universidad Católica Boliviana.",
+      imageUrl: CLUB_UNSPLASH.eventWorkshop,
+      linkUrl: "/unete",
+      placement: "HOME_HERO" as const,
+      sortOrder: 0,
+    },
+    {
+      title: "Próximo workshop en la nube",
+      subtitle: "Explora la consola AWS y despliega tu primer recurso.",
+      imageUrl: CLUB_UNSPLASH.eventCert,
+      linkUrl: "/eventos",
+      placement: "HOME_HERO" as const,
+      sortOrder: 1,
+    },
+    {
+      title: "Certifícate con el club",
+      subtitle: "Ruta Cloud Practitioner con simulacros y mentoría.",
+      imageUrl: CLUB_UNSPLASH.eventNetwork,
+      linkUrl: "/eventos",
+      placement: "HOME_SECONDARY" as const,
+      sortOrder: 0,
+    },
+    {
+      title: "Catálogo de servicios AWS",
+      subtitle: "Guías del club: cuándo usar cada servicio y por dónde empezar.",
+      imageUrl: CLUB_UNSPLASH.projApi,
+      linkUrl: "/servicios",
+      placement: "HOME_SECONDARY" as const,
+      sortOrder: 1,
+    },
+    {
+      title: "Calendario de eventos",
+      subtitle: "Labs, charlas y networking durante todo el año.",
+      imageUrl: CLUB_UNSPLASH.eventBuild,
+      linkUrl: "/eventos",
+      placement: "EVENTS_PAGE" as const,
+      sortOrder: 0,
+    },
+    {
+      title: "Aprende servicios AWS paso a paso",
+      subtitle: "Contenido curado por estudiantes para estudiantes.",
+      imageUrl: CLUB_UNSPLASH.projWeb,
+      linkUrl: "/servicios",
+      placement: "SERVICES_PAGE" as const,
+      sortOrder: 0,
+    },
+  ];
+
+  for (const b of banners) {
+    await prisma.siteBanner.create({
+      data: {
+        tenantId,
+        title: b.title,
+        subtitle: b.subtitle,
+        imageUrl: b.imageUrl,
+        linkUrl: b.linkUrl,
+        placement: b.placement,
+        isActive: true,
+        sortOrder: b.sortOrder,
+      },
+    });
+  }
+}
+
 async function seedClubEvents(tenantId: string) {
   const w1 = daysFromNow(7, 17);
   const b1 = daysFromNow(21, 9);
@@ -490,7 +559,7 @@ async function main() {
       instagramUrl: "https://www.instagram.com/aws_cc_ucb_lpz",
       youtubeUrl: "https://www.youtube.com/@AWSCloudClubUCB",
       foundedYear: 2024,
-      logoUrl: "/images/logo.png",
+      logoUrl: "/logo/AWS SBG UCB - La Paz - Negro.png",
       faviconUrl: "/favicon.ico",
       metaTitle: "AWS Student Builder Group UCB | La Paz",
       metaDescription:
@@ -510,6 +579,9 @@ async function main() {
 
   console.log("👥 Usuarios de prueba...");
   const users = await seedUsers(clubTenant.id, tenantRoles);
+
+  console.log("🖼️ Banners promocionales...");
+  await seedSiteBanners(clubTenant.id);
 
   console.log("📅 Eventos del club...");
   await seedClubEvents(clubTenant.id);

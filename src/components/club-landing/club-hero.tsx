@@ -91,10 +91,10 @@ export function ClubHero() {
     };
     const idleId =
       typeof window.requestIdleCallback === "function"
-        ? window.requestIdleCallback(run, { timeout: 3000 })
+        ? window.requestIdleCallback(run, { timeout: 1200 })
         : null;
     const timerId =
-      idleId === null ? window.setTimeout(run, 1800) : null;
+      idleId === null ? window.setTimeout(run, 600) : null;
     return () => {
       cancelled = true;
       if (idleId !== null) window.cancelIdleCallback(idleId);

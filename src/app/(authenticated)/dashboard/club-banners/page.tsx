@@ -245,12 +245,10 @@ export default function ClubBannersAdminPage() {
             ¿Qué son los banners?
           </CardTitle>
           <CardDescription className="text-sm leading-relaxed">
-            Son imágenes promocionales que el sitio público puede mostrar en
-            zonas concretas (hero del home, sección secundaria, página de
-            eventos o servicios). Aquí defines título, imagen, enlace, fechas de
-            vigencia y orden. Cuando conectemos el home a esta API, aparecerán
-            solos según la ubicación y si están activos en la fecha actual — no
-            hace falta tocar código cada vez que cambies una promo.
+            Imágenes promocionales que el sitio público muestra automáticamente
+            según la ubicación: hero del home, sección secundaria, /eventos y
+            /servicios. Define título, imagen, enlace, fechas de vigencia y
+            orden; solo se ven si están activos y dentro del rango de fechas.
           </CardDescription>
         </CardHeader>
         <CardContent className="pb-4 text-xs text-muted-foreground">

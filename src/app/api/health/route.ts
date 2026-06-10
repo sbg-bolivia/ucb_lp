@@ -1,24 +1,35 @@
+import { prisma } from "@/lib/db";
 import { NextResponse } from "next/server";
 
-export async function GET() {
-  try {
-    // Basic health check - can be extended to check database connectivity
-    const healthStatus = {
-      status: "healthy",
-      timestamp: new Date().toISOString(),
-      uptime: process.uptime(),
-      environment: process.env.NODE_ENV || "development",
-    };
+export const dynamic = "force-dynamic";
 
-    return NextResponse.json(healthStatus, { status: 200 });
-  } catch (_error) {
-    return NextResponse.json(
-      {
-        status: "unhealthy",
-        timestamp: new Date().toISOString(),
-        error: "Health check failed",
-      },
-      { status: 500 }
-    );
+export async function GET() {
+  const hasDatabaseUrl = Boolean(process.env.DATABASE_URL?.trim());
+  const hasSiteUrl = Boolean(
+    process.env.SITE_URL?.trim() || process.env.NEXT_PUBLIC_SITE_URL?.trim()
+  );
+
+  let database = false;
+  if (hasDatabaseUrl) {
+    try {
+      await prisma.$queryRaw`SELECT 1`;
+      database = true;
+    } catch {
+      database = false;
+    }
   }
+
+  const ok = hasDatabaseUrl && hasSiteUrl && database;
+
+  return NextResponse.json(
+    {
+      ok,
+      checks: {
+        databaseUrl: hasDatabaseUrl,
+        siteUrl: hasSiteUrl,
+        database,
+      },
+    },
+    { status: ok ? 200 : 503 }
+  );
 }

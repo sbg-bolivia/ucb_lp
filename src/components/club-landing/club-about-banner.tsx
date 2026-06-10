@@ -1,6 +1,7 @@
 "use client";
 
 import { CLUB } from "@/lib/club-brand";
+import { CLUB_LOGO } from "@/lib/club-brand-assets";
 import { fadeUpProps, staggerContainer, staggerItem } from "@/lib/club-motion";
 import { BookOpen, HeartHandshake, Shield } from "lucide-react";
 import { motion } from "motion/react";
@@ -98,7 +99,7 @@ export function ClubAboutBanner() {
               className={`relative overflow-hidden rounded-[2rem] ${clubTheme.card} p-10 sm:p-12`}
             >
               <Image
-                src="/logo.png"
+                src={CLUB_LOGO.pngBlack}
                 alt={`Marca ${CLUB.shortName}`}
                 width={400}
                 height={160}

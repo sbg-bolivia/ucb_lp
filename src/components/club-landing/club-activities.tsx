@@ -12,6 +12,7 @@ import { CalendarDays, Code2, GraduationCap, PartyPopper } from "lucide-react";
 import { motion } from "motion/react";
 import Link from "next/link";
 
+import { ClubSiteBanners } from "./club-site-banners";
 import { ClubPublishedEvents } from "./club-published-events";
 import { clubTheme } from "./club-theme";
 
@@ -57,13 +58,15 @@ export function ClubActivities() {
   const links = useClubLinks();
 
   return (
-    <section
-      id="actividades"
-      className={`relative ${clubTheme.sectionY} ${clubTheme.sectionTint}`}
-    >
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#00C8FF]/55 to-transparent" />
+    <>
+      <ClubSiteBanners placement="EVENTS_PAGE" variant="page" />
+      <section
+        id="actividades"
+        className={`relative ${clubTheme.sectionY} ${clubTheme.sectionTint}`}
+      >
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#00C8FF]/55 to-transparent" />
 
-      <div className="relative mx-auto max-w-7xl">
+        <div className="relative mx-auto max-w-7xl">
         <motion.div className="mx-auto max-w-3xl text-center" {...fadeUpProps}>
           <p className="text-sm font-bold uppercase tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-[#00C8FF] via-[#7E2CFF] to-[#A855F7]">
             Qué hacemos
@@ -153,5 +156,6 @@ export function ClubActivities() {
         </motion.div>
       </div>
     </section>
+    </>
   );
 }

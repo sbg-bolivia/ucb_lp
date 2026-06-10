@@ -2,8 +2,8 @@ import { BannerPlacement } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { prisma } from "../../lib/db";
-import { hasPermissionOrManage } from "../../services/rbacService";
-import { PermissionAction, PermissionResource } from "../../types/rbac";
+import { hasAdminOrContentPermission } from "../../services/rbacService";
+import { PermissionAction } from "../../types/rbac";
 import { protectedProcedure, publicProcedure, router } from "../trpc";
 
 const optionalUrl = z
@@ -49,12 +49,7 @@ async function assertAdmin(
   tenantId: string,
   action: PermissionAction
 ) {
-  const ok = await hasPermissionOrManage(
-    userId,
-    action,
-    PermissionResource.ADMIN,
-    tenantId
-  );
+  const ok = await hasAdminOrContentPermission(userId, action, tenantId);
   if (!ok) {
     throw new TRPCError({ code: "FORBIDDEN", message: "Sin permiso" });
   }

@@ -2,51 +2,41 @@
 
 import { useAuthContext } from "@/AuthContext";
 import { useUser } from "@/hooks/useUser";
-import Image from "next/image";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";
 
 interface RoleBasedRedirectProps {
   children: React.ReactNode;
 }
 
+const AUTH_ROUTES = ["/login", "/signup", "/forgot-password", "/reset-password"];
+
+function isAuthRoute(pathname: string) {
+  return AUTH_ROUTES.some(
+    (route) => pathname === route || pathname.startsWith(`${route}/`)
+  );
+}
+
 export function RoleBasedRedirect({ children }: RoleBasedRedirectProps) {
   const pathname = usePathname();
+  const router = useRouter();
   const { isAuthenticated, loading: authLoading } = useAuthContext();
-  const { primaryRole, isLoading: roleLoading } = useUser();
+  const { canViewDashboard, isLoading: roleLoading } = useUser();
 
   useEffect(() => {
-    // Temporarily disabled all redirections - allow free access to all routes
-    console.log("RoleBasedRedirect: All redirections disabled for debugging", {
-      primaryRole,
-      pathname,
-      isAuthenticated,
-      authLoading,
-      roleLoading,
-    });
+    if (authLoading || roleLoading || !pathname) return;
 
-    // No redirections - allow access to all routes
-    return;
-  }, [primaryRole, pathname, isAuthenticated, authLoading, roleLoading]);
-
-  // Show loading state while determining role
-  if (authLoading || roleLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-white">
-        <div className="text-center">
-          <div className="relative w-16 h-16 mx-auto mb-4">
-            <Image
-              src="/logo.png"
-              alt="Loading"
-              fill
-              className="object-contain animate-spin"
-              style={{ animationDuration: "2s" }}
-            />
-          </div>
-        </div>
-      </div>
-    );
-  }
+    if (isAuthenticated && isAuthRoute(pathname) && canViewDashboard) {
+      router.replace("/dashboard");
+    }
+  }, [
+    pathname,
+    isAuthenticated,
+    authLoading,
+    roleLoading,
+    canViewDashboard,
+    router,
+  ]);
 
   return <>{children}</>;
 }

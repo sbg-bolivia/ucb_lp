@@ -1,23 +1,79 @@
 "use client";
 
+import { AppLoadingSpinner } from "@/components/ui/app-loading-spinner";
 import { OrbitControls, useGLTF } from "@react-three/drei";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { Suspense, useEffect, useMemo, useRef, useState } from "react";
+import { Cloud } from "lucide-react";
+import {
+  Component,
+  type ErrorInfo,
+  type ReactNode,
+  Suspense,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import * as THREE from "three";
 
 const MODEL_URL = "/hero/sbg-logo.glb";
 
 useGLTF.preload(MODEL_URL);
 
+class ModelErrorBoundary extends Component<
+  { children: ReactNode; fallback: ReactNode },
+  { hasError: boolean }
+> {
+  state = { hasError: false };
+
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+
+  componentDidCatch(error: Error, info: ErrorInfo) {
+    console.warn("ClubHeroModel: no se pudo cargar el GLB", error, info);
+  }
+
+  render() {
+    if (this.state.hasError) return this.props.fallback;
+    return this.props.children;
+  }
+}
+
+function ModelLoadingFallback() {
+  return (
+    <div className="flex h-full min-h-[200px] items-center justify-center">
+      <AppLoadingSpinner label="Cargando modelo 3D…" />
+    </div>
+  );
+}
+
+function ModelUnavailableFallback() {
+  return (
+    <div className="flex h-full min-h-[200px] flex-col items-center justify-center gap-2 text-center">
+      <Cloud className="h-14 w-14 text-[#7E2CFF]/40" />
+      <p className="max-w-[220px] text-xs text-zinc-400">
+        Vista 3D no disponible en este dispositivo
+      </p>
+    </div>
+  );
+}
+
 function Model({
   autoRotate,
   interactingRef,
+  onReady,
 }: {
   autoRotate: boolean;
   interactingRef: React.RefObject<boolean>;
+  onReady?: () => void;
 }) {
   const { scene } = useGLTF(MODEL_URL);
   const groupRef = useRef<THREE.Group>(null);
+
+  useEffect(() => {
+    onReady?.();
+  }, [onReady]);
 
   const normalized = useMemo(() => {
     const clone = scene.clone(true);
@@ -138,6 +194,7 @@ export function ClubHeroModel({
 }) {
   const interactingRef = useRef(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [modelReady, setModelReady] = useState(false);
 
   useEffect(() => {
     const mq = window.matchMedia("(max-width: 767px)");
@@ -153,35 +210,51 @@ export function ClubHeroModel({
   };
 
   return (
-    <Canvas
-      camera={{ position: [0, 0.02, isMobile ? 9.2 : 8.1], fov: isMobile ? 36 : 32 }}
-      dpr={isMobile ? 1 : [1, 1.75]}
-      gl={{
-        antialias: !isMobile,
-        alpha: true,
-        powerPreference: isMobile ? "default" : "high-performance",
-      }}
-      style={{ width: "100%", height: "100%", touchAction: "none" }}
-    >
-      <CanvasBackground />
-      <SceneLights lightMode={lightMode} />
+    <ModelErrorBoundary fallback={<ModelUnavailableFallback />}>
+      <div className="relative h-full w-full">
+        {!modelReady ? (
+          <div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center">
+            <ModelLoadingFallback />
+          </div>
+        ) : null}
+        <Canvas
+          camera={{
+            position: [0, 0.02, isMobile ? 9.2 : 8.1],
+            fov: isMobile ? 36 : 32,
+          }}
+          dpr={isMobile ? 1 : [1, 1.75]}
+          gl={{
+            antialias: !isMobile,
+            alpha: true,
+            powerPreference: isMobile ? "default" : "high-performance",
+          }}
+          style={{ width: "100%", height: "100%", touchAction: "none" }}
+        >
+          <CanvasBackground />
+          <SceneLights lightMode={lightMode} />
 
-      <Suspense fallback={null}>
-        <Model autoRotate={autoRotate} interactingRef={interactingRef} />
-      </Suspense>
-      <StageRings compact={isMobile} />
+          <Suspense fallback={null}>
+            <Model
+              autoRotate={autoRotate}
+              interactingRef={interactingRef}
+              onReady={() => setModelReady(true)}
+            />
+          </Suspense>
+          <StageRings compact={isMobile} />
 
-      <OrbitControls
-        makeDefault
-        enableZoom={false}
-        enablePan={false}
-        autoRotate={false}
-        minPolarAngle={Math.PI / 3.2}
-        maxPolarAngle={Math.PI / 1.75}
-        rotateSpeed={0.85}
-        onStart={() => setInteracting(true)}
-        onEnd={() => setInteracting(false)}
-      />
-    </Canvas>
+          <OrbitControls
+            makeDefault
+            enableZoom={false}
+            enablePan={false}
+            autoRotate={false}
+            minPolarAngle={Math.PI / 3.2}
+            maxPolarAngle={Math.PI / 1.75}
+            rotateSpeed={0.85}
+            onStart={() => setInteracting(true)}
+            onEnd={() => setInteracting(false)}
+          />
+        </Canvas>
+      </div>
+    </ModelErrorBoundary>
   );
 }
