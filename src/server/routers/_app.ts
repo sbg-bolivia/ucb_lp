@@ -1,4 +1,5 @@
 import { router } from "../trpc";
+import { auditLogsRouter } from "./auditLogs";
 import { awsCommunitiesRouter } from "./awsCommunities";
 import { awsServicesRouter } from "./awsServices";
 import { clubEventsRouter } from "./clubEvents";
@@ -12,6 +13,7 @@ import { uploadsRouter } from "./uploads";
 import { userRouter } from "./user";
 
 export const appRouter = router({
+  auditLogs: auditLogsRouter,
   user: userRouter,
   rbac: rbacRouter,
   companyInfo: companyInfoRouter,

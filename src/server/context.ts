@@ -1,5 +1,6 @@
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
+import { getRequestMeta, type RequestMeta } from "@/lib/request-meta";
 import { initTRPC } from "@trpc/server";
 
 export interface Context {
@@ -15,6 +16,7 @@ export interface Context {
     displayName: string;
   };
   rbac?: unknown;
+  requestMeta?: RequestMeta;
 }
 
 export const createContext = async (opts: {
@@ -26,8 +28,10 @@ export const createContext = async (opts: {
       headers: opts.req.headers,
     });
 
+    const requestMeta = getRequestMeta(opts.req);
+
     if (!session?.user) {
-      return {};
+      return { requestMeta };
     }
 
     // Get user with tenant information
@@ -45,10 +49,11 @@ export const createContext = async (opts: {
     });
 
     if (!userWithTenant) {
-      return {};
+      return { requestMeta };
     }
 
     return {
+      requestMeta,
       user: {
         id: userWithTenant.id,
         email: userWithTenant.email,
@@ -64,7 +69,7 @@ export const createContext = async (opts: {
         : undefined,
     };
   } catch (_error) {
-    return {};
+    return { requestMeta: getRequestMeta(opts.req) };
   }
 };
 

@@ -31,6 +31,7 @@ import {
   BarChart3,
   Calendar,
   ChevronDown,
+  ClipboardList,
   Cloud,
   FolderKanban,
   Globe2,
@@ -144,6 +145,12 @@ export function AppSidebar() {
           href: "/dashboard/estadisticas",
           icon: BarChart3,
           description: "Visitas, contenido y métricas del sitio",
+        },
+        {
+          title: "Auditoría",
+          href: "/dashboard/auditoria",
+          icon: ClipboardList,
+          description: "Registro de acciones del equipo (IP y cambios)",
         },
         {
           title: t("settings2"),
