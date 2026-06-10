@@ -1,10 +1,21 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import { useCallback, useEffect, useState } from "react";
+import { Suspense, useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 
-export default function ConfirmEmailPage() {
+function ConfirmEmailFallback() {
+  return (
+    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 px-4 py-8 sm:px-6 lg:px-8">
+      <div className="text-center">
+        <div className="mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-b-2 border-blue-600" />
+        <p className="text-gray-600">Cargando confirmación...</p>
+      </div>
+    </div>
+  );
+}
+
+function ConfirmEmailContent() {
   const [loading, setLoading] = useState(true);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -30,7 +41,6 @@ export default function ConfirmEmailPage() {
           setSuccess(true);
           toast.success("¡Email confirmado exitosamente!");
 
-          // Redirigir al inicio después de 3 segundos
           setTimeout(() => {
             router.push("/");
           }, 3000);
@@ -60,9 +70,9 @@ export default function ConfirmEmailPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 py-8 px-4 sm:px-6 lg:px-8">
+      <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 px-4 py-8 sm:px-6 lg:px-8">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4" />
+          <div className="mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-b-2 border-blue-600" />
           <p className="text-gray-600">Confirmando tu email...</p>
         </div>
       </div>
@@ -70,13 +80,13 @@ export default function ConfirmEmailPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <div className="max-w-md w-full bg-white rounded-lg shadow-md p-8 text-center">
+    <div className="flex min-h-screen items-center justify-center bg-gray-50">
+      <div className="w-full max-w-md rounded-lg bg-white p-8 text-center shadow-md">
         {success ? (
           <div>
-            <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-green-100">
               <svg
-                className="w-8 h-8 text-green-600"
+                className="h-8 w-8 text-green-600"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -91,26 +101,26 @@ export default function ConfirmEmailPage() {
                 />
               </svg>
             </div>
-            <h1 className="text-2xl font-bold text-gray-900 mb-2">
+            <h1 className="mb-2 text-2xl font-bold text-gray-900">
               ¡Email Confirmado!
             </h1>
-            <p className="text-gray-600 mb-6">
+            <p className="mb-6 text-gray-600">
               Tu cuenta ha sido confirmada exitosamente. Serás redirigido al
               inicio en unos segundos.
             </p>
             <button
               type="button"
               onClick={() => router.push("/")}
-              className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+              className="rounded-lg bg-blue-600 px-6 py-2 text-white transition-colors hover:bg-blue-700"
             >
               Ir al inicio
             </button>
           </div>
         ) : (
           <div>
-            <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-red-100">
               <svg
-                className="w-8 h-8 text-red-600"
+                className="h-8 w-8 text-red-600"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -125,10 +135,10 @@ export default function ConfirmEmailPage() {
                 />
               </svg>
             </div>
-            <h1 className="text-2xl font-bold text-gray-900 mb-2">
+            <h1 className="mb-2 text-2xl font-bold text-gray-900">
               Error de Confirmación
             </h1>
-            <p className="text-gray-600 mb-6">
+            <p className="mb-6 text-gray-600">
               {error ||
                 "No se pudo confirmar tu email. El enlace puede ser inválido o haber expirado."}
             </p>
@@ -136,14 +146,14 @@ export default function ConfirmEmailPage() {
               <button
                 type="button"
                 onClick={() => router.push("/")}
-                className="w-full bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+                className="w-full rounded-lg bg-blue-600 px-6 py-2 text-white transition-colors hover:bg-blue-700"
               >
                 Ir al inicio
               </button>
               <button
                 type="button"
                 onClick={() => router.push("/?show=register")}
-                className="w-full bg-gray-200 text-gray-800 px-6 py-2 rounded-lg hover:bg-gray-300 transition-colors"
+                className="w-full rounded-lg bg-gray-200 px-6 py-2 text-gray-800 transition-colors hover:bg-gray-300"
               >
                 Registrarse nuevamente
               </button>
@@ -152,5 +162,13 @@ export default function ConfirmEmailPage() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function ConfirmEmailPage() {
+  return (
+    <Suspense fallback={<ConfirmEmailFallback />}>
+      <ConfirmEmailContent />
+    </Suspense>
   );
 }

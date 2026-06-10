@@ -7,10 +7,8 @@ import { Globe2 } from "lucide-react";
 import { motion } from "motion/react";
 import dynamic from "next/dynamic";
 
-import {
-  ClubCommunitiesList,
-  type AwsCommunityPublic,
-} from "./club-communities-map-inner";
+import { ClubCommunitiesList } from "./club-communities-list";
+import type { AwsCommunityPublic } from "./club-communities-types";
 import { clubTheme } from "./club-theme";
 
 const ClubCommunitiesMapInner = dynamic(

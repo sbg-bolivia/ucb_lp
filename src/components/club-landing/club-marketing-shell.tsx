@@ -1,5 +1,6 @@
 "use client";
 
+import { ClubAmbientModel } from "@/components/club-landing/club-ambient-model";
 import { ClubLandingFooter } from "@/components/club-landing/club-landing-footer";
 import { ClubLandingNavbar } from "@/components/club-landing/club-landing-navbar";
 import { useTheme } from "next-themes";
@@ -25,6 +26,7 @@ export function ClubMarketingShell({
     <div className={`min-h-screen antialiased ${clubTheme.pageBg}`}>
       <div className="club-grain" />
       <ClubLandingNavbar />
+      <ClubAmbientModel />
       <main className="overflow-x-clip pt-16">{children}</main>
       <ClubLandingFooter />
     </div>

@@ -17,7 +17,7 @@ import { Input } from "@/components/ui/input";
 import { AlertCircle, CheckCircle, Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
 
@@ -26,7 +26,22 @@ type ResetPasswordFormValues = {
   confirmPassword: string;
 };
 
-export default function ResetPasswordPage() {
+function ResetPasswordFallback() {
+  return (
+    <AuthPageShell
+      title="Restablecer contraseña"
+      backHref="/login"
+      backLabel="Volver al login"
+      subtitle="Cargando enlace de recuperación..."
+    >
+      <div className="flex justify-center py-8">
+        <div className="h-10 w-10 animate-spin rounded-full border-2 border-primary/30 border-t-primary" />
+      </div>
+    </AuthPageShell>
+  );
+}
+
+function ResetPasswordContent() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -205,5 +220,13 @@ export default function ResetPasswordPage() {
         </form>
       </Form>
     </AuthPageShell>
+  );
+}
+
+export default function ResetPasswordPage() {
+  return (
+    <Suspense fallback={<ResetPasswordFallback />}>
+      <ResetPasswordContent />
+    </Suspense>
   );
 }

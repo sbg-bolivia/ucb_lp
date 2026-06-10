@@ -14,7 +14,6 @@ import {
   Rotate3d,
 } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
-import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
@@ -23,11 +22,7 @@ import { isClubFeatureEnabled } from "@/lib/club-features";
 
 import { clubTheme } from "./club-theme";
 import { ClubCursorField } from "./club-cursor-field";
-
-const ClubHeroModel = dynamic(
-  () => import("./club-hero-model").then((m) => m.ClubHeroModel),
-  { ssr: false }
-);
+import { ClubSiteModel } from "./club-site-model";
 
 const SLIDE_COUNT = 2;
 const SLIDE_KEYS = ["slide-3d", "slide-portal"] as const;
@@ -73,31 +68,8 @@ export function ClubHero() {
   const [paused, setPaused] = useState(false);
   const [isLg, setIsLg] = useState(false);
   const [modelPaused, setModelPaused] = useState(false);
-  const [enable3d, setEnable3d] = useState(false);
-  const [reducedMotion, setReducedMotion] = useState(false);
 
-  useEffect(() => {
-    setMounted(true);
-    setReducedMotion(
-      window.matchMedia("(prefers-reduced-motion: reduce)").matches
-    );
-
-    // Siempre cargar el modelo 3D (antes se bloqueaba con "reduced motion" en Windows)
-    let cancelled = false;
-    const enable = () => {
-      if (!cancelled) setEnable3d(true);
-    };
-    const idleId =
-      typeof window.requestIdleCallback === "function"
-        ? window.requestIdleCallback(enable, { timeout: 800 })
-        : null;
-    const fallbackId = window.setTimeout(enable, 250);
-    return () => {
-      cancelled = true;
-      if (idleId !== null) window.cancelIdleCallback(idleId);
-      window.clearTimeout(fallbackId);
-    };
-  }, []);
+  useEffect(() => setMounted(true), []);
 
   useEffect(() => {
     const mq = window.matchMedia("(min-width: 1024px)");
@@ -209,16 +181,15 @@ export function ClubHero() {
       >
         <div className="club-hero-model-stage pointer-events-auto flex h-full w-full flex-col items-center justify-center py-1">
           <div className="club-hero-model-canvas min-h-0 w-full flex-1">
-            {mounted && enable3d ? (
-              <ClubHeroModel
-                autoRotate={!modelPaused && !reducedMotion}
-                lightMode={isLight ? "light" : "dark"}
+            {mounted ? (
+              <ClubSiteModel
+                variant="hero"
+                autoRotate={!modelPaused}
                 onInteractingChange={setModelPaused}
+                className="h-full w-full"
               />
             ) : (
-              <div className="flex h-full min-h-[200px] items-center justify-center">
-                <Cloud className="h-14 w-14 animate-pulse text-[#7E2CFF]/35" aria-hidden />
-              </div>
+              <div className="h-full min-h-[200px] w-full" aria-hidden />
             )}
           </div>
           <p

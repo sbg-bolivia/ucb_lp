@@ -19,8 +19,6 @@ import * as THREE from "three";
 
 const MODEL_URL = "/hero/sbg-logo.glb";
 
-useGLTF.preload(MODEL_URL);
-
 class ModelErrorBoundary extends Component<
   { children: ReactNode; fallback: ReactNode },
   { hasError: boolean }
@@ -74,7 +72,7 @@ function Model({
 
   useEffect(() => {
     onReady?.();
-  }, [onReady, scene]);
+  }, [onReady]);
 
   const normalized = useMemo(() => {
     const clone = scene.clone(true);
@@ -184,20 +182,26 @@ function CanvasBackground() {
   return null;
 }
 
+export type ClubHeroModelProps = {
+  autoRotate?: boolean;
+  lightMode?: "light" | "dark";
+  variant?: "hero" | "ambient";
+  onInteractingChange?: (interacting: boolean) => void;
+};
+
 export function ClubHeroModel({
   autoRotate = true,
   lightMode = "dark",
+  variant = "hero",
   onInteractingChange,
-}: {
-  autoRotate?: boolean;
-  lightMode?: "light" | "dark";
-  onInteractingChange?: (interacting: boolean) => void;
-}) {
+}: ClubHeroModelProps) {
   const interactingRef = useRef(false);
   const [isMobile, setIsMobile] = useState(false);
   const [modelReady, setModelReady] = useState(false);
+  const isAmbient = variant === "ambient";
 
   useEffect(() => {
+    useGLTF.preload(MODEL_URL);
     const mq = window.matchMedia("(max-width: 767px)");
     const update = () => setIsMobile(mq.matches);
     update();
@@ -222,10 +226,12 @@ export function ClubHeroModel({
         ) : null}
         <Canvas
           camera={{
-            position: [0, 0.02, isMobile ? 9.2 : 8.1],
-            fov: isMobile ? 36 : 32,
+            position: isAmbient
+              ? [0, 0.02, isMobile ? 10.5 : 9.4]
+              : [0, 0.02, isMobile ? 9.2 : 8.1],
+            fov: isAmbient ? (isMobile ? 34 : 30) : isMobile ? 36 : 32,
           }}
-          dpr={isMobile ? 1 : [1, 1.75]}
+          dpr={isMobile ? 1 : isAmbient ? [1, 1.5] : [1, 1.75]}
           gl={{
             antialias: !isMobile,
             alpha: true,
@@ -243,7 +249,7 @@ export function ClubHeroModel({
               onReady={handleModelReady}
             />
           </Suspense>
-          <StageRings compact={isMobile} />
+          <StageRings compact={isMobile || isAmbient} />
 
           <OrbitControls
             makeDefault
