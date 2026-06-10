@@ -9,6 +9,7 @@ import {
   type ErrorInfo,
   type ReactNode,
   Suspense,
+  useCallback,
   useEffect,
   useMemo,
   useRef,
@@ -73,7 +74,7 @@ function Model({
 
   useEffect(() => {
     onReady?.();
-  }, [onReady]);
+  }, [onReady, scene]);
 
   const normalized = useMemo(() => {
     const clone = scene.clone(true);
@@ -209,6 +210,8 @@ export function ClubHeroModel({
     onInteractingChange?.(value);
   };
 
+  const handleModelReady = useCallback(() => setModelReady(true), []);
+
   return (
     <ModelErrorBoundary fallback={<ModelUnavailableFallback />}>
       <div className="relative h-full w-full">
@@ -237,7 +240,7 @@ export function ClubHeroModel({
             <Model
               autoRotate={autoRotate}
               interactingRef={interactingRef}
-              onReady={() => setModelReady(true)}
+              onReady={handleModelReady}
             />
           </Suspense>
           <StageRings compact={isMobile} />

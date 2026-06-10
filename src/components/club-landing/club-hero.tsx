@@ -74,33 +74,30 @@ export function ClubHero() {
   const [isLg, setIsLg] = useState(false);
   const [modelPaused, setModelPaused] = useState(false);
   const [enable3d, setEnable3d] = useState(false);
-
-  useEffect(() => setMounted(true), []);
+  const [reducedMotion, setReducedMotion] = useState(false);
 
   useEffect(() => {
-    if (!mounted) return;
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const saveData = (
-      navigator as Navigator & { connection?: { saveData?: boolean } }
-    ).connection?.saveData;
-    if (reduced || saveData) return;
+    setMounted(true);
+    setReducedMotion(
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    );
 
+    // Siempre cargar el modelo 3D (antes se bloqueaba con "reduced motion" en Windows)
     let cancelled = false;
-    const run = () => {
+    const enable = () => {
       if (!cancelled) setEnable3d(true);
     };
     const idleId =
       typeof window.requestIdleCallback === "function"
-        ? window.requestIdleCallback(run, { timeout: 1200 })
+        ? window.requestIdleCallback(enable, { timeout: 800 })
         : null;
-    const timerId =
-      idleId === null ? window.setTimeout(run, 600) : null;
+    const fallbackId = window.setTimeout(enable, 250);
     return () => {
       cancelled = true;
       if (idleId !== null) window.cancelIdleCallback(idleId);
-      if (timerId !== null) window.clearTimeout(timerId);
+      window.clearTimeout(fallbackId);
     };
-  }, [mounted]);
+  }, []);
 
   useEffect(() => {
     const mq = window.matchMedia("(min-width: 1024px)");
@@ -214,13 +211,13 @@ export function ClubHero() {
           <div className="club-hero-model-canvas min-h-0 w-full flex-1">
             {mounted && enable3d ? (
               <ClubHeroModel
-                autoRotate={!modelPaused}
+                autoRotate={!modelPaused && !reducedMotion}
                 lightMode={isLight ? "light" : "dark"}
                 onInteractingChange={setModelPaused}
               />
             ) : (
               <div className="flex h-full min-h-[200px] items-center justify-center">
-                <Cloud className="h-14 w-14 animate-pulse text-[#7E2CFF]/35" />
+                <Cloud className="h-14 w-14 animate-pulse text-[#7E2CFF]/35" aria-hidden />
               </div>
             )}
           </div>
