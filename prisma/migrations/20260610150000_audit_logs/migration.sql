@@ -1,8 +1,21 @@
--- CreateEnum
-CREATE TYPE "AuditAction" AS ENUM ('CREATE', 'UPDATE', 'DELETE', 'RESTORE', 'REORDER', 'LOGIN', 'LOGOUT', 'OTHER');
+-- Idempotente: la migración pudo fallar a medias si AuditAction ya existía (P3018 / 42710)
 
--- CreateTable
-CREATE TABLE "audit_logs" (
+DO $$ BEGIN
+    CREATE TYPE "AuditAction" AS ENUM (
+        'CREATE',
+        'UPDATE',
+        'DELETE',
+        'RESTORE',
+        'REORDER',
+        'LOGIN',
+        'LOGOUT',
+        'OTHER'
+    );
+EXCEPTION
+    WHEN duplicate_object THEN NULL;
+END $$;
+
+CREATE TABLE IF NOT EXISTS "audit_logs" (
     "id" TEXT NOT NULL,
     "tenantId" TEXT,
     "userId" TEXT NOT NULL,
@@ -21,20 +34,36 @@ CREATE TABLE "audit_logs" (
     CONSTRAINT "audit_logs_pkey" PRIMARY KEY ("id")
 );
 
--- CreateIndex
-CREATE INDEX "audit_logs_tenantId_createdAt_idx" ON "audit_logs"("tenantId", "createdAt" DESC);
+CREATE INDEX IF NOT EXISTS "audit_logs_tenantId_createdAt_idx"
+    ON "audit_logs"("tenantId", "createdAt" DESC);
 
--- CreateIndex
-CREATE INDEX "audit_logs_userId_createdAt_idx" ON "audit_logs"("userId", "createdAt" DESC);
+CREATE INDEX IF NOT EXISTS "audit_logs_userId_createdAt_idx"
+    ON "audit_logs"("userId", "createdAt" DESC);
 
--- CreateIndex
-CREATE INDEX "audit_logs_resource_createdAt_idx" ON "audit_logs"("resource", "createdAt" DESC);
+CREATE INDEX IF NOT EXISTS "audit_logs_resource_createdAt_idx"
+    ON "audit_logs"("resource", "createdAt" DESC);
 
--- CreateIndex
-CREATE INDEX "audit_logs_action_createdAt_idx" ON "audit_logs"("action", "createdAt" DESC);
+CREATE INDEX IF NOT EXISTS "audit_logs_action_createdAt_idx"
+    ON "audit_logs"("action", "createdAt" DESC);
 
--- AddForeignKey
-ALTER TABLE "audit_logs" ADD CONSTRAINT "audit_logs_tenantId_fkey" FOREIGN KEY ("tenantId") REFERENCES "tenants"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+DO $$ BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_constraint WHERE conname = 'audit_logs_tenantId_fkey'
+    ) THEN
+        ALTER TABLE "audit_logs"
+            ADD CONSTRAINT "audit_logs_tenantId_fkey"
+            FOREIGN KEY ("tenantId") REFERENCES "tenants"("id")
+            ON DELETE SET NULL ON UPDATE CASCADE;
+    END IF;
+END $$;
 
--- AddForeignKey
-ALTER TABLE "audit_logs" ADD CONSTRAINT "audit_logs_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+DO $$ BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_constraint WHERE conname = 'audit_logs_userId_fkey'
+    ) THEN
+        ALTER TABLE "audit_logs"
+            ADD CONSTRAINT "audit_logs_userId_fkey"
+            FOREIGN KEY ("userId") REFERENCES "User"("id")
+            ON DELETE CASCADE ON UPDATE CASCADE;
+    END IF;
+END $$;

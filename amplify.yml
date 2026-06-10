@@ -1,56 +1,114 @@
-version: 1
-frontend:
-  phases:
-    preBuild:
-      commands:
-        - corepack enable
-        - corepack prepare pnpm@10.13.1 --activate
-        - pnpm install --frozen-lockfile
-        - |
-          if [ -z "$DATABASE_URL" ]; then
-            echo "ERROR: DATABASE_URL no está definida en Amplify Environment variables"
-            exit 1
-          fi
-          case "$DATABASE_URL" in
-            postgresql://*|postgres://*)
-              echo "DATABASE_URL OK (longitud ${#DATABASE_URL})"
-              ;;
-            *)
-              echo "ERROR: DATABASE_URL debe empezar con postgresql:// o postgres://"
-              exit 1
-              ;;
-          esac
-        - pnpm prisma generate
-        - pnpm prisma migrate deploy
-        - |
-          : > .env.production
-          for key in DATABASE_URL BETTER_AUTH_SECRET SITE_URL NEXT_PUBLIC_SITE_URL \
-            GOOGLE_CLIENT_ID GOOGLE_CLIENT_SECRET \
-            S3_REGION S3_BUCKET S3_ACCESS_KEY_ID S3_SECRET_ACCESS_KEY S3_PUBLIC_URL_BASE \
-            NODEMAILER_SMTP NODEMAILER_PORT NODEMAILER_USER NODEMAILER_PASSWORD \
-            GOOGLE_ANALYTICS_ID GOOGLE_ANALYTICS_PROPERTY_ID GOOGLE_ANALYTICS_CLIENT_EMAIL \
-            GOOGLE_ANALYTICS_PRIVATE_KEY; do
-            val="$(printenv "$key" || true)"
-            if [ -n "$val" ]; then
-              printf '%s=%s\n' "$key" "$val" >> .env.production
-            fi
-          done
-    build:
-      commands:
-        - pnpm run build
-    postBuild:
-      commands:
-        - |
-          if [ -f .env.production ]; then
-            cp .env.production .next/.env.production
-            echo ".env.production copiado a .next/ para runtime SSR"
-          fi
-  artifacts:
-    baseDirectory: .next
-    files:
-      - "**/*"
-  cache:
-    paths:
-      - node_modules/**/*
-      - .next/cache/**/*
-
+version: 1
+
+frontend:
+
+  phases:
+
+    preBuild:
+
+      commands:
+
+        - corepack enable
+
+        - corepack prepare pnpm@10.13.1 --activate
+
+        - pnpm install --frozen-lockfile
+
+        - |
+
+          if [ -z "$DATABASE_URL" ]; then
+
+            echo "ERROR: DATABASE_URL no está definida en Amplify Environment variables"
+
+            exit 1
+
+          fi
+
+          case "$DATABASE_URL" in
+
+            postgresql://*|postgres://*)
+
+              echo "DATABASE_URL OK (longitud ${#DATABASE_URL})"
+
+              ;;
+
+            *)
+
+              echo "ERROR: DATABASE_URL debe empezar con postgresql:// o postgres://"
+
+              exit 1
+
+              ;;
+
+          esac
+
+        - pnpm prisma generate
+
+        - |
+          pnpm prisma migrate resolve --rolled-back 20260610150000_audit_logs 2>/dev/null || true
+
+        - pnpm prisma migrate deploy
+
+        - |
+
+          : > .env.production
+
+          for key in DATABASE_URL BETTER_AUTH_SECRET SITE_URL NEXT_PUBLIC_SITE_URL \
+
+            GOOGLE_CLIENT_ID GOOGLE_CLIENT_SECRET \
+
+            S3_REGION S3_BUCKET S3_ACCESS_KEY_ID S3_SECRET_ACCESS_KEY S3_PUBLIC_URL_BASE \
+
+            NODEMAILER_SMTP NODEMAILER_PORT NODEMAILER_USER NODEMAILER_PASSWORD \
+
+            GOOGLE_ANALYTICS_ID GOOGLE_ANALYTICS_PROPERTY_ID GOOGLE_ANALYTICS_CLIENT_EMAIL \
+
+            GOOGLE_ANALYTICS_PRIVATE_KEY; do
+
+            val="$(printenv "$key" || true)"
+
+            if [ -n "$val" ]; then
+
+              printf '%s=%s\n' "$key" "$val" >> .env.production
+
+            fi
+
+          done
+
+    build:
+
+      commands:
+
+        - pnpm run build
+
+    postBuild:
+
+      commands:
+
+        - |
+
+          if [ -f .env.production ]; then
+
+            cp .env.production .next/.env.production
+
+            echo ".env.production copiado a .next/ para runtime SSR"
+
+          fi
+
+  artifacts:
+
+    baseDirectory: .next
+
+    files:
+
+      - "**/*"
+
+  cache:
+
+    paths:
+
+      - node_modules/**/*
+
+      - .next/cache/**/*
+
+
