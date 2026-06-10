@@ -1,3 +1,4 @@
+import { parseUserAgentSummary } from "@/lib/parse-user-agent";
 import { prisma } from "@/lib/db";
 import type { AuditAction } from "@prisma/client";
 
@@ -149,6 +150,73 @@ export type RecordAuditParams = {
   ipAddress?: string | null;
   userAgent?: string | null;
 };
+
+const AUTH_PROVIDER_LABELS: Record<string, string> = {
+  email: "correo y contraseña",
+  credential: "correo y contraseña",
+  google: "Google",
+  github: "GitHub",
+  social: "red social",
+};
+
+/** Registra inicio o cierre de sesión (Better Auth, no pasa por tRPC). */
+export async function recordAuthAuditEvent(params: {
+  action: "LOGIN" | "LOGOUT";
+  userId: string;
+  ipAddress?: string | null;
+  userAgent?: string | null;
+  provider?: string;
+}): Promise<void> {
+  const user = await prisma.user.findUnique({
+    where: { id: params.userId },
+    select: {
+      id: true,
+      email: true,
+      name: true,
+      tenantId: true,
+    },
+  });
+  if (!user) return;
+
+  const recent = await prisma.auditLog.findFirst({
+    where: {
+      userId: params.userId,
+      action: params.action,
+      ...(params.ipAddress ? { ipAddress: params.ipAddress } : {}),
+      createdAt: { gte: new Date(Date.now() - 30_000) },
+    },
+    select: { id: true },
+  });
+  if (recent) return;
+
+  const providerKey = params.provider ?? "email";
+  const providerLabel =
+    AUTH_PROVIDER_LABELS[providerKey] ?? providerKey;
+
+  const summary =
+    params.action === "LOGIN"
+      ? `Inició sesión (${providerLabel})`
+      : "Cerró sesión";
+
+  await prisma.auditLog.create({
+    data: {
+      tenantId: user.tenantId,
+      userId: user.id,
+      userEmail: user.email,
+      userName: user.name,
+      action: params.action,
+      resource: "auth_sessions",
+      summary: summary.slice(0, 500),
+      changes: {
+        provider: providerKey,
+        device: parseUserAgentSummary(params.userAgent),
+      },
+      ipAddress: params.ipAddress ?? null,
+      userAgent: params.userAgent ?? null,
+      procedure: params.action === "LOGIN" ? "auth.signIn" : "auth.signOut",
+    },
+  });
+}
 
 export async function recordAuditLog(params: RecordAuditParams): Promise<void> {
   const { user, procedure, input, resultData, ipAddress, userAgent } = params;

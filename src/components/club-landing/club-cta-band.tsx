@@ -14,11 +14,19 @@ export function ClubCtaBand() {
   const links = useClubLinks();
 
   const onJoin = () => {
-    if (isAuthenticated) router.push("/dashboard");
-    else if (links.meetupUrl)
+    if (links.meetupUrl) {
       window.open(links.meetupUrl, "_blank", "noopener,noreferrer");
+      return;
+    }
+    if (isAuthenticated) router.push("/dashboard");
     else router.push("/unete");
   };
+
+  const joinLabel = links.meetupUrl
+    ? "Ir a Meetup"
+    : isAuthenticated
+      ? "Ir al panel"
+      : "Únete al grupo";
 
   return (
     <section
@@ -75,7 +83,7 @@ export function ClubCtaBand() {
                 onClick={onJoin}
                 className={`group h-12 rounded-full px-8 text-xs font-bold text-white shadow-[0_4px_20px_rgba(126,44,255,0.15)] transition duration-350 hover:-translate-y-0.5 hover:shadow-[0_4px_25px_rgba(126,44,255,0.35)] bg-gradient-to-r ${clubTheme.gradientButton} active:scale-[0.98] sm:h-14 sm:text-sm`}
               >
-                {isAuthenticated ? "Ir al panel" : "Únete al grupo"}
+                {joinLabel}
                 <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
               </Button>
             </div>

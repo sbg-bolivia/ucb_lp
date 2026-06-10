@@ -9,6 +9,11 @@ export function toDatetimeLocalValue(
   return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
 }
 
+/** Fecha y hora actual en formato `datetime-local` (zona local del navegador). */
+export function nowDatetimeLocalValue(): string {
+  return toDatetimeLocalValue(new Date());
+}
+
 /** Convierte valor de `datetime-local` a `Date` o `null` si está vacío. */
 export function parseDatetimeLocal(value: string): Date | null {
   const t = value?.trim();

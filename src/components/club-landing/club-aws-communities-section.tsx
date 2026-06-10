@@ -6,6 +6,7 @@ import { trpc } from "@/utils/trpc";
 import { Globe2 } from "lucide-react";
 import { motion } from "motion/react";
 import dynamic from "next/dynamic";
+import { useMemo, useState } from "react";
 
 import { ClubCommunitiesList } from "./club-communities-list";
 import type { AwsCommunityPublic } from "./club-communities-types";
@@ -26,10 +27,18 @@ const ClubCommunitiesMapInner = dynamic(
 );
 
 export function ClubAwsCommunitiesSection() {
-  if (!isClubFeatureEnabled("awsCommunitiesMap")) return null;
+  const enabled = isClubFeatureEnabled("awsCommunitiesMap");
+  const [selectedId, setSelectedId] = useState<string | null>(null);
 
   const { data: communities, isLoading } =
-    trpc.awsCommunities.listPublic.useQuery();
+    trpc.awsCommunities.listPublic.useQuery(undefined, { enabled });
+
+  const list = useMemo(
+    () => (communities ?? []) as AwsCommunityPublic[],
+    [communities]
+  );
+
+  if (!enabled) return null;
 
   if (isLoading) {
     return (
@@ -68,7 +77,9 @@ export function ClubAwsCommunitiesSection() {
 
         <div className="grid gap-10 lg:grid-cols-2 lg:items-start lg:gap-12">
           <ClubCommunitiesMapInner
-            communities={communities as AwsCommunityPublic[]}
+            communities={list}
+            selectedId={selectedId}
+            onSelect={setSelectedId}
           />
           <div>
             <div className="mb-5 flex items-center gap-2">
@@ -77,8 +88,13 @@ export function ClubAwsCommunitiesSection() {
                 Listado por región
               </h3>
             </div>
+            <p className={`mb-4 text-sm ${clubTheme.textMuted}`}>
+              Haz clic en una comunidad para centrarla en el mapa.
+            </p>
             <ClubCommunitiesList
-              communities={communities as AwsCommunityPublic[]}
+              communities={list}
+              selectedId={selectedId}
+              onSelect={setSelectedId}
             />
           </div>
         </div>

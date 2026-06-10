@@ -7,7 +7,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { clubTheme } from "@/components/club-landing/club-theme";
+import { useClubLinks } from "@/hooks/useClubLinks";
 import { registrationButtonLabel } from "@/lib/event-labels";
+import { resolveEventRegistrationUrl } from "@/lib/event-registration-url";
 
 const FALLBACK_IMAGE =
   "https://images.unsplash.com/photo-1540575467067-178ab98d8357?auto=format&fit=crop&w=1200&q=80";
@@ -35,6 +37,7 @@ function formatRange(
 }
 
 export default function EventoDetallePage() {
+  const links = useClubLinks();
   const params = useParams();
   const id = typeof params.id === "string" ? params.id : "";
   const { data: event, isLoading } = trpc.clubEvents.getPublic.useQuery(
@@ -125,18 +128,25 @@ export default function EventoDetallePage() {
               </p>
             ) : null}
 
-            {(event.registrationUrl ?? event.externalUrl)?.trim() ? (
-              <Button asChild className="mt-8 rounded-full">
-                <a
-                  href={(event.registrationUrl ?? event.externalUrl) as string}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <ExternalLink className="mr-2 h-4 w-4" />
-                  {registrationButtonLabel(event.registrationType)}
-                </a>
-              </Button>
-            ) : null}
+            {(() => {
+              const registrationUrl = resolveEventRegistrationUrl(
+                event,
+                links.meetupUrl
+              );
+              if (!registrationUrl) return null;
+              return (
+                <Button asChild className="mt-8 rounded-full">
+                  <a
+                    href={registrationUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <ExternalLink className="mr-2 h-4 w-4" />
+                    {registrationButtonLabel(event.registrationType)}
+                  </a>
+                </Button>
+              );
+            })()}
           </div>
         </div>
       </div>

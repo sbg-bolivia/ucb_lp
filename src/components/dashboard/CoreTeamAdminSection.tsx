@@ -17,7 +17,6 @@ import {
   type CoreTeamMember,
   parseCoreTeamJson,
 } from "@/lib/club-core-team-schema";
-import { getInitials } from "@/lib/utils/avatar";
 import { useTrpcMutation } from "@/utils/trpc-shallow";
 import { trpc } from "@/utils/trpc";
 import {
@@ -31,7 +30,6 @@ import {
   UserPlus,
   Users,
 } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -52,37 +50,6 @@ function emptyMember(): CoreTeamMember {
     instagram: "",
     github: "",
   };
-}
-
-function MemberPreviewAvatar({
-  name,
-  image,
-}: {
-  name: string;
-  image?: string | null;
-}) {
-  const [imgFailed, setImgFailed] = useState(false);
-  const showImage = Boolean(image?.trim()) && !imgFailed;
-  const initials = getInitials(name) || "?";
-
-  return (
-    <div className="relative mx-auto h-24 w-24 overflow-hidden rounded-2xl border-2 border-primary/20 bg-muted shadow-inner">
-      {showImage ? (
-        <Image
-          src={image as string}
-          alt={name || "Miembro"}
-          fill
-          className="object-cover"
-          sizes="96px"
-          onError={() => setImgFailed(true)}
-        />
-      ) : (
-        <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-[#7E2CFF] to-[#00C8FF] text-xl font-bold text-white">
-          {initials}
-        </div>
-      )}
-    </div>
-  );
 }
 
 function TeamMemberCard({
@@ -131,7 +98,14 @@ function TeamMemberCard({
           <Trash2 className="h-4 w-4" />
         </Button>
 
-        <MemberPreviewAvatar name={member.name} image={member.image} />
+        <S3ImageUploadField
+          id={`ct-img-${member.id}`}
+          folder="team"
+          value={member.image ?? ""}
+          onChange={(url) => onChange({ image: url })}
+          previewVariant="inline-avatar"
+          fallbackName={member.name}
+        />
 
         <div className="space-y-1 text-center">
           <p className="text-base font-semibold text-foreground">
@@ -180,14 +154,6 @@ function TeamMemberCard({
             placeholder="Ej. Presidente · Liderazgo"
           />
         </div>
-        <S3ImageUploadField
-          id={`ct-img-${member.id}`}
-          label="Foto"
-          folder="team"
-          value={member.image ?? ""}
-          onChange={(url) => onChange({ image: url })}
-          placeholder="Sube a S3 o pega una URL"
-        />
         <div className="grid grid-cols-1 gap-3">
           <div className="space-y-2">
             <Label htmlFor={`ct-li-${member.id}`}>LinkedIn</Label>

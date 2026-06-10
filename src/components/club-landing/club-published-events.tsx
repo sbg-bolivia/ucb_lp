@@ -1,7 +1,9 @@
 "use client";
 
+import { useClubLinks } from "@/hooks/useClubLinks";
 import { CLUB } from "@/lib/club-brand";
 import { registrationButtonLabel } from "@/lib/event-labels";
+import { resolveEventRegistrationUrl } from "@/lib/event-registration-url";
 import { fadeUpProps, staggerContainer, staggerItem } from "@/lib/club-motion";
 import { trpc } from "@/utils/trpc";
 import { Calendar, ExternalLink, MapPin } from "lucide-react";
@@ -33,6 +35,7 @@ function formatRange(
 }
 
 export function ClubPublishedEvents() {
+  const links = useClubLinks();
   const { data: events, isLoading } = trpc.clubEvents.listPublic.useQuery();
 
   if (isLoading) {
@@ -93,79 +96,89 @@ export function ClubPublishedEvents() {
         </p>
       </motion.div>
 
-      <ul className="mx-auto grid max-w-5xl gap-5 sm:grid-cols-2">
-        {events.map((ev) => (
-          <motion.li key={ev.id} variants={staggerItem}>
-            <article
-              className={`flex h-full flex-col overflow-hidden ${clubTheme.card} ${clubTheme.cardHover}`}
-            >
-              {ev.imageUrl?.trim() ? (
-                <div className="relative aspect-[21/9] w-full bg-sky-100 dark:bg-zinc-800">
-                  {/* eslint-disable-next-line @next/next/no-img-element -- URLs arbitrarias desde admin */}
-                  <img
-                    src={ev.imageUrl}
-                    alt=""
-                    className="h-full w-full object-cover"
-                  />
-                </div>
-              ) : null}
-              <div className="flex flex-1 flex-col p-6 sm:p-7">
-                <div className="flex items-start gap-2 text-sm text-[#3b41ff] dark:text-violet-300">
-                  <Calendar className="mt-0.5 h-4 w-4 shrink-0" aria-hidden />
-                  <span className="font-medium leading-snug">
-                    {formatRange(ev.startsAt, ev.endsAt)}
-                  </span>
-                </div>
-                <h3
-                  className={`mt-3 text-xl font-bold ${clubTheme.textHeading}`}
-                >
-                  <Link
-                    href={`/eventos/${ev.id}`}
-                    className="hover:text-[#00C8FF] transition-colors"
-                  >
-                    {ev.title}
-                  </Link>
-                </h3>
-                {ev.description ? (
-                  <p
-                    className={`mt-2 line-clamp-4 text-sm leading-relaxed sm:text-base ${clubTheme.textMuted}`}
-                  >
-                    {ev.description}
-                  </p>
+      <ul className="mx-auto grid max-w-6xl gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {events.map((ev) => {
+          const registrationUrl = resolveEventRegistrationUrl(ev, links.meetupUrl);
+
+          return (
+            <motion.li key={ev.id} variants={staggerItem}>
+              <article
+                className={`flex h-full flex-col overflow-hidden ${clubTheme.card} ${clubTheme.cardHover}`}
+              >
+                {ev.imageUrl?.trim() ? (
+                  <div className="relative h-36 w-full shrink-0 bg-sky-100 dark:bg-zinc-800 sm:h-32">
+                    {/* eslint-disable-next-line @next/next/no-img-element -- URLs arbitrarias desde admin */}
+                    <img
+                      src={ev.imageUrl}
+                      alt=""
+                      className="h-full w-full object-cover"
+                    />
+                  </div>
                 ) : null}
-                {ev.location?.trim() ? (
-                  <p
-                    className={`mt-3 flex items-start gap-2 text-sm ${clubTheme.textMuted}`}
-                  >
-                    <MapPin className="mt-0.5 h-4 w-4 shrink-0" aria-hidden />
-                    <span className="text-slate-700 dark:text-zinc-300">
-                      {ev.location}
+                <div className="flex flex-1 flex-col p-4 sm:p-5">
+                  <div className="flex items-start gap-2 text-xs text-[#3b41ff] dark:text-violet-300">
+                    <Calendar
+                      className="mt-0.5 h-3.5 w-3.5 shrink-0"
+                      aria-hidden
+                    />
+                    <span className="font-medium leading-snug line-clamp-2">
+                      {formatRange(ev.startsAt, ev.endsAt)}
                     </span>
-                  </p>
-                ) : null}
-                <div className="mt-4 flex flex-wrap gap-2">
-                  <Link
-                    href={`/eventos/${ev.id}`}
-                    className="inline-flex items-center gap-1.5 rounded-full border border-black/10 px-4 py-2 text-xs font-semibold transition hover:border-[#00C8FF]/40 sm:text-sm dark:border-white/10"
+                  </div>
+                  <h3
+                    className={`mt-2 text-base font-bold leading-snug sm:text-lg ${clubTheme.textHeading}`}
                   >
-                    Ver detalles
-                  </Link>
-                  {(ev.registrationUrl ?? ev.externalUrl)?.trim() ? (
-                    <a
-                      href={(ev.registrationUrl ?? ev.externalUrl) as string}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1.5 rounded-full bg-[#3b41ff] px-4 py-2 text-xs font-semibold text-white transition hover:brightness-110 sm:text-sm"
+                    <Link
+                      href={`/eventos/${ev.id}`}
+                      className="hover:text-[#00C8FF] transition-colors"
                     >
-                      <ExternalLink className="h-3.5 w-3.5" />
-                      {registrationButtonLabel(ev.registrationType)}
-                    </a>
+                      {ev.title}
+                    </Link>
+                  </h3>
+                  {ev.description ? (
+                    <p
+                      className={`mt-1.5 line-clamp-2 text-sm leading-relaxed ${clubTheme.textMuted}`}
+                    >
+                      {ev.description}
+                    </p>
                   ) : null}
+                  {ev.location?.trim() ? (
+                    <p
+                      className={`mt-2 flex items-start gap-1.5 text-xs ${clubTheme.textMuted}`}
+                    >
+                      <MapPin
+                        className="mt-0.5 h-3.5 w-3.5 shrink-0"
+                        aria-hidden
+                      />
+                      <span className="line-clamp-1 text-slate-700 dark:text-zinc-300">
+                        {ev.location}
+                      </span>
+                    </p>
+                  ) : null}
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    <Link
+                      href={`/eventos/${ev.id}`}
+                      className="inline-flex items-center gap-1 rounded-full border border-black/10 px-3 py-1.5 text-xs font-semibold transition hover:border-[#00C8FF]/40 dark:border-white/10"
+                    >
+                      Ver detalles
+                    </Link>
+                    {registrationUrl ? (
+                      <a
+                        href={registrationUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1 rounded-full bg-[#3b41ff] px-3 py-1.5 text-xs font-semibold text-white transition hover:brightness-110"
+                      >
+                        <ExternalLink className="h-3 w-3" />
+                        {registrationButtonLabel(ev.registrationType)}
+                      </a>
+                    ) : null}
+                  </div>
                 </div>
-              </div>
-            </article>
-          </motion.li>
-        ))}
+              </article>
+            </motion.li>
+          );
+        })}
       </ul>
     </motion.div>
   );

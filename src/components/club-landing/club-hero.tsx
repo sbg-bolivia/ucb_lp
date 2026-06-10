@@ -102,11 +102,19 @@ export function ClubHero() {
   }, [paused, modelPaused]);
 
   const primaryJoin = () => {
-    if (isAuthenticated) router.push("/dashboard");
-    else if (links.meetupUrl)
+    if (links.meetupUrl) {
       window.open(links.meetupUrl, "_blank", "noopener,noreferrer");
+      return;
+    }
+    if (isAuthenticated) router.push("/dashboard");
     else router.push("/unete");
   };
+
+  const joinLabel = links.meetupUrl
+    ? "Ir a Meetup"
+    : isAuthenticated
+      ? "Ir al panel"
+      : null;
 
   const modelBox = isLg ? MODEL_BOX_LG : MODEL_BOX_SM;
 
@@ -242,7 +250,7 @@ export function ClubHero() {
                   onClick={primaryJoin}
                   className="group h-14 rounded-full border-none bg-gradient-to-r from-[#FF512F] to-[#DD2476] px-10 text-base font-bold text-white shadow-[0_0_32px_rgba(221,36,118,0.3)] transition-all duration-300 hover:-translate-y-0.5 hover:scale-[1.02] sm:px-12 sm:text-lg"
                 >
-                  {isAuthenticated ? "Ir al panel" : "Únete a la élite"}
+                  {joinLabel ?? "Únete a la élite"}
                   <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1 sm:h-5 sm:w-5" />
                 </Button>
               </div>
@@ -312,7 +320,7 @@ export function ClubHero() {
                     onClick={primaryJoin}
                     className={`group h-12 rounded-full bg-gradient-to-r px-8 text-base font-semibold text-white sm:h-14 ${clubTheme.gradientButton}`}
                   >
-                    {isAuthenticated ? "Ir al panel" : "Únete a la comunidad"}
+                    {joinLabel ?? "Únete a la comunidad"}
                     <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
                   </Button>
                   <Button

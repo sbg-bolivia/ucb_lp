@@ -1,5 +1,7 @@
 import type { Prisma } from "@prisma/client";
 import { z } from "zod";
+import { auth } from "../../lib/auth";
+import { upsertCredentialPassword } from "../../lib/auth-password";
 import { prisma } from "../../lib/db";
 import {
   calculateOffset,
@@ -204,21 +206,8 @@ export const userRouter = router({
       if (phoneValue !== undefined) updateData.phone = phoneValue;
       if (languageValue !== undefined) updateData.language = languageValue;
 
-      // Handle password update if provided - passwords are stored in Account table
       if (input.password && input.password.trim() !== "") {
-        const bcrypt = await import("bcryptjs");
-        const hashedPassword = await bcrypt.hash(input.password, 10);
-
-        // Update password in Account table (Better Auth stores passwords there)
-        await prisma.account.updateMany({
-          where: {
-            userId: targetUserId,
-            providerId: "credential",
-          },
-          data: {
-            password: hashedPassword,
-          },
-        });
+        await upsertCredentialPassword(targetUserId, input.password);
       }
 
       const updated = await prisma.user.update({
@@ -325,18 +314,34 @@ export const userRouter = router({
         throw new Error("Email ya registrado en este tenant");
       }
 
-      // Hash password
-      const bcrypt = await import("bcryptjs");
-      const hashedPassword = await bcrypt.hash(input.password, 10);
+      let signUpResult: Awaited<ReturnType<typeof auth.api.signUpEmail>>;
+      try {
+        signUpResult = await auth.api.signUpEmail({
+          body: {
+            email: input.email,
+            password: input.password,
+            name: input.name,
+          },
+        });
+      } catch (error) {
+        const message =
+          error instanceof Error ? error.message : "No se pudo crear el usuario";
+        if (message.toLowerCase().includes("already")) {
+          throw new Error("Email ya registrado");
+        }
+        throw new Error(message);
+      }
 
-      // Create user
-      const newUser = await prisma.user.create({
+      if (!signUpResult.user) {
+        throw new Error("No se pudo crear el usuario");
+      }
+
+      const newUser = await prisma.user.update({
+        where: { id: signUpResult.user.id },
         data: {
-          email: input.email,
-          name: input.name,
           phone: input.phone,
           language: input.language || "ES",
-          emailVerified: false, // Admin-created users need to verify email
+          emailVerified: true,
           tenantId: ctx.user.tenantId,
         },
         select: {
@@ -350,16 +355,6 @@ export const userRouter = router({
           tenantId: true,
           createdAt: true,
           updatedAt: true,
-        },
-      });
-
-      // Create account record for Better Auth compatibility
-      await prisma.account.create({
-        data: {
-          userId: newUser.id,
-          accountId: newUser.email,
-          providerId: "credential",
-          password: hashedPassword,
         },
       });
 

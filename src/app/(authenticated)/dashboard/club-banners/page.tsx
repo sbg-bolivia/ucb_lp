@@ -33,7 +33,11 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { BANNER_PLACEMENT_LABELS } from "@/lib/banner-labels";
-import { parseDatetimeLocal, toDatetimeLocalValue } from "@/lib/datetime-local";
+import {
+  nowDatetimeLocalValue,
+  parseDatetimeLocal,
+  toDatetimeLocalValue,
+} from "@/lib/datetime-local";
 import type { BannerPlacement } from "@prisma/client";
 import { useTrpcMutation } from "@/utils/trpc-shallow";
 import { trpc } from "@/utils/trpc";
@@ -447,7 +451,23 @@ export default function ClubBannersAdminPage() {
             </div>
             <div className="grid gap-3 sm:grid-cols-2">
               <div className="space-y-2">
-                <Label htmlFor="banner-start">Visible desde (opcional)</Label>
+                <div className="flex items-center justify-between gap-2">
+                  <Label htmlFor="banner-start">Visible desde (opcional)</Label>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    className="h-7 px-2 text-xs"
+                    onClick={() =>
+                      setForm((f) => ({
+                        ...f,
+                        startsAt: nowDatetimeLocalValue(),
+                      }))
+                    }
+                  >
+                    Hoy
+                  </Button>
+                </div>
                 <Input
                   id="banner-start"
                   type="datetime-local"
@@ -458,7 +478,23 @@ export default function ClubBannersAdminPage() {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="banner-end">Visible hasta (opcional)</Label>
+                <div className="flex items-center justify-between gap-2">
+                  <Label htmlFor="banner-end">Visible hasta (opcional)</Label>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    className="h-7 px-2 text-xs"
+                    onClick={() =>
+                      setForm((f) => ({
+                        ...f,
+                        endsAt: nowDatetimeLocalValue(),
+                      }))
+                    }
+                  >
+                    Hoy
+                  </Button>
+                </div>
                 <Input
                   id="banner-end"
                   type="datetime-local"

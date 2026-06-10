@@ -5,21 +5,22 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { optimizeImageForUpload } from "@/lib/image-optimize";
 import type { S3UploadFolder } from "@/lib/s3-constants";
+import { getInitials } from "@/lib/utils/avatar";
 import { cn } from "@/lib/utils";
 import { useTrpcMutation } from "@/utils/trpc-shallow";
 import { trpc } from "@/utils/trpc";
-import { ImagePlus, Link2, Loader2, Trash2 } from "lucide-react";
+import { Camera, ImagePlus, Link2, Loader2, Trash2 } from "lucide-react";
 import Image from "next/image";
 import { useRef, useState } from "react";
 import { toast } from "sonner";
 
 const MAX_BYTES = 5 * 1024 * 1024;
 
-type PreviewVariant = "wide" | "square" | "avatar";
+type PreviewVariant = "wide" | "square" | "avatar" | "inline-avatar";
 
 type Props = {
   id: string;
-  label: string;
+  label?: string;
   folder: S3UploadFolder;
   value: string;
   onChange: (url: string) => void;
@@ -27,6 +28,8 @@ type Props = {
   previewVariant?: PreviewVariant;
   /** Si S3 está activo, oculta URL por defecto */
   preferUpload?: boolean;
+  /** Nombre para iniciales cuando no hay imagen (solo inline-avatar) */
+  fallbackName?: string;
 };
 
 export function S3ImageUploadField({
@@ -38,6 +41,7 @@ export function S3ImageUploadField({
   placeholder = "Sube una imagen a S3",
   previewVariant = "wide",
   preferUpload = true,
+  fallbackName = "",
 }: Props) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
@@ -49,10 +53,11 @@ export function S3ImageUploadField({
 
   const s3Enabled = s3Status?.enabled === true;
   const hasPreview = Boolean(value.trim()) && !previewError;
+  const isInlineAvatar = previewVariant === "inline-avatar";
 
   const previewClass =
-    previewVariant === "avatar"
-      ? "relative mx-auto h-28 w-28 overflow-hidden rounded-2xl"
+    previewVariant === "inline-avatar" || previewVariant === "avatar"
+      ? "relative mx-auto h-24 w-24 overflow-hidden rounded-2xl"
       : previewVariant === "square"
         ? "relative aspect-square max-h-48 overflow-hidden rounded-xl"
         : "relative aspect-video max-h-44 overflow-hidden rounded-xl";
@@ -115,9 +120,121 @@ export function S3ImageUploadField({
     }
   };
 
+  const fileInput = s3Enabled ? (
+    <input
+      ref={inputRef}
+      type="file"
+      accept="image/jpeg,image/png,image/webp,image/gif"
+      className="hidden"
+      onChange={(e) => {
+        const file = e.target.files?.[0];
+        if (file) void handleFile(file);
+      }}
+    />
+  ) : null;
+
+  if (isInlineAvatar) {
+    const initials = getInitials(fallbackName) || "?";
+
+    return (
+      <div className="space-y-2">
+        <div className="group relative mx-auto h-24 w-24">
+          <div
+            className={cn(
+              previewClass,
+              "border-2 border-primary/20 bg-muted shadow-inner"
+            )}
+          >
+            {hasPreview ? (
+              <Image
+                src={value}
+                alt={fallbackName || "Foto"}
+                fill
+                className="object-cover"
+                sizes="96px"
+                onError={() => setPreviewError(true)}
+              />
+            ) : (
+              <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-[#7E2CFF] to-[#00C8FF] text-xl font-bold text-white">
+                {initials}
+              </div>
+            )}
+
+            {uploading ? (
+              <div className="absolute inset-0 flex items-center justify-center bg-background/70">
+                <Loader2 className="h-6 w-6 animate-spin text-primary" />
+              </div>
+            ) : (
+              <div className="absolute inset-0 flex items-center justify-center gap-1 rounded-2xl bg-black/50 opacity-0 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100">
+                {s3Enabled ? (
+                  <Button
+                    type="button"
+                    size="icon"
+                    variant="secondary"
+                    className="h-8 w-8"
+                    onClick={() => inputRef.current?.click()}
+                    aria-label={hasPreview ? "Cambiar foto" : "Subir foto"}
+                  >
+                    <Camera className="h-4 w-4" />
+                  </Button>
+                ) : null}
+                {hasPreview ? (
+                  <Button
+                    type="button"
+                    size="icon"
+                    variant="secondary"
+                    className="h-8 w-8 text-destructive hover:text-destructive"
+                    onClick={() => {
+                      onChange("");
+                      setPreviewError(false);
+                    }}
+                    aria-label="Quitar foto"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                ) : null}
+              </div>
+            )}
+          </div>
+          {fileInput}
+        </div>
+
+        {!s3Enabled || showManualUrl ? (
+          <div className="mx-auto max-w-xs space-y-1">
+            <Input
+              id={id}
+              value={value}
+              onChange={(e) => {
+                setPreviewError(false);
+                onChange(e.target.value);
+              }}
+              placeholder={placeholder}
+              className="h-8 text-xs"
+            />
+          </div>
+        ) : null}
+
+        {s3Enabled ? (
+          <div className="flex justify-center">
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              className="h-7 text-xs text-muted-foreground"
+              onClick={() => setShowManualUrl((v) => !v)}
+            >
+              <Link2 className="mr-1 h-3 w-3" />
+              {showManualUrl ? "Ocultar URL" : "URL manual"}
+            </Button>
+          </div>
+        ) : null}
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-3">
-      <Label htmlFor={id}>{label}</Label>
+      {label ? <Label htmlFor={id}>{label}</Label> : null}
 
       <div
         className={cn(
@@ -150,16 +267,7 @@ export function S3ImageUploadField({
         <div className="mt-3 flex flex-wrap gap-2">
           {s3Enabled ? (
             <>
-              <input
-                ref={inputRef}
-                type="file"
-                accept="image/jpeg,image/png,image/webp,image/gif"
-                className="hidden"
-                onChange={(e) => {
-                  const file = e.target.files?.[0];
-                  if (file) void handleFile(file);
-                }}
-              />
+              {fileInput}
               <Button
                 type="button"
                 size="sm"

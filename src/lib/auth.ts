@@ -1,6 +1,8 @@
 import { getSiteUrl } from "@/lib/club-brand";
 import { prisma } from "@/lib/db";
+import { getRequestMeta } from "@/lib/request-meta";
 import { sendResetPasswordEmail, sendVerificationEmail } from "@/lib/mailer";
+import { recordAuthAuditEvent } from "@/services/auditService";
 import type { GoogleProfile } from "@/types/auth";
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
@@ -36,7 +38,7 @@ export const auth = betterAuth({
 
   emailAndPassword: {
     enabled: true,
-    requireEmailVerification: true,
+    requireEmailVerification: false,
     sendResetPassword: async ({ user, url }) => {
       try {
         await sendResetPasswordEmail(user.email, url);
@@ -47,7 +49,7 @@ export const auth = betterAuth({
   },
 
   emailVerification: {
-    sendOnSignUp: true,
+    sendOnSignUp: false,
     autoSignInAfterVerification: true,
     sendVerificationEmail: async ({ user, url }) => {
       try {
@@ -79,6 +81,45 @@ export const auth = betterAuth({
     strategy: "jwt",
     expiresIn: 60 * 60 * 24 * 7,
     updateAge: 60 * 60 * 24,
+  },
+
+  databaseHooks: {
+    session: {
+      create: {
+        after: async (session, ctx) => {
+          try {
+            const path = (ctx?.path ?? "").replace(/\/+$/, "") || "/";
+            let provider = "email";
+            if (path.startsWith("/callback/")) {
+              provider = path.replace("/callback/", "").split("/")[0] ?? "social";
+            } else if (path === "/sign-in/email") {
+              provider = "email";
+            }
+
+            const meta = ctx?.request
+              ? getRequestMeta(ctx.request)
+              : { ip: null, userAgent: null };
+
+            const userId =
+              typeof session.userId === "string"
+                ? session.userId
+                : String((session as { userId?: string }).userId ?? "");
+
+            if (!userId) return;
+
+            await recordAuthAuditEvent({
+              action: "LOGIN",
+              userId,
+              ipAddress: meta.ip,
+              userAgent: meta.userAgent,
+              provider,
+            });
+          } catch (err) {
+            console.error("[audit] session.create", err);
+          }
+        },
+      },
+    },
   },
 
   callbacks: {
