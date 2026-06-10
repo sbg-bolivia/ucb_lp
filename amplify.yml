@@ -11,12 +11,24 @@ frontend:
             echo "ERROR: DATABASE_URL no está definida en Amplify → Environment variables"
             exit 1
           fi
+          # Quitar comillas si se copió desde un .env (causa P1012 en Prisma)
           case "$DATABASE_URL" in
-            \"*\"|\'*\')
-              echo "AVISO: DATABASE_URL tiene comillas literales; quítalas en la consola de Amplify"
+            \"*\") DATABASE_URL="${DATABASE_URL#\"}"; DATABASE_URL="${DATABASE_URL%\"}" ;;
+            \'*\') DATABASE_URL="${DATABASE_URL#\'}"; DATABASE_URL="${DATABASE_URL%\'}" ;;
+          esac
+          DATABASE_URL="$(printf '%s' "$DATABASE_URL" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')"
+          export DATABASE_URL
+          case "$DATABASE_URL" in
+            postgresql://*|postgres://*)
+              echo "DATABASE_URL válida (longitud ${#DATABASE_URL})"
+              ;;
+            *)
+              echo "ERROR: DATABASE_URL debe empezar con postgresql:// o postgres://"
+              echo "Valor actual empieza con: $(printf '%.12s' "$DATABASE_URL")..."
+              echo "En Amplify Console quita las comillas \" alrededor del valor."
+              exit 1
               ;;
           esac
-          echo "DATABASE_URL detectada en build (longitud ${#DATABASE_URL})"
         - pnpm prisma generate
         - pnpm prisma migrate deploy
         - |
