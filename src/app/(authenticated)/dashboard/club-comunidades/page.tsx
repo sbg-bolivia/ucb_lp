@@ -1,5 +1,6 @@
 "use client";
 
+import { S3ImageUploadField } from "@/components/dashboard/S3ImageUploadField";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -31,7 +32,13 @@ import { useTranslation } from "@/hooks/useTranslation";
 import { AWS_COMMUNITY_TYPE_LABELS } from "@/lib/aws-labels";
 import { trpc } from "@/utils/trpc";
 import type { AwsCommunityType } from "@prisma/client";
-import { Globe2, Pencil, Plus, Trash2 } from "lucide-react";
+import { AdminListLoading } from "@/components/dashboard/AdminListLoading";
+import { AdminPageHeader } from "@/components/dashboard/AdminPageHeader";
+import { useConfirm } from "@/components/dashboard/ConfirmDialogProvider";
+import { Badge } from "@/components/ui/badge";
+import { useAdminViewMode } from "@/hooks/useAdminViewMode";
+import { Globe2, MapPin, Pencil, Plus, Trash2 } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
@@ -120,7 +127,10 @@ function parseCoord(value: string): number | null {
 
 export default function ClubComunidadesAdminPage() {
   const { t } = useTranslation("dashboard");
-  const { data: communities, refetch } =
+  const confirm = useConfirm();
+  const { mode: viewMode, setMode: setViewMode } =
+    useAdminViewMode("club-comunidades");
+  const { data: communities, refetch, isLoading } =
     trpc.awsCommunities.listForAdmin.useQuery();
   const [open, setOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -204,26 +214,101 @@ export default function ClubComunidadesAdminPage() {
 
   const busy = createMut.isPending || updateMut.isPending;
 
+  const handleDelete = async (c: CommunityRow) => {
+    const ok = await confirm({
+      title: "Eliminar comunidad",
+      description: `¿Eliminar «${c.name}»? Esta acción no se puede deshacer.`,
+      confirmLabel: "Eliminar",
+      destructive: true,
+    });
+    if (ok) deleteMut.mutate({ id: c.id });
+  };
+
   return (
     <div className="space-y-6">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="text-2xl font-semibold text-foreground">
-            {t("clubCommunitiesAdmin")}
-          </h1>
-          <p className="mt-0.5 text-sm text-muted-foreground">
+      <AdminPageHeader
+        icon={Globe2}
+        title={t("clubCommunitiesAdmin")}
+        description={
+          <>
             {t("clubCommunitiesAdminDesc")}{" "}
-            <Link href="/nosotros" className="text-primary underline-offset-2 hover:underline">
+            <Link
+              href="/nosotros"
+              className="text-primary underline-offset-2 hover:underline"
+            >
               Ver en /nosotros
             </Link>
-          </p>
-        </div>
-        <Button type="button" onClick={openNew}>
-          <Plus className="mr-2 h-4 w-4" />
-          Nueva comunidad
-        </Button>
-      </div>
+          </>
+        }
+        showViewToggle
+        viewMode={viewMode}
+        onViewModeChange={setViewMode}
+        actions={
+          <Button type="button" onClick={openNew}>
+            <Plus className="mr-2 h-4 w-4" />
+            Nueva comunidad
+          </Button>
+        }
+      />
 
+      {viewMode === "cards" ? (
+        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+          {isLoading ? (
+            [1, 2, 3].map((i) => (
+              <div
+                key={i}
+                className="h-56 animate-pulse rounded-2xl border border-border bg-muted/30"
+              />
+            ))
+          ) : sorted.length === 0 ? (
+            <div className="col-span-full rounded-2xl border border-dashed py-16 text-center text-muted-foreground">
+              No hay comunidades registradas.
+            </div>
+          ) : (
+            sorted.map((c) => (
+              <div
+                key={c.id}
+                className="overflow-hidden rounded-2xl border border-border/80 bg-card"
+              >
+                <div className="relative flex h-28 items-center justify-center bg-gradient-to-br from-[#7E2CFF]/10 to-[#00C8FF]/10">
+                  {c.logoUrl ? (
+                    <Image
+                      src={c.logoUrl}
+                      alt={c.name}
+                      width={64}
+                      height={64}
+                      className="rounded-xl object-cover"
+                    />
+                  ) : (
+                    <Globe2 className="h-10 w-10 text-[#7E2CFF]/40" />
+                  )}
+                  <Badge className="absolute right-2 top-2" variant={c.isPublished ? "default" : "secondary"}>
+                    {c.isPublished ? "Publicado" : "Borrador"}
+                  </Badge>
+                </div>
+                <div className="space-y-2 p-4">
+                  <h3 className="font-semibold">{c.name}</h3>
+                  <p className="text-xs text-muted-foreground">
+                    {AWS_COMMUNITY_TYPE_LABELS[c.communityType]}
+                  </p>
+                  <p className="flex items-center gap-1 text-xs text-muted-foreground">
+                    <MapPin className="h-3 w-3" />
+                    {c.city}
+                  </p>
+                  <div className="flex justify-end gap-1 pt-2">
+                    <Button type="button" variant="ghost" size="icon" className="h-8 w-8" onClick={() => openEdit(c)}>
+                      <Pencil className="h-4 w-4" />
+                    </Button>
+                    <Button type="button" variant="ghost" size="icon" className="h-8 w-8 text-destructive" onClick={() => void handleDelete(c)}>
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+      ) : (
       <div className="rounded-xl border border-border bg-card">
         <Table>
           <TableHeader>
@@ -237,7 +322,9 @@ export default function ClubComunidadesAdminPage() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {sorted.length === 0 ? (
+            {isLoading ? (
+              <AdminListLoading colSpan={6} />
+            ) : sorted.length === 0 ? (
               <TableRow>
                 <TableCell
                   colSpan={6}
@@ -283,15 +370,7 @@ export default function ClubComunidadesAdminPage() {
                       variant="ghost"
                       size="icon"
                       className="h-8 w-8 text-destructive hover:text-destructive"
-                      onClick={() => {
-                        if (
-                          confirm(
-                            `¿Eliminar «${c.name}»? Esta acción no se puede deshacer.`
-                          )
-                        ) {
-                          deleteMut.mutate({ id: c.id });
-                        }
-                      }}
+                      onClick={() => void handleDelete(c)}
                       aria-label="Eliminar"
                     >
                       <Trash2 className="h-4 w-4" />
@@ -303,6 +382,7 @@ export default function ClubComunidadesAdminPage() {
           </TableBody>
         </Table>
       </div>
+      )}
 
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="max-h-[min(90vh,800px)] overflow-y-auto sm:max-w-xl">
@@ -416,6 +496,13 @@ export default function ClubComunidadesAdminPage() {
                 }
               />
             </div>
+            <S3ImageUploadField
+              id="comm-logo"
+              label="Logo (opcional)"
+              folder="communities"
+              value={form.logoUrl}
+              onChange={(url) => setForm((f) => ({ ...f, logoUrl: url }))}
+            />
             <div className="space-y-2">
               <Label htmlFor="comm-meetup">Meetup (opcional)</Label>
               <Input

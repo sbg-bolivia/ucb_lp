@@ -1,6 +1,7 @@
 "use client";
 
 import { AppSidebar } from "@/components/dashboard/AppSidebar";
+import { ConfirmDialogProvider } from "@/components/dashboard/ConfirmDialogProvider";
 import { DashboardNavbar } from "@/components/dashboard/DashboardNavbar";
 import {
   SidebarInset,
@@ -14,6 +15,7 @@ export function DashboardLayoutClient({
   children: React.ReactNode;
 }) {
   return (
+    <ConfirmDialogProvider>
     <SidebarProvider>
       <AppSidebar />
       <SidebarInset>
@@ -28,5 +30,6 @@ export function DashboardLayoutClient({
         </div>
       </SidebarInset>
     </SidebarProvider>
+    </ConfirmDialogProvider>
   );
 }

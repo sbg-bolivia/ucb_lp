@@ -40,7 +40,12 @@ import type {
   AwsServiceCardType,
   AwsServiceCategory,
 } from "@prisma/client";
-import { Cloud, ExternalLink, Pencil, Plus, Trash2 } from "lucide-react";
+import { AdminListLoading } from "@/components/dashboard/AdminListLoading";
+import { AdminPageHeader } from "@/components/dashboard/AdminPageHeader";
+import { useConfirm } from "@/components/dashboard/ConfirmDialogProvider";
+import { Badge } from "@/components/ui/badge";
+import { useAdminViewMode } from "@/hooks/useAdminViewMode";
+import { Cloud, ExternalLink, Pencil, Plus, Star, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
@@ -159,6 +164,7 @@ function ServiceCardsEditor({
   cards: ServiceCardRow[];
   onChanged: () => void;
 }) {
+  const confirm = useConfirm();
   const [cardOpen, setCardOpen] = useState(false);
   const [editingCardId, setEditingCardId] = useState<string | null>(null);
   const [cardForm, setCardForm] = useState<CardFormState>(emptyCardForm);
@@ -284,10 +290,14 @@ function ServiceCardsEditor({
                   variant="ghost"
                   size="icon"
                   className="h-8 w-8 text-destructive"
-                  onClick={() => {
-                    if (confirm("¿Eliminar esta tarjeta?")) {
-                      deleteCardMut.mutate({ id: card.id });
-                    }
+                  onClick={async () => {
+                    const ok = await confirm({
+                      title: "Eliminar tarjeta",
+                      description: "¿Eliminar esta tarjeta del servicio?",
+                      confirmLabel: "Eliminar",
+                      destructive: true,
+                    });
+                    if (ok) deleteCardMut.mutate({ id: card.id });
                   }}
                   aria-label="Eliminar tarjeta"
                 >
@@ -414,7 +424,11 @@ function ServiceCardsEditor({
 
 export default function ClubServiciosAdminPage() {
   const { t } = useTranslation("dashboard");
-  const { data: services, refetch } = trpc.awsServices.listForAdmin.useQuery();
+  const confirm = useConfirm();
+  const { mode: viewMode, setMode: setViewMode } =
+    useAdminViewMode("club-servicios");
+  const { data: services, refetch, isLoading } =
+    trpc.awsServices.listForAdmin.useQuery();
   const [open, setOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState<ServiceFormState>(emptyServiceForm);
@@ -507,14 +521,23 @@ export default function ClubServiciosAdminPage() {
 
   const busy = createMut.isPending || updateMut.isPending;
 
+  const handleDelete = async (s: ServiceRow) => {
+    const ok = await confirm({
+      title: "Eliminar servicio",
+      description: `¿Eliminar «${s.name}» y todas sus tarjetas?`,
+      confirmLabel: "Eliminar",
+      destructive: true,
+    });
+    if (ok) deleteMut.mutate({ id: s.id });
+  };
+
   return (
     <div className="space-y-6">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="text-2xl font-semibold text-foreground">
-            {t("clubServicesAdmin")}
-          </h1>
-          <p className="mt-0.5 text-sm text-muted-foreground">
+      <AdminPageHeader
+        icon={Cloud}
+        title={t("clubServicesAdmin")}
+        description={
+          <>
             {t("clubServicesAdminDesc")}{" "}
             <Link
               href="/servicios"
@@ -522,14 +545,109 @@ export default function ClubServiciosAdminPage() {
             >
               Ver en /servicios
             </Link>
-          </p>
-        </div>
-        <Button type="button" onClick={openNew}>
-          <Plus className="mr-2 h-4 w-4" />
-          Nuevo servicio
-        </Button>
-      </div>
+          </>
+        }
+        showViewToggle
+        viewMode={viewMode}
+        onViewModeChange={setViewMode}
+        actions={
+          <Button type="button" onClick={openNew}>
+            <Plus className="mr-2 h-4 w-4" />
+            Nuevo servicio
+          </Button>
+        }
+      />
 
+      {viewMode === "cards" ? (
+        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+          {isLoading ? (
+            [1, 2, 3].map((i) => (
+              <div
+                key={i}
+                className="h-56 animate-pulse rounded-2xl border border-border bg-muted/30"
+              />
+            ))
+          ) : sorted.length === 0 ? (
+            <div className="col-span-full rounded-2xl border border-dashed border-border py-16 text-center text-muted-foreground">
+              No hay servicios. Crea el primero con &quot;Nuevo servicio&quot;.
+            </div>
+          ) : (
+            sorted.map((s) => (
+              <div
+                key={s.id}
+                className="overflow-hidden rounded-2xl border border-border/80 bg-card shadow-sm transition-shadow hover:shadow-md"
+              >
+                <div className="flex items-start justify-between gap-2 border-b border-border/50 bg-gradient-to-br from-[#7E2CFF]/8 to-[#00C8FF]/8 p-4">
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-2">
+                      <Cloud className="h-4 w-4 shrink-0 text-[#7E2CFF]" />
+                      <h3 className="truncate font-semibold">{s.name}</h3>
+                      {s.isPopular ? (
+                        <Star className="h-3.5 w-3.5 shrink-0 fill-primary text-primary" />
+                      ) : null}
+                    </div>
+                    <p className="mt-1 font-mono text-xs text-muted-foreground">
+                      {s.slug}
+                    </p>
+                  </div>
+                  <Badge variant={s.isPublished ? "default" : "secondary"}>
+                    {s.isPublished ? "Publicado" : "Borrador"}
+                  </Badge>
+                </div>
+                <div className="space-y-2 p-4">
+                  <p className="text-xs font-medium text-primary/90">
+                    {AWS_SERVICE_CATEGORY_LABELS[s.category]}
+                  </p>
+                  <p className="line-clamp-2 text-sm text-muted-foreground">
+                    {s.shortDescription}
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    {s.cards.length} tarjeta{s.cards.length === 1 ? "" : "s"}
+                  </p>
+                  <div className="flex justify-end gap-1 pt-2">
+                    {s.isPublished ? (
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8"
+                        asChild
+                      >
+                        <a
+                          href={`/servicios/${s.slug}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          aria-label="Ver público"
+                        >
+                          <ExternalLink className="h-4 w-4" />
+                        </a>
+                      </Button>
+                    ) : null}
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8"
+                      onClick={() => openEdit(s)}
+                    >
+                      <Pencil className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8 text-destructive"
+                      onClick={() => void handleDelete(s)}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+      ) : (
       <div className="rounded-xl border border-border bg-card">
         <Table>
           <TableHeader>
@@ -543,7 +661,9 @@ export default function ClubServiciosAdminPage() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {sorted.length === 0 ? (
+            {isLoading ? (
+              <AdminListLoading colSpan={5} />
+            ) : sorted.length === 0 ? (
               <TableRow>
                 <TableCell
                   colSpan={6}
@@ -603,15 +723,7 @@ export default function ClubServiciosAdminPage() {
                       variant="ghost"
                       size="icon"
                       className="h-8 w-8 text-destructive hover:text-destructive"
-                      onClick={() => {
-                        if (
-                          confirm(
-                            `¿Eliminar «${s.name}» y todas sus tarjetas?`
-                          )
-                        ) {
-                          deleteMut.mutate({ id: s.id });
-                        }
-                      }}
+                      onClick={() => void handleDelete(s)}
                       aria-label="Eliminar"
                     >
                       <Trash2 className="h-4 w-4" />
@@ -623,6 +735,7 @@ export default function ClubServiciosAdminPage() {
           </TableBody>
         </Table>
       </div>
+      )}
 
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="max-h-[min(92vh,860px)] overflow-y-auto sm:max-w-2xl">

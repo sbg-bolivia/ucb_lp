@@ -1,5 +1,7 @@
 "use client";
 
+import { useConfirm } from "@/components/dashboard/ConfirmDialogProvider";
+
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -111,6 +113,7 @@ const resourceConfig = {
 };
 
 export default function RolesPage() {
+  const confirmDialog = useConfirm();
   const [editingRole, setEditingRole] = useState<Role | null>(null);
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
@@ -253,17 +256,22 @@ export default function RolesPage() {
     setIsViewDialogOpen(true);
   }, []);
 
-  const handleRemovePermission = (rolePermissionId: string) => {
-    if (confirm("¿Estás seguro de que quieres eliminar este permiso?")) {
-      const rolePermission = rolePermissions.find(
-        (rp) => rp.id === rolePermissionId
-      );
-      if (rolePermission && viewingRole) {
-        removePermission.mutate({
-          roleId: viewingRole.id,
-          permissionId: rolePermission.permission.id,
-        });
-      }
+  const handleRemovePermission = async (rolePermissionId: string) => {
+    const ok = await confirmDialog({
+      title: "Quitar permiso",
+      description: "¿Estás seguro de que quieres eliminar este permiso del rol?",
+      confirmLabel: "Quitar",
+      destructive: true,
+    });
+    if (!ok) return;
+    const rolePermission = rolePermissions.find(
+      (rp) => rp.id === rolePermissionId
+    );
+    if (rolePermission && viewingRole) {
+      removePermission.mutate({
+        roleId: viewingRole.id,
+        permissionId: rolePermission.permission.id,
+      });
     }
   };
 
@@ -288,16 +296,16 @@ export default function RolesPage() {
   };
 
   const handleDelete = useCallback(
-    (role: Role) => {
-      if (
-        confirm(
-          `¿Estás seguro de que quieres eliminar el rol "${role.displayName}"?`
-        )
-      ) {
-        deleteRole.mutate({ id: role.id });
-      }
+    async (role: Role) => {
+      const ok = await confirmDialog({
+        title: "Eliminar rol",
+        description: `¿Estás seguro de que quieres eliminar el rol «${role.displayName}»?`,
+        confirmLabel: "Eliminar",
+        destructive: true,
+      });
+      if (ok) deleteRole.mutate({ id: role.id });
     },
-    [deleteRole]
+    [confirmDialog, deleteRole]
   );
 
   const onSubmit = (data: RoleFormData) => {

@@ -9,7 +9,17 @@ import type { AppRouter } from "../server/routers/_app";
 export const trpc = createTRPCReact<AppRouter>();
 
 export const TRPCProvider = ({ children }: { children: React.ReactNode }) => {
-  const [queryClient] = React.useState(() => new QueryClient());
+  const [queryClient] = React.useState(
+    () =>
+      new QueryClient({
+        defaultOptions: {
+          queries: {
+            staleTime: 60_000,
+            refetchOnWindowFocus: false,
+          },
+        },
+      })
+  );
 
   const trpcClient = useMemo(() => {
     return trpc.createClient({

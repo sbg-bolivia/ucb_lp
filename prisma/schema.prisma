@@ -67,6 +67,20 @@ model Tenant {
   @@map("tenants")
 }
 
+/// Visitas a páginas públicas (métricas del dashboard).
+model PageViewHit {
+  id         String   @id @default(cuid())
+  path       String   @db.VarChar(500)
+  referrer   String?  @db.VarChar(500)
+  deviceType String?  @db.VarChar(20)
+  tenantId   String?
+  createdAt  DateTime @default(now())
+
+  @@index([createdAt])
+  @@index([path])
+  @@map("page_view_hits")
+}
+
 /// Eventos del club (sitio público /eventos); CRUD manual desde el dashboard.
 model ClubEvent {
   id               String             @id @default(uuid())

@@ -38,8 +38,8 @@ const MODEL_BOX_LG = {
   height: "min(84vh, 800px)",
 } as const;
 const MODEL_BOX_SM = {
-  width: "min(380px, 94vw)",
-  height: "min(68vh, 640px)",
+  width: "min(300px, 88vw)",
+  height: "min(42vh, 380px)",
 } as const;
 const MODEL_TRANSITION = {
   type: "spring" as const,
@@ -136,11 +136,11 @@ export function ClubHero() {
           }
         : {
             ...modelBox,
-            top: "42%",
+            top: "38%",
             left: "50%",
             right: "auto",
             x: "-50%",
-            y: "-58%",
+            y: "-52%",
           };
 
   const navBtnClass = isLight

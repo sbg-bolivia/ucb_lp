@@ -1,9 +1,13 @@
 "use client";
 
+import { AdminPageHeader } from "@/components/dashboard/AdminPageHeader";
 import { Badge } from "@/components/ui/badge";
 import { useTranslation } from "@/hooks/useTranslation";
-import { Building2, ExternalLink, Shield, Users } from "lucide-react";
+import { getAdminNavGroups } from "@/lib/admin-nav-sections";
+import { trpc } from "@/utils/trpc";
+import { Eye, ExternalLink, Shield } from "lucide-react";
 import Link from "next/link";
+import type { ComponentType } from "react";
 import TenantInfo from "./TenantInfo";
 
 interface AdminDashboardProps {
@@ -16,103 +20,147 @@ interface AdminDashboardProps {
   } | null;
 }
 
-export default function AdminDashboard({ user }: AdminDashboardProps) {
-  const { t } = useTranslation("dashboard");
-
-  const adminSections = [
-    {
-      title: t("users"),
-      description: t("usersDescription"),
-      icon: <Users className="h-5 w-5" />,
-      iconColor: "text-primary",
-      bgColor: "bg-primary/10",
-      href: "/dashboard/users",
-    },
-    {
-      title: t("rolesPermissions"),
-      description: t("rolesDescription"),
-      icon: <Shield className="h-5 w-5" />,
-      iconColor: "text-accent-foreground",
-      bgColor: "bg-accent/20",
-      href: "/dashboard/roles",
-    },
-    {
-      title: t("companyInfo"),
-      description: t("companyDescription"),
-      icon: <Building2 className="h-5 w-5" />,
-      iconColor: "text-secondary",
-      bgColor: "bg-secondary/10",
-      href: "/dashboard/company-info",
-    },
-  ];
-
+function QuickLinkCard({
+  title,
+  description,
+  href,
+  icon: Icon,
+}: {
+  title: string;
+  description: string;
+  href: string;
+  icon: ComponentType<{ className?: string }>;
+}) {
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-semibold text-foreground">
-            {t("adminPanel")}
-          </h1>
-          <p className="text-sm text-muted-foreground mt-0.5 mr-8">
-            {t("adminWelcome", { name: user?.name || "Administrador" })}
+    <Link
+      href={href}
+      className="group flex h-full flex-col rounded-2xl border border-border/70 bg-card p-5 transition-all hover:border-[#7E2CFF]/30 hover:shadow-md"
+    >
+      <div className="flex items-start gap-3">
+        <div className="rounded-xl bg-gradient-to-br from-[#7E2CFF]/15 to-[#00C8FF]/15 p-2.5">
+          <Icon className="h-5 w-5 text-[#7E2CFF] dark:text-[#00C8FF]" />
+        </div>
+        <div className="min-w-0 flex-1">
+          <h3 className="font-semibold text-foreground group-hover:text-primary">
+            {title}
+          </h3>
+          <p className="mt-1 text-sm text-muted-foreground line-clamp-2">
+            {description}
           </p>
         </div>
-        <div className="flex items-center space-x-2">
-          <div className="p-2 bg-primary/10 rounded-lg">
-            <Shield className="h-5 w-5 text-primary" />
-          </div>
-          <span className="text-sm font-medium text-foreground">
+        <ExternalLink className="h-4 w-4 shrink-0 text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100" />
+      </div>
+      <span className="mt-4 text-xs font-medium text-primary">Abrir →</span>
+    </Link>
+  );
+}
+
+export default function AdminDashboard({ user }: AdminDashboardProps) {
+  const { t } = useTranslation("dashboard");
+  const { data: stats } = trpc.dashboardStats.getOverview.useQuery(undefined, {
+    enabled: Boolean(user?.tenantId),
+  });
+
+  const navGroups = getAdminNavGroups({
+    users: t("users"),
+    usersDescription: t("usersDescription"),
+    rolesPermissions: t("rolesPermissions"),
+    rolesDescription: t("rolesDescription"),
+    clubPublicTeam: t("clubPublicTeam"),
+    clubPublicTeamDesc: t("clubPublicTeamDesc"),
+    clubEventsAdmin: t("clubEventsAdmin"),
+    clubEventsAdminDesc: t("clubEventsAdminDesc"),
+    clubServicesAdmin: t("clubServicesAdmin"),
+    clubServicesAdminDesc: t("clubServicesAdminDesc"),
+    clubCommunitiesAdmin: t("clubCommunitiesAdmin"),
+    clubCommunitiesAdminDesc: t("clubCommunitiesAdminDesc"),
+    clubProjectsAdmin: t("clubProjectsAdmin"),
+    clubProjectsAdminDesc: t("clubProjectsAdminDesc"),
+    settings2: t("settings2"),
+    systemSettings: t("systemSettings"),
+  });
+
+  return (
+    <div className="space-y-8">
+      <AdminPageHeader
+        icon={Shield}
+        title={t("adminPanel")}
+        description={t("adminWelcome", {
+          name: user?.name || "Administrador",
+        })}
+        actions={
+          <Badge className="bg-gradient-to-r from-[#7E2CFF]/20 to-[#00C8FF]/20 text-foreground">
             {t("superAdmin")}
-          </span>
-        </div>
-      </div>
+          </Badge>
+        }
+      />
 
-      {/* Main Content - Vertical Layout */}
-      <div className="space-y-6">
-        {/* Tenant Information - Full Width */}
-        {user?.tenantId && (
-          <div className="w-full">
-            <TenantInfo />
-          </div>
-        )}
-
-        {/* Admin Sections - Grid below */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {adminSections.map((section) => (
-            <Link
-              key={section.href}
-              href={section.href}
-              className="group relative overflow-hidden bg-card rounded-xl border border-border p-6 transition-all hover:border-primary/20 hover:shadow-md"
-            >
-              <div className="flex flex-col h-full">
-                <div className="flex items-start space-x-4 mb-4">
-                  <div
-                    className={`flex-shrink-0 rounded-lg p-3 ${section.bgColor}`}
-                  >
-                    <div className={section.iconColor}>{section.icon}</div>
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <h3 className="text-lg font-semibold text-foreground group-hover:text-primary mb-1 transition-colors">
-                      {section.title}
-                    </h3>
-                    <p className="text-sm text-muted-foreground leading-relaxed">
-                      {section.description}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-center justify-between mt-auto pt-4 border-t border-secondary/20">
-                  <div className="flex items-center text-xs text-secondary/70">
-                    <span>{t("manage")}</span>
-                  </div>
-                  <ExternalLink className="h-4 w-4 text-secondary group-hover:text-primary transition-colors" />
-                </div>
+      {stats ? (
+        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+          <Link
+            href="/dashboard/estadisticas"
+            className="rounded-2xl border border-border/70 bg-card p-5 transition-colors hover:border-[#7E2CFF]/30 hover:bg-primary/5"
+          >
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-xs uppercase tracking-wide text-muted-foreground">
+                  Visitas 7 días
+                </p>
+                <p className="mt-1 text-2xl font-bold">{stats.traffic.views7d}</p>
               </div>
-            </Link>
-          ))}
+              <Eye className="h-5 w-5 text-[#00C8FF]" />
+            </div>
+          </Link>
+          <div className="rounded-2xl border border-border/70 bg-card p-5">
+            <p className="text-xs uppercase tracking-wide text-muted-foreground">
+              Usuarios
+            </p>
+            <p className="mt-1 text-2xl font-bold">{stats.content.users}</p>
+          </div>
+          <div className="rounded-2xl border border-border/70 bg-card p-5">
+            <p className="text-xs uppercase tracking-wide text-muted-foreground">
+              Eventos publicados
+            </p>
+            <p className="mt-1 text-2xl font-bold">
+              {stats.content.eventsPublished}
+            </p>
+          </div>
+          <div className="rounded-2xl border border-border/70 bg-card p-5">
+            <p className="text-xs uppercase tracking-wide text-muted-foreground">
+              Visitas 30 días
+            </p>
+            <p className="mt-1 text-2xl font-bold">{stats.traffic.views30d}</p>
+          </div>
         </div>
-      </div>
+      ) : null}
+
+      {navGroups.map((group) => (
+        <section key={group.id} className="space-y-4">
+          <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+            {group.label}
+          </h2>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {group.items.map((item) => (
+              <QuickLinkCard
+                key={item.href}
+                title={item.title}
+                description={item.description}
+                href={item.href}
+                icon={item.icon}
+              />
+            ))}
+          </div>
+        </section>
+      ))}
+
+      {user?.tenantId ? (
+        <section className="space-y-4">
+          <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+            Resumen del tenant
+          </h2>
+          <TenantInfo />
+        </section>
+      ) : null}
     </div>
   );
 }

@@ -1,5 +1,6 @@
 "use client";
 
+import { S3ImageUploadField } from "@/components/dashboard/S3ImageUploadField";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -22,6 +23,9 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { useTranslation } from "@/hooks/useTranslation";
 import { trpc } from "@/utils/trpc";
+import { AdminListLoading } from "@/components/dashboard/AdminListLoading";
+import { AdminPageHeader } from "@/components/dashboard/AdminPageHeader";
+import { useConfirm } from "@/components/dashboard/ConfirmDialogProvider";
 import { FolderKanban, Pencil, Plus, Trash2 } from "lucide-react";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
@@ -72,7 +76,9 @@ function projectToForm(p: ClubProjectRow): FormState {
 
 export default function ClubProyectosAdminPage() {
   const { t } = useTranslation("dashboard");
-  const { data: projects, refetch } = trpc.clubProjects.listForAdmin.useQuery();
+  const confirm = useConfirm();
+  const { data: projects, refetch, isLoading } =
+    trpc.clubProjects.listForAdmin.useQuery();
   const [open, setOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState<FormState>(emptyForm);
@@ -147,22 +153,29 @@ export default function ClubProyectosAdminPage() {
 
   const busy = createMut.isPending || updateMut.isPending;
 
+  const handleDelete = async (p: { id: string; title: string }) => {
+    const ok = await confirm({
+      title: "Eliminar proyecto",
+      description: `¿Eliminar «${p.title}»? Esta acción no se puede deshacer.`,
+      confirmLabel: "Eliminar",
+      destructive: true,
+    });
+    if (ok) deleteMut.mutate({ id: p.id });
+  };
+
   return (
     <div className="space-y-6">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="text-2xl font-semibold text-foreground">
-            {t("clubProjectsAdmin")}
-          </h1>
-          <p className="mt-0.5 text-sm text-muted-foreground">
-            {t("clubProjectsAdminDesc")}
-          </p>
-        </div>
-        <Button type="button" onClick={openNew}>
-          <Plus className="mr-2 h-4 w-4" />
-          Nuevo proyecto
-        </Button>
-      </div>
+      <AdminPageHeader
+        icon={FolderKanban}
+        title={t("clubProjectsAdmin")}
+        description={t("clubProjectsAdminDesc")}
+        actions={
+          <Button type="button" onClick={openNew}>
+            <Plus className="mr-2 h-4 w-4" />
+            Nuevo proyecto
+          </Button>
+        }
+      />
 
       <div className="rounded-xl border border-border bg-card">
         <Table>
@@ -175,7 +188,9 @@ export default function ClubProyectosAdminPage() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {sorted.length === 0 ? (
+            {isLoading ? (
+              <AdminListLoading colSpan={5} />
+            ) : sorted.length === 0 ? (
               <TableRow>
                 <TableCell
                   colSpan={4}
@@ -208,15 +223,7 @@ export default function ClubProyectosAdminPage() {
                       variant="ghost"
                       size="icon"
                       className="h-8 w-8 text-destructive hover:text-destructive"
-                      onClick={() => {
-                        if (
-                          confirm(
-                            `¿Eliminar el proyecto «${p.title}»? Esta acción no se puede deshacer.`
-                          )
-                        ) {
-                          deleteMut.mutate({ id: p.id });
-                        }
-                      }}
+                      onClick={() => void handleDelete(p)}
                       aria-label="Eliminar"
                     >
                       <Trash2 className="h-4 w-4" />
@@ -272,17 +279,13 @@ export default function ClubProyectosAdminPage() {
                 placeholder="React, AWS Lambda, DynamoDB"
               />
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="pr-img">URL de imagen (opcional)</Label>
-              <Input
-                id="pr-img"
-                value={form.imageUrl}
-                onChange={(e) =>
-                  setForm((f) => ({ ...f, imageUrl: e.target.value }))
-                }
-                placeholder="/proyectos/cover.jpg o https://..."
-              />
-            </div>
+            <S3ImageUploadField
+              id="pr-img"
+              label="Imagen del proyecto (opcional)"
+              folder="projects"
+              value={form.imageUrl}
+              onChange={(url) => setForm((f) => ({ ...f, imageUrl: url }))}
+            />
             <div className="space-y-2">
               <Label htmlFor="pr-url">Enlace al proyecto (GitHub, demo…)</Label>
               <Input

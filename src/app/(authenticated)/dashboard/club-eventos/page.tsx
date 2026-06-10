@@ -1,5 +1,8 @@
 "use client";
 
+import { AdminDragHandle, reorderItems } from "@/components/dashboard/AdminDragReorder";
+import { S3ImageUploadField } from "@/components/dashboard/S3ImageUploadField";
+import { S3VideoUploadField } from "@/components/dashboard/S3VideoUploadField";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -35,8 +38,14 @@ import {
 } from "@/lib/event-labels";
 import type { EventStatus, RegistrationType } from "@prisma/client";
 import { trpc } from "@/utils/trpc";
-import { Calendar, Pencil, Plus, Trash2 } from "lucide-react";
-import { useMemo, useState } from "react";
+import { AdminListLoading } from "@/components/dashboard/AdminListLoading";
+import { AdminPageHeader } from "@/components/dashboard/AdminPageHeader";
+import { useConfirm } from "@/components/dashboard/ConfirmDialogProvider";
+import { Badge } from "@/components/ui/badge";
+import { useAdminViewMode } from "@/hooks/useAdminViewMode";
+import { Calendar, Eye, MapPin, Pencil, Plus, Trash2 } from "lucide-react";
+import Image from "next/image";
+import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 
 type FormState = {
@@ -123,10 +132,20 @@ function eventToForm(e: ClubEventRow): FormState {
 
 export default function ClubEventosAdminPage() {
   const { t } = useTranslation("dashboard");
-  const { data: events, refetch } = trpc.clubEvents.listForAdmin.useQuery();
+  const confirm = useConfirm();
+  const { mode: viewMode, setMode: setViewMode } =
+    useAdminViewMode("club-eventos");
+  const { data: events, refetch, isLoading } =
+    trpc.clubEvents.listForAdmin.useQuery();
   const [open, setOpen] = useState(false);
+  const [viewOnly, setViewOnly] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState<FormState>(emptyForm);
+  const [orderedIds, setOrderedIds] = useState<string[]>([]);
+
+  useEffect(() => {
+    if (events) setOrderedIds(events.map((e) => e.id));
+  }, [events]);
 
   const createMut = trpc.clubEvents.create.useMutation({
     onSuccess: () => {
@@ -158,16 +177,38 @@ export default function ClubEventosAdminPage() {
     onError: (e) => toast.error(e.message),
   });
 
-  const sorted = useMemo(() => events ?? [], [events]);
+  const reorderMut = trpc.clubEvents.reorder.useMutation({
+    onSuccess: () => toast.success("Orden actualizado"),
+    onError: (e) => toast.error(e.message),
+  });
+
+  const sorted = useMemo(() => {
+    if (!events) return [];
+    const map = new Map(events.map((e) => [e.id, e]));
+    const result: typeof events = [];
+    for (const id of orderedIds) {
+      const item = map.get(id);
+      if (item) result.push(item);
+    }
+    return result;
+  }, [events, orderedIds]);
+
+  const handleReorder = (from: number, to: number) => {
+    const next = reorderItems(orderedIds, from, to);
+    setOrderedIds(next);
+    reorderMut.mutate({ orderedIds: next });
+  };
 
   const openNew = () => {
     setEditingId(null);
+    setViewOnly(false);
     setForm(emptyForm);
     setOpen(true);
   };
 
-  const openEdit = (e: ClubEventRow) => {
+  const openEdit = (e: ClubEventRow, readOnly = false) => {
     setEditingId(e.id);
+    setViewOnly(readOnly);
     setForm(eventToForm(e));
     setOpen(true);
   };
@@ -206,27 +247,132 @@ export default function ClubEventosAdminPage() {
 
   const busy = createMut.isPending || updateMut.isPending;
 
+  const handleDelete = async (ev: ClubEventRow) => {
+    const ok = await confirm({
+      title: "Eliminar evento",
+      description: `¿Eliminar «${ev.title}»? Esta acción no se puede deshacer.`,
+      confirmLabel: "Eliminar",
+      destructive: true,
+    });
+    if (ok) deleteMut.mutate({ id: ev.id });
+  };
+
+  const formatDate = (value: Date | string | null) =>
+    value
+      ? new Intl.DateTimeFormat("es-BO", {
+          dateStyle: "medium",
+          timeStyle: "short",
+        }).format(new Date(value))
+      : "—";
+
   return (
     <div className="space-y-6">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="text-2xl font-semibold text-foreground">
-            {t("clubEventsAdmin")}
-          </h1>
-          <p className="mt-0.5 text-sm text-muted-foreground">
-            {t("clubEventsAdminDesc")}
-          </p>
-        </div>
-        <Button type="button" onClick={openNew}>
-          <Plus className="mr-2 h-4 w-4" />
-          Nuevo evento
-        </Button>
-      </div>
+      <AdminPageHeader
+        icon={Calendar}
+        title={t("clubEventsAdmin")}
+        description={t("clubEventsAdminDesc")}
+        showViewToggle
+        viewMode={viewMode}
+        onViewModeChange={setViewMode}
+        actions={
+          <Button type="button" onClick={openNew}>
+            <Plus className="mr-2 h-4 w-4" />
+            Nuevo evento
+          </Button>
+        }
+      />
 
+      {viewMode === "cards" ? (
+        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+          {isLoading ? (
+            [1, 2, 3].map((i) => (
+              <div
+                key={i}
+                className="h-64 animate-pulse rounded-2xl border border-border bg-muted/30"
+              />
+            ))
+          ) : sorted.length === 0 ? (
+            <div className="col-span-full rounded-2xl border border-dashed border-border py-16 text-center text-muted-foreground">
+              No hay eventos. Crea el primero con &quot;Nuevo evento&quot;.
+            </div>
+          ) : (
+            sorted.map((ev) => (
+              <div
+                key={ev.id}
+                className="overflow-hidden rounded-2xl border border-border/80 bg-card shadow-sm transition-shadow hover:shadow-md"
+              >
+                <div className="relative aspect-video bg-muted/40">
+                  {ev.imageUrl ? (
+                    <Image
+                      src={ev.imageUrl}
+                      alt={ev.title}
+                      fill
+                      className="object-cover"
+                      sizes="(max-width: 768px) 100vw, 320px"
+                    />
+                  ) : (
+                    <div className="flex h-full items-center justify-center bg-gradient-to-br from-[#7E2CFF]/10 to-[#00C8FF]/10">
+                      <Calendar className="h-10 w-10 text-[#7E2CFF]/50" />
+                    </div>
+                  )}
+                  <Badge
+                    className="absolute right-2 top-2"
+                    variant={ev.isPublished ? "default" : "secondary"}
+                  >
+                    {ev.isPublished ? "Publicado" : "Borrador"}
+                  </Badge>
+                </div>
+                <div className="space-y-2 p-4">
+                  <h3 className="font-semibold leading-snug">{ev.title}</h3>
+                  <p className="text-xs text-muted-foreground">
+                    {formatDate(ev.startsAt)}
+                  </p>
+                  {ev.location ? (
+                    <p className="flex items-center gap-1 text-xs text-muted-foreground">
+                      <MapPin className="h-3 w-3" />
+                      {ev.location}
+                    </p>
+                  ) : null}
+                  <div className="flex justify-end gap-1 pt-2">
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8"
+                      onClick={() => openEdit(ev, true)}
+                    >
+                      <Eye className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8"
+                      onClick={() => openEdit(ev)}
+                    >
+                      <Pencil className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8 text-destructive"
+                      onClick={() => void handleDelete(ev)}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+      ) : (
       <div className="rounded-xl border border-border bg-card">
         <Table>
           <TableHeader>
             <TableRow>
+              <TableHead className="w-10" />
               <TableHead>Título</TableHead>
               <TableHead className="hidden md:table-cell">Fecha</TableHead>
               <TableHead className="hidden lg:table-cell">Lugar</TableHead>
@@ -235,18 +381,41 @@ export default function ClubEventosAdminPage() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {sorted.length === 0 ? (
+            {isLoading ? (
+              <AdminListLoading colSpan={6} />
+            ) : sorted.length === 0 ? (
               <TableRow>
                 <TableCell
-                  colSpan={5}
+                  colSpan={6}
                   className="py-10 text-center text-muted-foreground"
                 >
                   No hay eventos. Crea el primero con &quot;Nuevo evento&quot;.
                 </TableCell>
               </TableRow>
             ) : (
-              sorted.map((ev) => (
-                <TableRow key={ev.id}>
+              sorted.map((ev, index) => (
+                <TableRow
+                  key={ev.id}
+                  draggable
+                  onDragStart={(e) =>
+                    e.dataTransfer.setData("text/plain", String(index))
+                  }
+                  onDragOver={(e) => e.preventDefault()}
+                  onDrop={(e) => {
+                    e.preventDefault();
+                    const from = Number.parseInt(
+                      e.dataTransfer.getData("text/plain"),
+                      10
+                    );
+                    if (Number.isFinite(from) && from !== index) {
+                      handleReorder(from, index);
+                    }
+                  }}
+                  className="cursor-grab active:cursor-grabbing"
+                >
+                  <TableCell>
+                    <AdminDragHandle />
+                  </TableCell>
                   <TableCell className="font-medium">{ev.title}</TableCell>
                   <TableCell className="hidden md:table-cell text-muted-foreground text-sm">
                     {ev.startsAt
@@ -266,6 +435,16 @@ export default function ClubEventosAdminPage() {
                       variant="ghost"
                       size="icon"
                       className="h-8 w-8"
+                      onClick={() => openEdit(ev, true)}
+                      aria-label="Ver"
+                    >
+                      <Eye className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8"
                       onClick={() => openEdit(ev)}
                       aria-label="Editar"
                     >
@@ -276,15 +455,7 @@ export default function ClubEventosAdminPage() {
                       variant="ghost"
                       size="icon"
                       className="h-8 w-8 text-destructive hover:text-destructive"
-                      onClick={() => {
-                        if (
-                          confirm(
-                            `¿Eliminar el evento «${ev.title}»? Esta acción no se puede deshacer.`
-                          )
-                        ) {
-                          deleteMut.mutate({ id: ev.id });
-                        }
-                      }}
+                      onClick={() => void handleDelete(ev)}
                       aria-label="Eliminar"
                     >
                       <Trash2 className="h-4 w-4" />
@@ -296,16 +467,24 @@ export default function ClubEventosAdminPage() {
           </TableBody>
         </Table>
       </div>
+      )}
 
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="max-h-[min(90vh,720px)] overflow-y-auto sm:max-w-lg">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <Calendar className="h-5 w-5" />
-              {editingId ? "Editar evento" : "Nuevo evento"}
+              {viewOnly
+                ? "Ver evento"
+                : editingId
+                  ? "Editar evento"
+                  : "Nuevo evento"}
             </DialogTitle>
           </DialogHeader>
-          <div className="grid gap-4 py-2">
+          <fieldset
+            disabled={viewOnly}
+            className="grid gap-4 border-0 p-0 py-2 disabled:opacity-100"
+          >
             <div className="space-y-2">
               <Label htmlFor="ev-title">Título</Label>
               <Input
@@ -364,17 +543,14 @@ export default function ClubEventosAdminPage() {
                 placeholder="Campus, aula, enlace Zoom..."
               />
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="ev-img">URL de imagen (opcional)</Label>
-              <Input
-                id="ev-img"
-                value={form.imageUrl}
-                onChange={(e) =>
-                  setForm((f) => ({ ...f, imageUrl: e.target.value }))
-                }
-                placeholder="/eventos/cartel.jpg o https://..."
-              />
-            </div>
+            <S3ImageUploadField
+              id="ev-img"
+              label="Imagen del evento (opcional)"
+              folder="events"
+              value={form.imageUrl}
+              onChange={(url) => setForm((f) => ({ ...f, imageUrl: url }))}
+              placeholder="Sube a S3 o pega una URL"
+            />
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div className="space-y-2">
                 <Label>Tipo de registro</Label>
@@ -442,17 +618,16 @@ export default function ClubEventosAdminPage() {
                 placeholder="https://..."
               />
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="ev-video">Video promocional (opcional)</Label>
-              <Input
-                id="ev-video"
-                value={form.promoVideoUrl}
-                onChange={(e) =>
-                  setForm((f) => ({ ...f, promoVideoUrl: e.target.value }))
-                }
-                placeholder="https://youtube.com/..."
-              />
-            </div>
+            <S3VideoUploadField
+              id="ev-video"
+              label="Video promocional (opcional)"
+              folder="events"
+              value={form.promoVideoUrl}
+              onChange={(url) =>
+                setForm((f) => ({ ...f, promoVideoUrl: url }))
+              }
+              placeholder="Sube MP4/WebM a S3 o pega URL (YouTube, etc.)"
+            />
             <div className="flex flex-wrap gap-6">
               <div className="flex items-center gap-2">
                 <Checkbox
@@ -503,18 +678,24 @@ export default function ClubEventosAdminPage() {
                 }
               />
             </div>
-          </div>
+          </fieldset>
           <DialogFooter className="gap-2 sm:gap-0">
             <Button
               type="button"
               variant="outline"
               onClick={() => setOpen(false)}
             >
-              Cancelar
+              {viewOnly ? "Cerrar" : "Cancelar"}
             </Button>
-            <Button type="button" onClick={submit} disabled={busy}>
-              {editingId ? "Guardar cambios" : "Crear evento"}
-            </Button>
+            {viewOnly ? (
+              <Button type="button" onClick={() => setViewOnly(false)}>
+                Editar
+              </Button>
+            ) : (
+              <Button type="button" onClick={submit} disabled={busy}>
+                {editingId ? "Guardar cambios" : "Crear evento"}
+              </Button>
+            )}
           </DialogFooter>
         </DialogContent>
       </Dialog>

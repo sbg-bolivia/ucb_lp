@@ -12,9 +12,9 @@
   --color-card-foreground: hsl(240 10% 3.9%);
   --color-popover: hsl(0 0% 100%);
   --color-popover-foreground: hsl(240 10% 3.9%);
-  --color-primary: hsl(215, 40%, 42%);
+  --color-primary: hsl(271, 76%, 53%);
   --color-primary-foreground: hsl(0 0% 98%);
-  --color-secondary: hsl(187, 60%, 42%);
+  --color-secondary: hsl(193, 100%, 50%);
   --color-secondary-foreground: hsl(0 0% 98%);
   --color-muted: hsl(240 4.8% 95.9%);
   --color-muted-foreground: hsl(240 3.8% 46.1%);
@@ -24,7 +24,7 @@
   --color-destructive-foreground: hsl(0 0% 98%);
   --color-border: hsl(240 5.9% 90%);
   --color-input: hsl(240 5.9% 90%);
-  --color-ring: hsl(215, 40%, 42%);
+  --color-ring: hsl(271, 76%, 53%);
 
   --radius: 0.6rem;
 }
@@ -37,9 +37,9 @@
   --color-card-foreground: hsl(0 0% 98%);
   --color-popover: hsl(221, 60%, 12%);
   --color-popover-foreground: hsl(0 0% 98%);
-  --color-primary: hsl(210, 50%, 58%);
+  --color-primary: hsl(271, 70%, 62%);
   --color-primary-foreground: hsl(0 0% 98%);
-  --color-secondary: hsl(187, 60%, 57%);
+  --color-secondary: hsl(193, 100%, 50%);
   --color-secondary-foreground: hsl(0 0% 98%);
   --color-muted: hsl(221, 60%, 18%);
   --color-muted-foreground: hsl(240 5% 64.9%);
@@ -49,15 +49,15 @@
   --color-destructive-foreground: hsl(0 0% 98%);
   --color-border: hsl(221, 60%, 15%);
   --color-input: hsl(221, 60%, 18%);
-  --color-ring: hsl(210, 50%, 58%);
+  --color-ring: hsl(271, 70%, 62%);
   --sidebar: hsl(221, 60%, 8%);
   --sidebar-foreground: hsl(0 0% 98%);
-  --sidebar-primary: hsl(210, 50%, 58%);
+  --sidebar-primary: hsl(271, 70%, 62%);
   --sidebar-primary-foreground: hsl(0 0% 98%);
   --sidebar-accent: hsl(210, 50%, 15%);
   --sidebar-accent-foreground: hsl(0 0% 98%);
   --sidebar-border: hsl(221, 60%, 12%);
-  --sidebar-ring: hsl(210, 50%, 58%);
+  --sidebar-ring: hsl(193, 100%, 50%);
 }
 
 /* Global styles */

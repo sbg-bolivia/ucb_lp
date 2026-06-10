@@ -31,6 +31,7 @@ if (!skipValidation) {
 }
 
 export const auth = betterAuth({
+  baseURL: getSiteUrl(),
   database: prismaAdapter(prisma, { provider: "postgresql" }),
 
   emailAndPassword: {

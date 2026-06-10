@@ -1,6 +1,7 @@
 "use client";
 
 import { useAuthContext } from "@/AuthContext";
+import { useConfirm } from "@/components/dashboard/ConfirmDialogProvider";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -652,6 +653,7 @@ function UserRolesManager({ userId }: { userId: string }) {
 
 export default function UsersPage() {
   const { t } = useTranslation("dashboard");
+  const confirmDialog = useConfirm();
   const [dialogUser, setDialogUser] = useState<Partial<User> | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const { canManageUsers } = useRBAC();
@@ -772,17 +774,18 @@ export default function UsersPage() {
   };
 
   const handleDelete = useCallback(
-    (user: User) => {
-      if (
-        confirm(
+    async (user: User) => {
+      const ok = await confirmDialog({
+        title: "Eliminar usuario",
+        description:
           t("confirmDeleteUser") ||
-            "¿Estás seguro de que quieres eliminar este usuario?"
-        )
-      ) {
-        deleteUser.mutate({ id: user.id });
-      }
+          "¿Estás seguro de que quieres eliminar este usuario?",
+        confirmLabel: "Eliminar",
+        destructive: true,
+      });
+      if (ok) deleteUser.mutate({ id: user.id });
     },
-    [deleteUser, t]
+    [confirmDialog, deleteUser, t]
   );
 
   // Definir columnas de la tabla (memoized to prevent re-creation on each render)

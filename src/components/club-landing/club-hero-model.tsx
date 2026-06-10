@@ -2,7 +2,7 @@
 
 import { OrbitControls, useGLTF } from "@react-three/drei";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { Suspense, useEffect, useMemo, useRef } from "react";
+import { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
 
 const MODEL_URL = "/hero/sbg-logo.glb";
@@ -56,18 +56,19 @@ function Model({
   );
 }
 
-function StageRings() {
+function StageRings({ compact }: { compact?: boolean }) {
   const ringsRef = useRef<THREE.Group>(null);
   useFrame((_, delta) => {
     if (ringsRef.current) ringsRef.current.rotation.z += delta * 0.12;
   });
+  const radii = compact ? [1.35, 1.75] : [1.55, 2.05, 2.55];
   return (
     <group
       ref={ringsRef}
       position={[0, -0.82, 0]}
       rotation={[Math.PI / 2, 0, 0]}
     >
-      {[1.55, 2.05, 2.55].map((r, i) => (
+      {radii.map((r, i) => (
         <mesh key={r}>
           <torusGeometry args={[r, 0.012, 16, 96]} />
           <meshBasicMaterial
@@ -136,6 +137,15 @@ export function ClubHeroModel({
   onInteractingChange?: (interacting: boolean) => void;
 }) {
   const interactingRef = useRef(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 767px)");
+    const update = () => setIsMobile(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
 
   const setInteracting = (value: boolean) => {
     interactingRef.current = value;
@@ -144,9 +154,13 @@ export function ClubHeroModel({
 
   return (
     <Canvas
-      camera={{ position: [0, 0.02, 8.1], fov: 32 }}
-      dpr={[1, 2]}
-      gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
+      camera={{ position: [0, 0.02, isMobile ? 9.2 : 8.1], fov: isMobile ? 36 : 32 }}
+      dpr={isMobile ? 1 : [1, 1.75]}
+      gl={{
+        antialias: !isMobile,
+        alpha: true,
+        powerPreference: isMobile ? "default" : "high-performance",
+      }}
       style={{ width: "100%", height: "100%", touchAction: "none" }}
     >
       <CanvasBackground />
@@ -155,7 +169,7 @@ export function ClubHeroModel({
       <Suspense fallback={null}>
         <Model autoRotate={autoRotate} interactingRef={interactingRef} />
       </Suspense>
-      <StageRings />
+      <StageRings compact={isMobile} />
 
       <OrbitControls
         makeDefault

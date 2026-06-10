@@ -1,9 +1,7 @@
 "use client";
 
 import { useAuthContext } from "@/AuthContext";
-import { FeedbackDialog } from "@/components/dashboard/FeedbackDialog";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,7 +13,6 @@ import {
 import {
   Sidebar,
   SidebarContent,
-  SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
   SidebarGroupLabel,
@@ -31,14 +28,15 @@ import { useTranslation } from "@/hooks/useTranslation";
 import { useUser } from "@/hooks/useUser";
 import { cn } from "@/lib/utils";
 import {
+  BarChart3,
   Calendar,
   ChevronDown,
   Cloud,
   FolderKanban,
   Globe2,
+  ImageIcon,
   LayoutDashboard,
   LogOut,
-  Plus,
   Settings,
   Shield,
   User,
@@ -46,7 +44,6 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useState } from "react";
 
 interface NavItem {
   title: string;
@@ -106,6 +103,12 @@ export function AppSidebar() {
           icon: Calendar,
           description: t("clubEventsAdminDesc"),
         },
+        {
+          title: "Banners del home",
+          href: "/dashboard/club-banners",
+          icon: ImageIcon,
+          description: "Hero y banners promocionales",
+        },
         ...(isClubFeatureEnabled("awsServices")
           ? [
               {
@@ -136,6 +139,12 @@ export function AppSidebar() {
               },
             ]
           : []),
+        {
+          title: "Estadísticas",
+          href: "/dashboard/estadisticas",
+          icon: BarChart3,
+          description: "Visitas, contenido y métricas del sitio",
+        },
         {
           title: t("settings2"),
           href: "/dashboard/settings",
@@ -171,7 +180,6 @@ export function AppSidebar() {
   const navItems = getNavItems();
   const { state } = useSidebar();
   const isCollapsed = state === "collapsed";
-  const [isFeedbackDialogOpen, setIsFeedbackDialogOpen] = useState(false);
 
   const handleSignOut = async () => {
     await signOut();
@@ -360,71 +368,6 @@ export function AppSidebar() {
         </SidebarGroup>
       </SidebarContent>
 
-      <SidebarFooter
-        className={cn(
-          "border-t border-border/30",
-          isCollapsed ? "p-2 space-y-1" : "p-3 space-y-3"
-        )}
-      >
-        <SidebarMenu className="w-full flex flex-col">
-          <SidebarMenuItem className="w-full flex justify-center">
-            <SidebarMenuButton
-              onClick={() => router.push("/dashboard/settings")}
-              tooltip={tCommon("settings")}
-              className={cn(
-                "group/item rounded-lg text-sidebar-foreground/70 transition-all duration-200 hover:bg-accent/30 hover:text-foreground",
-                isCollapsed
-                  ? "h-9 w-full justify-center items-center px-2"
-                  : "h-9 w-full px-3"
-              )}
-            >
-              <Settings
-                className={cn(
-                  "shrink-0 transition-transform duration-200 group-hover/item:scale-110",
-                  isCollapsed ? "size-4" : "size-5"
-                )}
-              />
-              {!isCollapsed && (
-                <span className="font-medium truncate">
-                  {tCommon("settings")}
-                </span>
-              )}
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        </SidebarMenu>
-
-        {/* Promotional Card */}
-        {!isCollapsed ? (
-          <div className="rounded-lg p-4 bg-gradient-to-br from-primary/15 to-background border border-border/50 shadow-sm shadow-primary/10">
-            <p className="mb-4 text-sm leading-relaxed">
-              {t("feedbackDialog.promotionalCardText")}
-            </p>
-            <Button
-              onClick={() => setIsFeedbackDialogOpen(true)}
-              className="w-full bg-primary text-primary-foreground hover:bg-primary/0 shadow-sm transition-all duration-300 font-medium"
-              size="sm"
-            >
-              <Plus className="mr-2 h-4 w-4" />
-              {t("feedbackDialog.promotionalButton")}
-            </Button>
-          </div>
-        ) : (
-          <div className="flex justify-center w-full">
-            <Button
-              onClick={() => setIsFeedbackDialogOpen(true)}
-              title={t("feedbackDialog.promotionalButton")}
-              className="h-9 w-full max-w-[calc(100%-0.5rem)] text-white shadow-lg transition-all duration-300 rounded-lg flex items-center justify-center px-2 font-medium bg-gradient-to-br from-primary via-secondary hover:from-primary/90 hover:via-secondary/90 hover:to-accent/90"
-              size="icon"
-            >
-              <Plus className="h-4 w-4" />
-            </Button>
-          </div>
-        )}
-      </SidebarFooter>
-      <FeedbackDialog
-        isOpen={isFeedbackDialogOpen}
-        onClose={() => setIsFeedbackDialogOpen(false)}
-      />
     </Sidebar>
   );
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import { useAuthContext } from "@/AuthContext";
+import { DashboardGlobalSearch } from "@/components/dashboard/DashboardGlobalSearch";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
@@ -103,6 +104,8 @@ export function DashboardNavbar() {
           </BreadcrumbList>
         </Breadcrumb>
       </div>
+
+      <DashboardGlobalSearch />
 
       {/* Right side - Language, Theme and User Menu */}
       <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">

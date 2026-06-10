@@ -61,12 +61,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     window.addEventListener("storage", handleStorageChange);
 
-    // Also check session periodically
-    const interval = setInterval(getSession, 30000); // Check every 30 seconds
+    const onVisible = () => {
+      if (document.visibilityState === "visible") void getSession();
+    };
+    document.addEventListener("visibilitychange", onVisible);
 
     return () => {
       window.removeEventListener("storage", handleStorageChange);
-      clearInterval(interval);
+      document.removeEventListener("visibilitychange", onVisible);
     };
   }, []);
 
@@ -101,7 +103,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       await authClient.signIn.social({
         provider: "google",
         callbackURL: "/",
-        errorCallbackURL: "/signin",
+        errorCallbackURL: "/login",
         newUserCallbackURL: "/",
       });
 

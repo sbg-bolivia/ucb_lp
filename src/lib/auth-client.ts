@@ -1,6 +1,6 @@
-import { getSiteUrl } from "@/lib/club-brand";
+import { getClientSiteUrl } from "@/lib/club-brand";
 import { createAuthClient } from "better-auth/react";
 
 export const authClient = createAuthClient({
-  baseURL: getSiteUrl(),
+  baseURL: getClientSiteUrl(),
 });

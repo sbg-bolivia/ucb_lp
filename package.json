@@ -23,7 +23,8 @@
     "db:down": "docker-compose down",
     "db:clean": "docker-compose down -v",
     "db:logs": "docker-compose logs -f",
-    "dev": "npm-run-all db:start dev:wait dev:push dev:next",
+    "dev": "next dev --turbo",
+    "dev:local": "npm-run-all db:start dev:wait dev:push dev:next",
     "dev:wait": "wait-on tcp:5435 -t 10000",
     "dev:push": "prisma db push",
     "dev:next": "next dev --turbo",
@@ -36,6 +37,8 @@
     "prepare": "husky"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.1063.0",
+    "@aws-sdk/s3-request-presigner": "^3.1063.0",
     "@hookform/resolvers": "^5.2.2",
     "@prisma/client": "^6.5.0",
     "@radix-ui/react-accordion": "^1.2.12",

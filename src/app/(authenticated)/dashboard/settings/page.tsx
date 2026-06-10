@@ -1,7 +1,10 @@
 "use client";
 
+import { AdminPageHeader } from "@/components/dashboard/AdminPageHeader";
+import { S3ImageUploadField } from "@/components/dashboard/S3ImageUploadField";
 import { TranslationButton } from "@/components/dashboard/TranslationButton";
 import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Card,
   CardContent,
@@ -224,26 +227,22 @@ export default function SettingsPage() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-semibold text-foreground">
-            {t("settings2")}
-          </h1>
-          <p className="text-sm text-muted-foreground mt-0.5 mr-8">
-            {t("settingsDesc")}
-          </p>
-        </div>
-        <div className="flex items-center space-x-2">
-          <div className="p-2 bg-primary/10 rounded-lg">
-            <Settings className="h-5 w-5 text-primary" />
-          </div>
-        </div>
-      </div>
+      <AdminPageHeader
+        icon={Settings}
+        title={t("settings2")}
+        description={t("settingsDesc")}
+      />
 
-      {/* Form */}
       <form onSubmit={handleSubmit} className="space-y-6">
-        {/* Basic Information - Campos no traducibles (base) */}
+        <Tabs defaultValue="general" className="w-full">
+          <TabsList className="grid h-auto w-full grid-cols-2 gap-1 sm:grid-cols-4">
+            <TabsTrigger value="general">General</TabsTrigger>
+            <TabsTrigger value="contacto">Contacto</TabsTrigger>
+            <TabsTrigger value="redes">Redes</TabsTrigger>
+            <TabsTrigger value="seo">SEO</TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="general" className="mt-6 space-y-6">
         <Card className="bg-card rounded-xl border border-border">
           <CardHeader>
             <CardTitle className="flex items-center gap-3">
@@ -348,46 +347,29 @@ export default function SettingsPage() {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="logoUrl">
-                  {t("logoUrl") || "URL del Logo"}
-                </Label>
-                <Input
-                  id="logoUrl"
-                  type="text"
-                  value={formData.logoUrl}
-                  onChange={(e) => handleInputChange("logoUrl", e.target.value)}
-                  placeholder="/images/logo.png o https://example.com/logo.png"
-                />
-                <p className="text-xs text-muted-foreground">
-                  {t("logoUrlHelp") ||
-                    "URL completa o ruta relativa del logo (ej: /images/logo.png)"}
-                </p>
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="faviconUrl">
-                  {t("faviconUrl") || "URL del Favicon"}
-                </Label>
-                <Input
-                  id="faviconUrl"
-                  type="text"
-                  value={formData.faviconUrl}
-                  onChange={(e) =>
-                    handleInputChange("faviconUrl", e.target.value)
-                  }
-                  placeholder="/favicon.ico o https://example.com/favicon.ico"
-                />
-                <p className="text-xs text-muted-foreground">
-                  {t("faviconUrlHelp") ||
-                    "URL completa o ruta relativa del favicon (ej: /favicon.ico)"}
-                </p>
-              </div>
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+              <S3ImageUploadField
+                id="logoUrl"
+                label={t("logoUrl") || "Logo del club"}
+                folder="brand"
+                value={formData.logoUrl}
+                onChange={(url) => handleInputChange("logoUrl", url)}
+                previewVariant="square"
+              />
+              <S3ImageUploadField
+                id="faviconUrl"
+                label={t("faviconUrl") || "Favicon"}
+                folder="brand"
+                value={formData.faviconUrl}
+                onChange={(url) => handleInputChange("faviconUrl", url)}
+                previewVariant="avatar"
+              />
             </div>
           </CardContent>
         </Card>
+          </TabsContent>
 
-        {/* Contact Information */}
+          <TabsContent value="contacto" className="mt-6 space-y-6">
         <Card className="bg-card rounded-xl border border-border">
           <CardHeader>
             <CardTitle className="flex items-center gap-3">
@@ -453,8 +435,9 @@ export default function SettingsPage() {
             </div>
           </CardContent>
         </Card>
+          </TabsContent>
 
-        {/* Social Media */}
+          <TabsContent value="redes" className="mt-6 space-y-6">
         <Card className="bg-card rounded-xl border border-border">
           <CardHeader>
             <CardTitle className="flex items-center gap-3">
@@ -563,8 +546,9 @@ export default function SettingsPage() {
             </div>
           </CardContent>
         </Card>
+          </TabsContent>
 
-        {/* SEO Information - Campos no traducibles (base) */}
+          <TabsContent value="seo" className="mt-6 space-y-6">
         <Card className="bg-card rounded-xl border border-border">
           <CardHeader>
             <CardTitle className="flex items-center gap-3">
@@ -643,6 +627,8 @@ export default function SettingsPage() {
             </div>
           </CardContent>
         </Card>
+          </TabsContent>
+        </Tabs>
 
         {/* Submit Button */}
         <div className="flex justify-end">

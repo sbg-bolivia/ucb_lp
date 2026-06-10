@@ -214,4 +214,40 @@ export const clubEventsRouter = router({
       await prisma.clubEvent.delete({ where: { id: input.id } });
       return { ok: true as const };
     }),
+
+  reorder: protectedProcedure
+    .input(z.object({ orderedIds: z.array(z.string().uuid()).min(1) }))
+    .mutation(async ({ ctx, input }) => {
+      if (!ctx.user.tenantId) {
+        throw new TRPCError({ code: "BAD_REQUEST", message: "Sin tenant" });
+      }
+      const ok = await hasPermissionOrManage(
+        ctx.user.id,
+        PermissionAction.UPDATE,
+        PermissionResource.ADMIN,
+        ctx.user.tenantId
+      );
+      if (!ok) {
+        throw new TRPCError({ code: "FORBIDDEN", message: "Sin permiso" });
+      }
+
+      const existing = await prisma.clubEvent.findMany({
+        where: { tenantId: ctx.user.tenantId, id: { in: input.orderedIds } },
+        select: { id: true },
+      });
+      if (existing.length !== input.orderedIds.length) {
+        throw new TRPCError({ code: "BAD_REQUEST", message: "IDs inválidos" });
+      }
+
+      await prisma.$transaction(
+        input.orderedIds.map((id, index) =>
+          prisma.clubEvent.update({
+            where: { id },
+            data: { sortOrder: index },
+          })
+        )
+      );
+
+      return { ok: true as const };
+    }),
 });

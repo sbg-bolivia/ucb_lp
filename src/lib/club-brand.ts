@@ -13,7 +13,24 @@ export const CLUB = {
   email: "awscloudclubucblapaz@gmail.com",
 } as const;
 
+/** URL del sitio en servidor (API, emails, SEO, Better Auth). */
 export function getSiteUrl(): string {
+  return (
+    process.env.SITE_URL ||
+    process.env.NEXT_PUBLIC_SITE_URL ||
+    "http://localhost:3000"
+  );
+}
+
+/**
+ * URL base para el cliente (navegador).
+ * `SITE_URL` no se expone al bundle del cliente; usa el origen actual o
+ * `NEXT_PUBLIC_SITE_URL`.
+ */
+export function getClientSiteUrl(): string {
+  if (typeof window !== "undefined") {
+    return window.location.origin;
+  }
   return (
     process.env.NEXT_PUBLIC_SITE_URL ||
     process.env.SITE_URL ||

@@ -1,6 +1,12 @@
 "use client";
 
 import {
+  AuthPageShell,
+  AuthPrimaryButton,
+  AUTH_INPUT_CLASS,
+} from "@/components/auth/AuthPageShell";
+import { Button } from "@/components/ui/button";
+import {
   Form,
   FormControl,
   FormItem,
@@ -8,7 +14,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { ArrowLeft, CheckCircle, Mail } from "lucide-react";
+import { CheckCircle, Mail } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
@@ -23,24 +29,15 @@ export default function ForgotPasswordPage() {
   const [emailSent, setEmailSent] = useState(false);
 
   const form = useForm<ForgotPasswordFormValues>({
-    defaultValues: {
-      email: "",
-    },
+    defaultValues: { email: "" },
   });
 
-  const {
-    control,
-    handleSubmit,
-    setError,
-    clearErrors,
-    formState: { errors: _errors },
-  } = form;
+  const { control, handleSubmit, setError, clearErrors } = form;
 
   const onSubmit = async (data: ForgotPasswordFormValues) => {
     setLoading(true);
     clearErrors();
 
-    // Validación de email
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(data.email)) {
       setError("email", {
@@ -69,7 +66,7 @@ export default function ForgotPasswordPage() {
           result.error?.message || "Error al enviar email de recuperación"
         );
       }
-    } catch (_error) {
+    } catch {
       toast.error("Error de red o servidor");
     }
     setLoading(false);
@@ -77,135 +74,85 @@ export default function ForgotPasswordPage() {
 
   if (emailSent) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center py-8 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-md w-full space-y-8">
-          <div className="text-center">
-            <Link
-              href="/signin"
-              className="inline-flex items-center text-blue-600 hover:text-blue-700 mb-8 transition-colors"
-            >
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              Volver al inicio de sesión
-            </Link>
+      <AuthPageShell
+        title="Email enviado"
+        backHref="/login"
+        backLabel="Volver al login"
+        icon={<CheckCircle className="h-8 w-8 text-white" />}
+      >
+        <p className="text-center text-sm text-muted-foreground">
+          Hemos enviado un enlace de recuperación a tu correo. Revisa tu bandeja
+          de entrada y sigue las instrucciones.
+        </p>
 
-            <div className="mx-auto h-16 w-16 bg-green-100 rounded-full flex items-center justify-center mb-6">
-              <CheckCircle className="h-8 w-8 text-green-600" />
-            </div>
-
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">
-              Email Enviado
-            </h2>
-
-            <p className="text-gray-600 mb-8">
-              Hemos enviado un enlace de recuperación a tu correo electrónico.
-              Revisa tu bandeja de entrada y sigue las instrucciones para
-              restablecer tu contraseña.
-            </p>
-
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
-              <div className="flex items-center">
-                <Mail className="h-5 w-5 text-blue-600 mr-2" />
-                <span className="text-sm text-blue-800">
-                  Si no recibes el email en unos minutos, revisa tu carpeta de
-                  spam.
-                </span>
-              </div>
-            </div>
-
-            <div className="space-y-3">
-              <button
-                type="button"
-                onClick={() => setEmailSent(false)}
-                className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg font-semibold hover:bg-blue-700 transition-colors"
-              >
-                Enviar otro email
-              </button>
-
-              <Link
-                href="/signin"
-                className="w-full block text-center border border-gray-300 text-gray-700 py-2 px-4 rounded-lg font-semibold hover:bg-gray-50 transition-colors"
-              >
-                Volver al inicio de sesión
-              </Link>
-            </div>
+        <div className="mt-6 rounded-lg border border-primary/20 bg-primary/5 p-4 dark:bg-primary/10">
+          <div className="flex items-start gap-2 text-sm text-foreground">
+            <Mail className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
+            <span>
+              Si no recibes el email en unos minutos, revisa tu carpeta de spam.
+            </span>
           </div>
         </div>
-      </div>
+
+        <div className="mt-6 space-y-3">
+          <AuthPrimaryButton
+            type="button"
+            onClick={() => setEmailSent(false)}
+          >
+            Enviar otro email
+          </AuthPrimaryButton>
+          <Button variant="outline" className="w-full" asChild>
+            <Link href="/login">Volver al login</Link>
+          </Button>
+        </div>
+      </AuthPageShell>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center py-8 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
-        {/* Header */}
-        <div className="text-center">
-          <Link
-            href="/signin"
-            className="inline-flex items-center text-blue-600 hover:text-blue-700 mb-8 transition-colors"
-          >
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Volver al inicio de sesión
-          </Link>
+    <AuthPageShell
+      title="Recuperar contraseña"
+      backHref="/login"
+      backLabel="Volver al login"
+      subtitle="Ingresa tu correo y te enviaremos un enlace para restablecer tu contraseña."
+    >
+      <Form {...form}>
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+          <Controller
+            name="email"
+            control={control}
+            rules={{ required: "Correo requerido" }}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Correo electrónico</FormLabel>
+                <FormControl>
+                  <Input
+                    type="email"
+                    placeholder="tu@email.com"
+                    className={AUTH_INPUT_CLASS}
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-          <div className="mx-auto h-16 w-16 bg-gradient-to-br from-blue-600 to-blue-700 rounded-xl flex items-center justify-center shadow-lg">
-            <span className="text-white font-bold text-2xl">F</span>
-          </div>
-          <h2 className="mt-6 text-3xl font-bold text-gray-900">
-            Recuperar Contraseña
-          </h2>
-          <p className="mt-2 text-sm text-gray-600">
-            Ingresa tu correo electrónico y te enviaremos un enlace para
-            restablecer tu contraseña.
-          </p>
-        </div>
+          <AuthPrimaryButton loading={loading}>
+            {loading ? "Enviando..." : "Enviar enlace de recuperación"}
+          </AuthPrimaryButton>
+        </form>
+      </Form>
 
-        {/* Form */}
-        <div className="bg-white py-8 px-6 shadow-lg rounded-lg">
-          <Form {...form}>
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-              <Controller
-                name="email"
-                control={control}
-                rules={{ required: "Correo requerido" }}
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Correo electrónico</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="email"
-                        placeholder="tu@email.com"
-                        {...field}
-                        className="w-full"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg font-semibold hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-              >
-                {loading ? "Enviando..." : "Enviar enlace de recuperación"}
-              </button>
-            </form>
-          </Form>
-
-          <div className="mt-6 text-center">
-            <p className="text-sm text-gray-600">
-              ¿Recordaste tu contraseña?{" "}
-              <Link
-                href="/signin"
-                className="font-medium text-blue-600 hover:text-blue-500"
-              >
-                Inicia sesión aquí
-              </Link>
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
+      <p className="mt-6 text-center text-sm text-muted-foreground">
+        ¿Recordaste tu contraseña?{" "}
+        <Link
+          href="/login"
+          className="font-medium text-primary hover:text-primary/80"
+        >
+          Inicia sesión aquí
+        </Link>
+      </p>
+    </AuthPageShell>
   );
 }
