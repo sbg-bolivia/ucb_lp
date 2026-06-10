@@ -73,8 +73,34 @@ export function ClubHero() {
   const [paused, setPaused] = useState(false);
   const [isLg, setIsLg] = useState(false);
   const [modelPaused, setModelPaused] = useState(false);
+  const [enable3d, setEnable3d] = useState(false);
 
   useEffect(() => setMounted(true), []);
+
+  useEffect(() => {
+    if (!mounted) return;
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const saveData = (
+      navigator as Navigator & { connection?: { saveData?: boolean } }
+    ).connection?.saveData;
+    if (reduced || saveData) return;
+
+    let cancelled = false;
+    const run = () => {
+      if (!cancelled) setEnable3d(true);
+    };
+    const idleId =
+      typeof window.requestIdleCallback === "function"
+        ? window.requestIdleCallback(run, { timeout: 3000 })
+        : null;
+    const timerId =
+      idleId === null ? window.setTimeout(run, 1800) : null;
+    return () => {
+      cancelled = true;
+      if (idleId !== null) window.cancelIdleCallback(idleId);
+      if (timerId !== null) window.clearTimeout(timerId);
+    };
+  }, [mounted]);
 
   useEffect(() => {
     const mq = window.matchMedia("(min-width: 1024px)");
@@ -186,13 +212,17 @@ export function ClubHero() {
       >
         <div className="club-hero-model-stage pointer-events-auto flex h-full w-full flex-col items-center justify-center py-1">
           <div className="club-hero-model-canvas min-h-0 w-full flex-1">
-            {mounted ? (
+            {mounted && enable3d ? (
               <ClubHeroModel
                 autoRotate={!modelPaused}
                 lightMode={isLight ? "light" : "dark"}
                 onInteractingChange={setModelPaused}
               />
-            ) : null}
+            ) : (
+              <div className="flex h-full min-h-[200px] items-center justify-center">
+                <Cloud className="h-14 w-14 animate-pulse text-[#7E2CFF]/35" />
+              </div>
+            )}
           </div>
           <p
             className={`pointer-events-none mt-2 shrink-0 flex items-center justify-center gap-2 pb-1 text-xs font-medium uppercase tracking-[0.18em] ${

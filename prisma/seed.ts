@@ -58,6 +58,11 @@ const PERMISSION_DEFS = [
   { action: PermissionAction.READ, resource: PermissionResource.ADMIN },
   { action: PermissionAction.UPDATE, resource: PermissionResource.ADMIN },
   { action: PermissionAction.MANAGE, resource: PermissionResource.ADMIN },
+  { action: PermissionAction.CREATE, resource: PermissionResource.CONTENT },
+  { action: PermissionAction.READ, resource: PermissionResource.CONTENT },
+  { action: PermissionAction.UPDATE, resource: PermissionResource.CONTENT },
+  { action: PermissionAction.DELETE, resource: PermissionResource.CONTENT },
+  { action: PermissionAction.MANAGE, resource: PermissionResource.CONTENT },
 ];
 
 const ROLE_NAME_MAP = {
@@ -73,6 +78,7 @@ async function clearDatabase() {
   await prisma.session.deleteMany({});
   await prisma.account.deleteMany({});
   await prisma.verification.deleteMany({});
+  await prisma.clubEventVersion.deleteMany({});
   await prisma.eventCollaboration.deleteMany({});
   await prisma.awsServiceCard.deleteMany({});
   await prisma.awsService.deleteMany({});
@@ -177,9 +183,7 @@ async function createRolesAndPermissions(tenantId: string) {
         (p.action === PermissionAction.READ ||
           p.action === PermissionAction.UPDATE)) ||
       p.resource === PermissionResource.DASHBOARD ||
-      (p.resource === PermissionResource.ADMIN &&
-        (p.action === PermissionAction.READ ||
-          p.action === PermissionAction.UPDATE))
+      p.resource === PermissionResource.CONTENT
   );
   for (const permission of moderatorPermissions) {
     await prisma.rolePermission.create({

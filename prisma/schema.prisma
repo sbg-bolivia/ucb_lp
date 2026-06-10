@@ -111,11 +111,27 @@ model ClubEvent {
   createdAt        DateTime           @default(now())
   updatedAt        DateTime           @updatedAt
   collaborations   EventCollaboration[]
+  versions         ClubEventVersion[]
 
   @@index([tenantId])
   @@index([tenantId, isPublished, startsAt])
   @@index([tenantId, status, startsAt])
   @@map("club_events")
+}
+
+/// Snapshot de un evento antes de cada actualización (historial / restaurar)
+model ClubEventVersion {
+  id            String    @id @default(uuid())
+  eventId       String
+  event         ClubEvent @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  versionNumber Int
+  snapshot      Json
+  changedById   String?
+  changeNote    String?
+  createdAt     DateTime  @default(now())
+
+  @@index([eventId, versionNumber(sort: Desc)])
+  @@map("club_event_versions")
 }
 
 /// Colaboración de un evento con otra comunidad AWS (SBG, User Group, etc.)
@@ -435,6 +451,7 @@ enum PermissionResource {
   PERMISSION
   DASHBOARD
   ADMIN
+  CONTENT
 }
 
 // ================================

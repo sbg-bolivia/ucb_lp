@@ -1,6 +1,8 @@
 "use client";
 
 import { AdminDragHandle, reorderItems } from "@/components/dashboard/AdminDragReorder";
+import { AdminLivePreview } from "@/components/dashboard/AdminLivePreview";
+import { EventVersionHistory } from "@/components/dashboard/EventVersionHistory";
 import { S3ImageUploadField } from "@/components/dashboard/S3ImageUploadField";
 import { S3VideoUploadField } from "@/components/dashboard/S3VideoUploadField";
 import { Button } from "@/components/ui/button";
@@ -43,7 +45,7 @@ import { AdminPageHeader } from "@/components/dashboard/AdminPageHeader";
 import { useConfirm } from "@/components/dashboard/ConfirmDialogProvider";
 import { Badge } from "@/components/ui/badge";
 import { useAdminViewMode } from "@/hooks/useAdminViewMode";
-import { Calendar, Eye, MapPin, Pencil, Plus, Trash2 } from "lucide-react";
+import { Calendar, Eye, History, MapPin, Pencil, Plus, Trash2 } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
@@ -142,6 +144,7 @@ export default function ClubEventosAdminPage() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState<FormState>(emptyForm);
   const [orderedIds, setOrderedIds] = useState<string[]>([]);
+  const [historyOpen, setHistoryOpen] = useState(false);
 
   useEffect(() => {
     if (events) setOrderedIds(events.map((e) => e.id));
@@ -678,8 +681,22 @@ export default function ClubEventosAdminPage() {
                 }
               />
             </div>
+            <AdminLivePreview
+              path={editingId ? `/eventos/${editingId}` : null}
+            />
           </fieldset>
           <DialogFooter className="gap-2 sm:gap-0">
+            {editingId ? (
+              <Button
+                type="button"
+                variant="outline"
+                className="mr-auto"
+                onClick={() => setHistoryOpen(true)}
+              >
+                <History className="mr-2 h-4 w-4" />
+                Historial
+              </Button>
+            ) : null}
             <Button
               type="button"
               variant="outline"
@@ -699,6 +716,14 @@ export default function ClubEventosAdminPage() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      <EventVersionHistory
+        eventId={editingId}
+        eventTitle={form.title}
+        open={historyOpen}
+        onOpenChange={setHistoryOpen}
+        onRestored={() => void refetch()}
+      />
     </div>
   );
 }

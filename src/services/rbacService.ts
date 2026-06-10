@@ -162,6 +162,30 @@ export async function hasPermission(
  * @param tenantId - Tenant ID
  * @returns true if user has MANAGE permission OR the specific action permission
  */
+/** ADMIN o permiso CONTENT (editores de contenido sin acceso a usuarios/roles). */
+export async function hasAdminOrContentPermission(
+  userId: string,
+  action: PermissionAction,
+  tenantId: string
+): Promise<boolean> {
+  if (
+    await hasPermissionOrManage(
+      userId,
+      action,
+      PermissionResource.ADMIN,
+      tenantId
+    )
+  ) {
+    return true;
+  }
+  return hasPermissionOrManage(
+    userId,
+    action,
+    PermissionResource.CONTENT,
+    tenantId
+  );
+}
+
 export async function hasPermissionOrManage(
   userId: string,
   action: PermissionAction,

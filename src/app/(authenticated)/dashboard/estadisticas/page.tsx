@@ -9,11 +9,14 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { downloadStatsCsv } from "@/lib/export-stats-csv";
 import { trpc } from "@/utils/trpc";
+import { Button } from "@/components/ui/button";
 import {
   BarChart3,
   Calendar,
   Cloud,
+  Download,
   Eye,
   Globe2,
   TrendingUp,
@@ -68,6 +71,19 @@ export default function EstadisticasPage() {
         icon={BarChart3}
         title="Estadísticas"
         description="Visitas al sitio público, contenido publicado y salud general de la plataforma."
+        actions={
+          data ? (
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => downloadStatsCsv(data)}
+            >
+              <Download className="mr-2 h-4 w-4" />
+              Exportar CSV
+            </Button>
+          ) : null
+        }
       />
 
       {isLoading ? (

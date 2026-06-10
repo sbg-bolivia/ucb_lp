@@ -1,10 +1,18 @@
+import type { ClubEvent } from "@prisma/client";
 import { EventStatus, RegistrationType } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
+import {
+  eventToSnapshot,
+  snapshotToEventData,
+  type ClubEventSnapshot,
+} from "../../lib/club-event-snapshot";
 import { prisma } from "../../lib/db";
-import { hasPermissionOrManage } from "../../services/rbacService";
-import { PermissionAction, PermissionResource } from "../../types/rbac";
+import { hasAdminOrContentPermission } from "../../services/rbacService";
+import { PermissionAction } from "../../types/rbac";
 import { protectedProcedure, publicProcedure, router } from "../trpc";
+
+const MAX_EVENT_VERSIONS = 30;
 
 const optionalUrl = z
   .string()
@@ -43,8 +51,48 @@ async function getFirstActiveTenantId(): Promise<string | null> {
   return t?.id ?? null;
 }
 
+async function assertContentAccess(
+  userId: string,
+  tenantId: string,
+  action: PermissionAction
+) {
+  const ok = await hasAdminOrContentPermission(userId, action, tenantId);
+  if (!ok) {
+    throw new TRPCError({ code: "FORBIDDEN", message: "Sin permiso" });
+  }
+}
+
+async function saveEventVersion(event: ClubEvent, changedById: string) {
+  const last = await prisma.clubEventVersion.findFirst({
+    where: { eventId: event.id },
+    orderBy: { versionNumber: "desc" },
+    select: { versionNumber: true },
+  });
+  const versionNumber = (last?.versionNumber ?? 0) + 1;
+
+  await prisma.clubEventVersion.create({
+    data: {
+      eventId: event.id,
+      versionNumber,
+      snapshot: eventToSnapshot(event),
+      changedById,
+    },
+  });
+
+  const stale = await prisma.clubEventVersion.findMany({
+    where: { eventId: event.id },
+    orderBy: { versionNumber: "desc" },
+    skip: MAX_EVENT_VERSIONS,
+    select: { id: true },
+  });
+  if (stale.length > 0) {
+    await prisma.clubEventVersion.deleteMany({
+      where: { id: { in: stale.map((v) => v.id) } },
+    });
+  }
+}
+
 export const clubEventsRouter = router({
-  /** Eventos publicados del tenant por defecto (sitio público). */
   listPublic: publicProcedure.query(async () => {
     const tenantId = await getFirstActiveTenantId();
     if (!tenantId) return [];
@@ -70,15 +118,11 @@ export const clubEventsRouter = router({
     if (!ctx.user.tenantId) {
       throw new TRPCError({ code: "BAD_REQUEST", message: "Sin tenant" });
     }
-    const ok = await hasPermissionOrManage(
+    await assertContentAccess(
       ctx.user.id,
-      PermissionAction.READ,
-      PermissionResource.ADMIN,
-      ctx.user.tenantId
+      ctx.user.tenantId,
+      PermissionAction.READ
     );
-    if (!ok) {
-      throw new TRPCError({ code: "FORBIDDEN", message: "Sin permiso" });
-    }
 
     return prisma.clubEvent.findMany({
       where: { tenantId: ctx.user.tenantId },
@@ -86,21 +130,51 @@ export const clubEventsRouter = router({
     });
   }),
 
+  listVersions: protectedProcedure
+    .input(z.object({ eventId: z.string().uuid() }))
+    .query(async ({ ctx, input }) => {
+      if (!ctx.user.tenantId) {
+        throw new TRPCError({ code: "BAD_REQUEST", message: "Sin tenant" });
+      }
+      await assertContentAccess(
+        ctx.user.id,
+        ctx.user.tenantId,
+        PermissionAction.READ
+      );
+
+      const event = await prisma.clubEvent.findFirst({
+        where: { id: input.eventId, tenantId: ctx.user.tenantId },
+        select: { id: true },
+      });
+      if (!event) {
+        throw new TRPCError({ code: "NOT_FOUND", message: "Evento no encontrado" });
+      }
+
+      return prisma.clubEventVersion.findMany({
+        where: { eventId: input.eventId },
+        orderBy: { versionNumber: "desc" },
+        take: MAX_EVENT_VERSIONS,
+        select: {
+          id: true,
+          versionNumber: true,
+          snapshot: true,
+          changedById: true,
+          createdAt: true,
+        },
+      });
+    }),
+
   create: protectedProcedure
     .input(clubEventCreateSchema)
     .mutation(async ({ ctx, input }) => {
       if (!ctx.user.tenantId) {
         throw new TRPCError({ code: "BAD_REQUEST", message: "Sin tenant" });
       }
-      const ok = await hasPermissionOrManage(
+      await assertContentAccess(
         ctx.user.id,
-        PermissionAction.CREATE,
-        PermissionResource.ADMIN,
-        ctx.user.tenantId
+        ctx.user.tenantId,
+        PermissionAction.CREATE
       );
-      if (!ok) {
-        throw new TRPCError({ code: "FORBIDDEN", message: "Sin permiso" });
-      }
 
       const registrationUrl =
         input.registrationUrl ?? input.externalUrl ?? null;
@@ -133,15 +207,11 @@ export const clubEventsRouter = router({
       if (!ctx.user.tenantId) {
         throw new TRPCError({ code: "BAD_REQUEST", message: "Sin tenant" });
       }
-      const ok = await hasPermissionOrManage(
+      await assertContentAccess(
         ctx.user.id,
-        PermissionAction.UPDATE,
-        PermissionResource.ADMIN,
-        ctx.user.tenantId
+        ctx.user.tenantId,
+        PermissionAction.UPDATE
       );
-      if (!ok) {
-        throw new TRPCError({ code: "FORBIDDEN", message: "Sin permiso" });
-      }
 
       const { id, ...patch } = input;
       const existing = await prisma.clubEvent.findFirst({
@@ -153,6 +223,8 @@ export const clubEventsRouter = router({
           message: "Evento no encontrado",
         });
       }
+
+      await saveEventVersion(existing, ctx.user.id);
 
       const data: Record<string, unknown> = {};
       if (patch.title !== undefined) data.title = patch.title;
@@ -185,21 +257,48 @@ export const clubEventsRouter = router({
       });
     }),
 
+  restoreVersion: protectedProcedure
+    .input(z.object({ versionId: z.string().uuid() }))
+    .mutation(async ({ ctx, input }) => {
+      if (!ctx.user.tenantId) {
+        throw new TRPCError({ code: "BAD_REQUEST", message: "Sin tenant" });
+      }
+      await assertContentAccess(
+        ctx.user.id,
+        ctx.user.tenantId,
+        PermissionAction.UPDATE
+      );
+
+      const version = await prisma.clubEventVersion.findFirst({
+        where: { id: input.versionId },
+        include: {
+          event: true,
+        },
+      });
+      if (!version || version.event.tenantId !== ctx.user.tenantId) {
+        throw new TRPCError({ code: "NOT_FOUND", message: "Versión no encontrada" });
+      }
+
+      await saveEventVersion(version.event, ctx.user.id);
+
+      const snapshot = version.snapshot as ClubEventSnapshot;
+      return prisma.clubEvent.update({
+        where: { id: version.eventId },
+        data: snapshotToEventData(snapshot),
+      });
+    }),
+
   delete: protectedProcedure
     .input(z.object({ id: z.string().uuid() }))
     .mutation(async ({ ctx, input }) => {
       if (!ctx.user.tenantId) {
         throw new TRPCError({ code: "BAD_REQUEST", message: "Sin tenant" });
       }
-      const ok = await hasPermissionOrManage(
+      await assertContentAccess(
         ctx.user.id,
-        PermissionAction.DELETE,
-        PermissionResource.ADMIN,
-        ctx.user.tenantId
+        ctx.user.tenantId,
+        PermissionAction.DELETE
       );
-      if (!ok) {
-        throw new TRPCError({ code: "FORBIDDEN", message: "Sin permiso" });
-      }
 
       const existing = await prisma.clubEvent.findFirst({
         where: { id: input.id, tenantId: ctx.user.tenantId },
@@ -221,15 +320,11 @@ export const clubEventsRouter = router({
       if (!ctx.user.tenantId) {
         throw new TRPCError({ code: "BAD_REQUEST", message: "Sin tenant" });
       }
-      const ok = await hasPermissionOrManage(
+      await assertContentAccess(
         ctx.user.id,
-        PermissionAction.UPDATE,
-        PermissionResource.ADMIN,
-        ctx.user.tenantId
+        ctx.user.tenantId,
+        PermissionAction.UPDATE
       );
-      if (!ok) {
-        throw new TRPCError({ code: "FORBIDDEN", message: "Sin permiso" });
-      }
 
       const existing = await prisma.clubEvent.findMany({
         where: { tenantId: ctx.user.tenantId, id: { in: input.orderedIds } },

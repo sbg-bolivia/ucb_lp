@@ -13,6 +13,7 @@ export enum PermissionResource {
   PERMISSION = "PERMISSION",
   DASHBOARD = "DASHBOARD",
   ADMIN = "ADMIN",
+  CONTENT = "CONTENT",
 }
 
 export interface Role {
@@ -162,5 +163,27 @@ export const DEFAULT_PERMISSIONS = {
   ADMIN_MANAGE: {
     action: PermissionAction.MANAGE,
     resource: PermissionResource.ADMIN,
+  },
+
+  // Contenido del sitio (eventos, equipo, banners…) sin gestionar usuarios
+  CONTENT_CREATE: {
+    action: PermissionAction.CREATE,
+    resource: PermissionResource.CONTENT,
+  },
+  CONTENT_READ: {
+    action: PermissionAction.READ,
+    resource: PermissionResource.CONTENT,
+  },
+  CONTENT_UPDATE: {
+    action: PermissionAction.UPDATE,
+    resource: PermissionResource.CONTENT,
+  },
+  CONTENT_DELETE: {
+    action: PermissionAction.DELETE,
+    resource: PermissionResource.CONTENT,
+  },
+  CONTENT_MANAGE: {
+    action: PermissionAction.MANAGE,
+    resource: PermissionResource.CONTENT,
   },
 } as const;

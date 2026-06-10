@@ -5,6 +5,7 @@ import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { randomUUID } from "node:crypto";
 
 import type { S3UploadFolder } from "./s3-constants";
+import { getS3Env } from "./s3-env";
 
 export type { S3UploadFolder } from "./s3-constants";
 export { S3_UPLOAD_FOLDERS } from "./s3-constants";
@@ -34,17 +35,15 @@ function allowedTypesFor(kind: S3MediaKind): Set<string> {
 }
 
 export function isS3Configured(): boolean {
-  return Boolean(process.env.AWS_S3_BUCKET && process.env.AWS_REGION);
+  const { bucket, region } = getS3Env();
+  return Boolean(bucket && region);
 }
 
 function getS3Client(): S3Client {
-  const region = process.env.AWS_REGION;
+  const { region, accessKeyId, secretAccessKey } = getS3Env();
   if (!region) {
-    throw new Error("AWS_REGION no configurada");
+    throw new Error("S3_REGION (o AWS_REGION) no configurada");
   }
-
-  const accessKeyId = process.env.AWS_ACCESS_KEY_ID;
-  const secretAccessKey = process.env.AWS_SECRET_ACCESS_KEY;
 
   return new S3Client({
     region,
@@ -80,13 +79,12 @@ export function buildObjectKey(
 }
 
 export function getPublicObjectUrl(key: string): string {
-  const bucket = process.env.AWS_S3_BUCKET;
-  const region = process.env.AWS_REGION;
+  const { bucket, region, publicUrlBase } = getS3Env();
   if (!bucket || !region) {
-    throw new Error("AWS_S3_BUCKET o AWS_REGION no configuradas");
+    throw new Error("S3_BUCKET y S3_REGION no configuradas");
   }
 
-  const customBase = process.env.AWS_S3_PUBLIC_URL_BASE?.replace(/\/$/, "");
+  const customBase = publicUrlBase?.replace(/\/$/, "");
   if (customBase) {
     return `${customBase}/${key}`;
   }
@@ -100,9 +98,9 @@ export async function createPresignedUploadUrl(input: {
   contentType: string;
   mediaKind?: S3MediaKind;
 }): Promise<{ uploadUrl: string; publicUrl: string; key: string }> {
-  const bucket = process.env.AWS_S3_BUCKET;
+  const { bucket } = getS3Env();
   if (!bucket) {
-    throw new Error("AWS_S3_BUCKET no configurado");
+    throw new Error("S3_BUCKET no configurado");
   }
 
   const key = buildObjectKey(

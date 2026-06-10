@@ -61,7 +61,10 @@ const FALLBACK_IMAGE =
   "https://images.unsplash.com/photo-1540575467067-178ab98d8357?auto=format&fit=crop&w=900&q=80";
 
 export function ClubHomeEvents() {
-  const { data: events, isLoading } = trpc.clubEvents.listPublic.useQuery();
+  const { data: events, isLoading } = trpc.clubEvents.listPublic.useQuery(
+    undefined,
+    { staleTime: 120_000 }
+  );
   const featured = (events ?? []).slice(0, 3);
 
   return (
@@ -129,6 +132,8 @@ export function ClubHomeEvents() {
                           fill
                           className="object-cover transition-transform duration-700 group-hover:scale-110"
                           sizes="(max-width: 1024px) 100vw, 40vw"
+                          priority={index === 0}
+                          loading={index === 0 ? undefined : "lazy"}
                         />
                       </div>
                       <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-80 lg:bg-gradient-to-r dark:from-[#0C0D12]" />

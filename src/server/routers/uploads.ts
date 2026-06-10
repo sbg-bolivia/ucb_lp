@@ -51,7 +51,7 @@ export const uploadsRouter = router({
         throw new TRPCError({
           code: "PRECONDITION_FAILED",
           message:
-            "S3 no configurado. Añade AWS_REGION y AWS_S3_BUCKET en las variables de entorno.",
+            "S3 no configurado. Añade S3_REGION y S3_BUCKET en las variables de entorno.",
         });
       }
 
@@ -90,7 +90,7 @@ export const uploadsRouter = router({
         throw new TRPCError({
           code: "PRECONDITION_FAILED",
           message:
-            "S3 no configurado. Añade AWS_REGION y AWS_S3_BUCKET en las variables de entorno.",
+            "S3 no configurado. Añade S3_REGION y S3_BUCKET en las variables de entorno.",
         });
       }
 

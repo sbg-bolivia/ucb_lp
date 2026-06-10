@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { optimizeImageForUpload } from "@/lib/image-optimize";
 import type { S3UploadFolder } from "@/lib/s3-constants";
 import { cn } from "@/lib/utils";
 import { trpc } from "@/utils/trpc";
@@ -68,7 +69,9 @@ export function S3ImageUploadField({
     setUploading(true);
     setPreviewError(false);
     try {
-      const contentType = file.type as
+      const optimized = await optimizeImageForUpload(file);
+      const uploadFile = optimized.file;
+      const contentType = uploadFile.type as
         | "image/jpeg"
         | "image/png"
         | "image/webp"
@@ -76,14 +79,14 @@ export function S3ImageUploadField({
 
       const { uploadUrl, publicUrl } = await presignMut.mutateAsync({
         folder,
-        fileName: file.name,
+        fileName: uploadFile.name,
         contentType,
       });
 
       const res = await fetch(uploadUrl, {
         method: "PUT",
         headers: { "Content-Type": contentType },
-        body: file,
+        body: uploadFile,
       });
 
       if (!res.ok) {
@@ -91,7 +94,17 @@ export function S3ImageUploadField({
       }
 
       onChange(publicUrl);
-      toast.success("Imagen subida a S3");
+      const savedPct =
+        optimized.originalBytes > 0
+          ? Math.round(
+              (1 - optimized.optimizedBytes / optimized.originalBytes) * 100
+            )
+          : 0;
+      toast.success(
+        savedPct > 5
+          ? `Imagen optimizada y subida (−${savedPct}% peso)`
+          : "Imagen subida a S3"
+      );
     } catch (e) {
       const msg = e instanceof Error ? e.message : "Error al subir";
       toast.error(msg);
@@ -208,12 +221,12 @@ export function S3ImageUploadField({
 
       {s3Enabled ? (
         <p className="text-xs text-muted-foreground">
-          JPG, PNG, WebP o GIF · máx. 5 MB ·{" "}
+          JPG, PNG, WebP o GIF · máx. 5 MB · se optimiza al subir ·{" "}
           <code className="rounded bg-muted px-1">club/{folder}/</code>
         </p>
       ) : (
         <p className="text-xs text-muted-foreground">
-          S3 no configurado: configura AWS_S3_BUCKET en .env
+          S3 no configurado: configura S3_BUCKET en .env
         </p>
       )}
     </div>

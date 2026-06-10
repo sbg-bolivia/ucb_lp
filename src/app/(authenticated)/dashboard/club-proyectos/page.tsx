@@ -26,7 +26,10 @@ import { trpc } from "@/utils/trpc";
 import { AdminListLoading } from "@/components/dashboard/AdminListLoading";
 import { AdminPageHeader } from "@/components/dashboard/AdminPageHeader";
 import { useConfirm } from "@/components/dashboard/ConfirmDialogProvider";
-import { FolderKanban, Pencil, Plus, Trash2 } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { useAdminViewMode } from "@/hooks/useAdminViewMode";
+import { ExternalLink, FolderKanban, Pencil, Plus, Trash2 } from "lucide-react";
+import Image from "next/image";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
 
@@ -77,6 +80,8 @@ function projectToForm(p: ClubProjectRow): FormState {
 export default function ClubProyectosAdminPage() {
   const { t } = useTranslation("dashboard");
   const confirm = useConfirm();
+  const { mode: viewMode, setMode: setViewMode } =
+    useAdminViewMode("club-proyectos");
   const { data: projects, refetch, isLoading } =
     trpc.clubProjects.listForAdmin.useQuery();
   const [open, setOpen] = useState(false);
@@ -169,6 +174,9 @@ export default function ClubProyectosAdminPage() {
         icon={FolderKanban}
         title={t("clubProjectsAdmin")}
         description={t("clubProjectsAdminDesc")}
+        showViewToggle
+        viewMode={viewMode}
+        onViewModeChange={setViewMode}
         actions={
           <Button type="button" onClick={openNew}>
             <Plus className="mr-2 h-4 w-4" />
@@ -177,6 +185,97 @@ export default function ClubProyectosAdminPage() {
         }
       />
 
+      {viewMode === "cards" ? (
+        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+          {isLoading ? (
+            [1, 2, 3].map((i) => (
+              <div
+                key={i}
+                className="h-64 animate-pulse rounded-2xl border border-border bg-muted/30"
+              />
+            ))
+          ) : sorted.length === 0 ? (
+            <div className="col-span-full rounded-2xl border border-dashed border-border py-16 text-center text-muted-foreground">
+              No hay proyectos. Crea el primero con &quot;Nuevo proyecto&quot;.
+            </div>
+          ) : (
+            sorted.map((p) => (
+              <div
+                key={p.id}
+                className="overflow-hidden rounded-2xl border border-border/80 bg-card shadow-sm transition-shadow hover:shadow-md"
+              >
+                <div className="relative aspect-video bg-muted/40">
+                  {p.imageUrl ? (
+                    <Image
+                      src={p.imageUrl}
+                      alt={p.title}
+                      fill
+                      className="object-cover"
+                      sizes="(max-width: 768px) 100vw, 320px"
+                    />
+                  ) : (
+                    <div className="flex h-full items-center justify-center bg-gradient-to-br from-[#7E2CFF]/10 to-[#00C8FF]/10">
+                      <FolderKanban className="h-10 w-10 text-[#7E2CFF]/50" />
+                    </div>
+                  )}
+                  <Badge
+                    className="absolute right-2 top-2"
+                    variant={p.isPublished ? "default" : "secondary"}
+                  >
+                    {p.isPublished ? "Publicado" : "Borrador"}
+                  </Badge>
+                </div>
+                <div className="space-y-2 p-4">
+                  <h3 className="font-semibold leading-snug">{p.title}</h3>
+                  {p.tags ? (
+                    <p className="text-xs text-muted-foreground line-clamp-1">
+                      {p.tags}
+                    </p>
+                  ) : null}
+                  <div className="flex justify-end gap-1 pt-2">
+                    {p.projectUrl ? (
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8"
+                        asChild
+                      >
+                        <a
+                          href={p.projectUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          aria-label="Abrir proyecto"
+                        >
+                          <ExternalLink className="h-4 w-4" />
+                        </a>
+                      </Button>
+                    ) : null}
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8"
+                      onClick={() => openEdit(p)}
+                    >
+                      <Pencil className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8 text-destructive"
+                      onClick={() => void handleDelete(p)}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+      ) : (
       <div className="rounded-xl border border-border bg-card">
         <Table>
           <TableHeader>
@@ -235,6 +334,7 @@ export default function ClubProyectosAdminPage() {
           </TableBody>
         </Table>
       </div>
+      )}
 
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="max-h-[min(90vh,720px)] overflow-y-auto sm:max-w-lg">

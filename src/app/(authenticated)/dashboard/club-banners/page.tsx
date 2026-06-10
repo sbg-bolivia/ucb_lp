@@ -36,7 +36,14 @@ import { BANNER_PLACEMENT_LABELS } from "@/lib/banner-labels";
 import { parseDatetimeLocal, toDatetimeLocalValue } from "@/lib/datetime-local";
 import type { BannerPlacement } from "@prisma/client";
 import { trpc } from "@/utils/trpc";
-import { ExternalLink, ImageIcon, Pencil, Plus, Trash2 } from "lucide-react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { ExternalLink, ImageIcon, Info, Pencil, Plus, Trash2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
@@ -230,6 +237,27 @@ export default function ClubBannersAdminPage() {
           </Button>
         }
       />
+
+      <Card className="rounded-2xl border-dashed border-[#7E2CFF]/25 bg-gradient-to-br from-[#7E2CFF]/5 to-[#00C8FF]/5">
+        <CardHeader className="pb-2">
+          <CardTitle className="flex items-center gap-2 text-base">
+            <Info className="h-4 w-4 text-[#7E2CFF]" />
+            ¿Qué son los banners?
+          </CardTitle>
+          <CardDescription className="text-sm leading-relaxed">
+            Son imágenes promocionales que el sitio público puede mostrar en
+            zonas concretas (hero del home, sección secundaria, página de
+            eventos o servicios). Aquí defines título, imagen, enlace, fechas de
+            vigencia y orden. Cuando conectemos el home a esta API, aparecerán
+            solos según la ubicación y si están activos en la fecha actual — no
+            hace falta tocar código cada vez que cambies una promo.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="pb-4 text-xs text-muted-foreground">
+          Flujo: subes imagen a S3 → eliges ubicación → guardas. El público verá
+          solo banners activos y dentro del rango de fechas.
+        </CardContent>
+      </Card>
 
       <div className="rounded-xl border border-border bg-card">
         <Table>

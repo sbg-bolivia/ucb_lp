@@ -1,6 +1,7 @@
 "use client";
 
 import { AdminPageHeader } from "@/components/dashboard/AdminPageHeader";
+import { DashboardAlerts } from "@/components/dashboard/DashboardAlerts";
 import { Badge } from "@/components/ui/badge";
 import { useTranslation } from "@/hooks/useTranslation";
 import { getAdminNavGroups } from "@/lib/admin-nav-sections";
@@ -94,6 +95,8 @@ export default function AdminDashboard({ user }: AdminDashboardProps) {
           </Badge>
         }
       />
+
+      <DashboardAlerts />
 
       {stats ? (
         <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">

@@ -187,7 +187,7 @@ export function S3VideoUploadField({
         </p>
       ) : (
         <p className="text-xs text-muted-foreground">
-          S3 no configurado: configura AWS_S3_BUCKET en .env
+          S3 no configurado: configura S3_BUCKET en .env
         </p>
       )}
     </div>
