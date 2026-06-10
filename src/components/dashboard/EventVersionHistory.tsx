@@ -9,6 +9,7 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import type { ClubEventSnapshot } from "@/lib/club-event-snapshot";
+import { useTrpcMutation } from "@/utils/trpc-shallow";
 import { trpc } from "@/utils/trpc";
 import { History, RotateCcw } from "lucide-react";
 import { toast } from "sonner";
@@ -41,7 +42,7 @@ export function EventVersionHistory({
       { enabled: Boolean(eventId) && open }
     );
 
-  const restoreMut = trpc.clubEvents.restoreVersion.useMutation({
+  const restoreMut = useTrpcMutation(trpc.clubEvents.restoreVersion, {
     onSuccess: () => {
       toast.success("Versión restaurada");
       void refetch();

@@ -18,6 +18,7 @@ import {
   parseCoreTeamJson,
 } from "@/lib/club-core-team-schema";
 import { getInitials } from "@/lib/utils/avatar";
+import { useTrpcMutation } from "@/utils/trpc-shallow";
 import { trpc } from "@/utils/trpc";
 import {
   ExternalLink,
@@ -239,23 +240,12 @@ export function CoreTeamAdminSection() {
     }
   }, [tenant]);
 
-  const updateInfo = (
-    trpc.companyInfo.update as unknown as {
-      useMutation: (opts: {
-        onSuccess: () => void;
-        onError: (e: unknown) => void;
-      }) => {
-        mutateAsync: (input: { coreTeam: unknown }) => Promise<unknown>;
-        isPending: boolean;
-      };
-    }
-  ).useMutation({
+  const updateInfo = useTrpcMutation(trpc.companyInfo.update, {
     onSuccess: () => {
       toast.success("Equipo público guardado");
       refetch();
     },
-    onError: (e: unknown) =>
-      toast.error(e instanceof Error ? e.message : "Error al guardar"),
+    onError: (e) => toast.error(e.message || "Error al guardar"),
   });
 
   const save = async () => {

@@ -35,6 +35,7 @@ import {
 import { BANNER_PLACEMENT_LABELS } from "@/lib/banner-labels";
 import { parseDatetimeLocal, toDatetimeLocalValue } from "@/lib/datetime-local";
 import type { BannerPlacement } from "@prisma/client";
+import { useTrpcMutation } from "@/utils/trpc-shallow";
 import { trpc } from "@/utils/trpc";
 import {
   Card,
@@ -125,7 +126,7 @@ export default function ClubBannersAdminPage() {
     return result;
   }, [banners, orderedIds]);
 
-  const createMut = trpc.siteBanners.create.useMutation({
+  const createMut = useTrpcMutation(trpc.siteBanners.create, {
     onSuccess: () => {
       toast.success("Banner creado");
       void refetch();
@@ -136,7 +137,7 @@ export default function ClubBannersAdminPage() {
     onError: (e) => toast.error(e.message),
   });
 
-  const updateMut = trpc.siteBanners.update.useMutation({
+  const updateMut = useTrpcMutation(trpc.siteBanners.update, {
     onSuccess: () => {
       toast.success("Banner actualizado");
       void refetch();
@@ -147,7 +148,7 @@ export default function ClubBannersAdminPage() {
     onError: (e) => toast.error(e.message),
   });
 
-  const deleteMut = trpc.siteBanners.delete.useMutation({
+  const deleteMut = useTrpcMutation(trpc.siteBanners.delete, {
     onSuccess: () => {
       toast.success("Banner eliminado");
       void refetch();
@@ -155,7 +156,7 @@ export default function ClubBannersAdminPage() {
     onError: (e) => toast.error(e.message),
   });
 
-  const reorderMut = trpc.siteBanners.reorder.useMutation({
+  const reorderMut = useTrpcMutation(trpc.siteBanners.reorder, {
     onSuccess: () => toast.success("Orden actualizado"),
     onError: (e) => toast.error(e.message),
   });

@@ -13,6 +13,7 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { useTranslation } from "@/hooks/useTranslation";
+import { useTrpcMutation } from "@/utils/trpc-shallow";
 import { trpc } from "@/utils/trpc";
 import { Globe, Save } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -101,7 +102,7 @@ export function MultiLanguageEditor({
     setTranslations(loaded);
   }, [esTranslations, enTranslations, ptTranslations]);
 
-  const saveTranslation = trpc.translation.save.useMutation({
+  const saveTranslation = useTrpcMutation(trpc.translation.save, {
     onSuccess: () => {
       toast.success(t("save") || "Traducción guardada");
       refetchEs();
@@ -113,7 +114,7 @@ export function MultiLanguageEditor({
     },
   });
 
-  const saveBulkTranslations = trpc.translation.saveBulk.useMutation({
+  const saveBulkTranslations = useTrpcMutation(trpc.translation.saveBulk, {
     onSuccess: () => {
       toast.success(t("save") || "Traducciones guardadas");
       refetchEs();

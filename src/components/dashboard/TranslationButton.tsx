@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Textarea } from "@/components/ui/textarea";
+import { useTrpcMutation } from "@/utils/trpc-shallow";
 import { trpc } from "@/utils/trpc";
 import { TranslationStatus } from "@prisma/client";
 import { Save } from "lucide-react";
@@ -108,7 +109,7 @@ export function TranslationButton({
     }
   }, [isOpen, enTranslation, ptTranslation]);
 
-  const saveTranslation = trpc.translation.save.useMutation({
+  const saveTranslation = useTrpcMutation(trpc.translation.save, {
     onSuccess: async () => {
       toast.success("Traducción guardada");
       // Refetch translations if dialog is open

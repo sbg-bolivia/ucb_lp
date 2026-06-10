@@ -29,6 +29,7 @@ import { ScrollableTable } from "@/components/ui/scrollable-table";
 import { usePagination } from "@/hooks/usePagination";
 import { useRBAC } from "@/hooks/useRBAC";
 import { useTranslation } from "@/hooks/useTranslation";
+import { useTrpcMutation } from "@/utils/trpc-shallow";
 import { trpc } from "@/utils/trpc";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Edit, Eye, Plus, Trash2, UserCheck, UserX, Users } from "lucide-react";
@@ -486,7 +487,7 @@ function UserRolesManager({ userId }: { userId: string }) {
       }
     );
 
-  const assignRole = trpc.user.assignRole.useMutation({
+  const assignRole = useTrpcMutation(trpc.user.assignRole, {
     onSuccess: () => {
       refetchUserRoles();
       // TODO: Add toast notification for success
@@ -497,7 +498,7 @@ function UserRolesManager({ userId }: { userId: string }) {
     },
   });
 
-  const removeRole = trpc.user.removeRole.useMutation({
+  const removeRole = useTrpcMutation(trpc.user.removeRole, {
     onSuccess: () => {
       refetchUserRoles();
       // TODO: Add toast notification for success
@@ -669,7 +670,7 @@ export default function UsersPage() {
     isLoading,
   } = trpc.user.getAll.useQuery(queryParams);
 
-  const updateUser = trpc.user.update.useMutation({
+  const updateUser = useTrpcMutation(trpc.user.update, {
     onSuccess: () => {
       console.log("User updated successfully, closing dialog");
       refetch();
@@ -683,7 +684,7 @@ export default function UsersPage() {
     },
   });
 
-  const createUser = trpc.user.create.useMutation({
+  const createUser = useTrpcMutation(trpc.user.create, {
     onSuccess: async () => {
       refetch();
       setIsDialogOpen(false);
@@ -696,9 +697,9 @@ export default function UsersPage() {
     },
   });
 
-  const assignRoleMutation = trpc.user.assignRole.useMutation();
+  const assignRoleMutation = useTrpcMutation(trpc.user.assignRole);
 
-  const deleteUser = trpc.user.delete.useMutation({
+  const deleteUser = useTrpcMutation(trpc.user.delete, {
     onSuccess: () => {
       refetch();
       // TODO: Add toast notification for success
@@ -753,9 +754,9 @@ export default function UsersPage() {
     } else {
       // Create new user
       const { selectedRoles, ...userData } = data;
-      const newUser = await createUser.mutateAsync(
+      const newUser = (await createUser.mutateAsync(
         userData as CreateUserFormData
-      );
+      )) as { id: string };
 
       // Assign initial roles if any were selected
       if (selectedRoles && selectedRoles.length > 0) {

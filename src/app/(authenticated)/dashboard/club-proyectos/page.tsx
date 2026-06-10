@@ -22,6 +22,7 @@ import {
 } from "@/components/ui/table";
 import { Textarea } from "@/components/ui/textarea";
 import { useTranslation } from "@/hooks/useTranslation";
+import { useTrpcMutation } from "@/utils/trpc-shallow";
 import { trpc } from "@/utils/trpc";
 import { AdminListLoading } from "@/components/dashboard/AdminListLoading";
 import { AdminPageHeader } from "@/components/dashboard/AdminPageHeader";
@@ -88,7 +89,7 @@ export default function ClubProyectosAdminPage() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState<FormState>(emptyForm);
 
-  const createMut = trpc.clubProjects.create.useMutation({
+  const createMut = useTrpcMutation(trpc.clubProjects.create, {
     onSuccess: () => {
       toast.success("Proyecto creado");
       void refetch();
@@ -99,7 +100,7 @@ export default function ClubProyectosAdminPage() {
     onError: (e) => toast.error(e.message),
   });
 
-  const updateMut = trpc.clubProjects.update.useMutation({
+  const updateMut = useTrpcMutation(trpc.clubProjects.update, {
     onSuccess: () => {
       toast.success("Proyecto actualizado");
       void refetch();
@@ -110,7 +111,7 @@ export default function ClubProyectosAdminPage() {
     onError: (e) => toast.error(e.message),
   });
 
-  const deleteMut = trpc.clubProjects.delete.useMutation({
+  const deleteMut = useTrpcMutation(trpc.clubProjects.delete, {
     onSuccess: () => {
       toast.success("Proyecto eliminado");
       void refetch();

@@ -30,6 +30,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { useTranslation } from "@/hooks/useTranslation";
 import { AWS_COMMUNITY_TYPE_LABELS } from "@/lib/aws-labels";
+import { useTrpcMutation } from "@/utils/trpc-shallow";
 import { trpc } from "@/utils/trpc";
 import type { AwsCommunityType } from "@prisma/client";
 import { AdminListLoading } from "@/components/dashboard/AdminListLoading";
@@ -136,7 +137,7 @@ export default function ClubComunidadesAdminPage() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState<FormState>(emptyForm);
 
-  const createMut = trpc.awsCommunities.create.useMutation({
+  const createMut = useTrpcMutation(trpc.awsCommunities.create, {
     onSuccess: () => {
       toast.success("Comunidad creada");
       void refetch();
@@ -147,7 +148,7 @@ export default function ClubComunidadesAdminPage() {
     onError: (e) => toast.error(e.message),
   });
 
-  const updateMut = trpc.awsCommunities.update.useMutation({
+  const updateMut = useTrpcMutation(trpc.awsCommunities.update, {
     onSuccess: () => {
       toast.success("Comunidad actualizada");
       void refetch();
@@ -158,7 +159,7 @@ export default function ClubComunidadesAdminPage() {
     onError: (e) => toast.error(e.message),
   });
 
-  const deleteMut = trpc.awsCommunities.delete.useMutation({
+  const deleteMut = useTrpcMutation(trpc.awsCommunities.delete, {
     onSuccess: () => {
       toast.success("Comunidad eliminada");
       void refetch();

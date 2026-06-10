@@ -28,6 +28,7 @@ import {
 } from "@/components/ui/scrollable-table";
 import { Textarea } from "@/components/ui/textarea";
 import { useRBAC } from "@/hooks/useRBAC";
+import { useTrpcMutation } from "@/utils/trpc-shallow";
 import { trpc } from "@/utils/trpc";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -166,7 +167,7 @@ export default function RolesPage() {
     }
   );
 
-  const createRole = trpc.rbac.createRole.useMutation({
+  const createRole = useTrpcMutation(trpc.rbac.createRole, {
     onSuccess: () => {
       refetch();
       setIsCreateDialogOpen(false);
@@ -179,7 +180,7 @@ export default function RolesPage() {
     },
   });
 
-  const updateRole = trpc.rbac.updateRole.useMutation({
+  const updateRole = useTrpcMutation(trpc.rbac.updateRole, {
     onSuccess: () => {
       refetch();
       setIsEditDialogOpen(false);
@@ -193,7 +194,7 @@ export default function RolesPage() {
     },
   });
 
-  const deleteRole = trpc.rbac.deleteRole.useMutation({
+  const deleteRole = useTrpcMutation(trpc.rbac.deleteRole, {
     onSuccess: () => {
       refetch();
       // TODO: Add toast notification
@@ -204,7 +205,7 @@ export default function RolesPage() {
     },
   });
 
-  const assignPermission = trpc.rbac.assignPermissionToRole.useMutation({
+  const assignPermission = useTrpcMutation(trpc.rbac.assignPermissionToRole, {
     onSuccess: () => {
       refetchRolePermissions();
       setSelectedPermissions([]);
@@ -216,7 +217,7 @@ export default function RolesPage() {
     },
   });
 
-  const removePermission = trpc.rbac.removePermissionFromRole.useMutation({
+  const removePermission = useTrpcMutation(trpc.rbac.removePermissionFromRole, {
     onSuccess: () => {
       refetchRolePermissions();
       // TODO: Add toast notification

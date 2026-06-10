@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import type { S3UploadFolder } from "@/lib/s3-constants";
 import { cn } from "@/lib/utils";
+import { useTrpcMutation } from "@/utils/trpc-shallow";
 import { trpc } from "@/utils/trpc";
 import { Film, Link2, Loader2, Trash2, Video } from "lucide-react";
 import { useRef, useState } from "react";
@@ -36,7 +37,7 @@ export function S3VideoUploadField({
   const [showManualUrl, setShowManualUrl] = useState(false);
 
   const { data: s3Status } = trpc.uploads.isConfigured.useQuery();
-  const presignMut = trpc.uploads.getPresignedVideoUrl.useMutation();
+  const presignMut = useTrpcMutation(trpc.uploads.getPresignedVideoUrl);
 
   const s3Enabled = s3Status?.enabled === true;
   const hasPreview = Boolean(value.trim());
@@ -54,11 +55,11 @@ export function S3VideoUploadField({
     setUploading(true);
     try {
       const contentType = file.type as "video/mp4" | "video/webm";
-      const { uploadUrl, publicUrl } = await presignMut.mutateAsync({
+      const { uploadUrl, publicUrl } = (await presignMut.mutateAsync({
         folder,
         fileName: file.name,
         contentType,
-      });
+      })) as { uploadUrl: string; publicUrl: string };
 
       const res = await fetch(uploadUrl, {
         method: "PUT",

@@ -34,6 +34,7 @@ import {
   AWS_SERVICE_CATEGORY_LABELS,
 } from "@/lib/aws-labels";
 import { slugify } from "@/lib/slugify";
+import { useTrpcMutation } from "@/utils/trpc-shallow";
 import { trpc } from "@/utils/trpc";
 import type {
   AwsDifficultyLevel,
@@ -169,7 +170,7 @@ function ServiceCardsEditor({
   const [editingCardId, setEditingCardId] = useState<string | null>(null);
   const [cardForm, setCardForm] = useState<CardFormState>(emptyCardForm);
 
-  const createCardMut = trpc.awsServices.createCard.useMutation({
+  const createCardMut = useTrpcMutation(trpc.awsServices.createCard, {
     onSuccess: () => {
       toast.success("Tarjeta añadida");
       onChanged();
@@ -180,7 +181,7 @@ function ServiceCardsEditor({
     onError: (e) => toast.error(e.message),
   });
 
-  const updateCardMut = trpc.awsServices.updateCard.useMutation({
+  const updateCardMut = useTrpcMutation(trpc.awsServices.updateCard, {
     onSuccess: () => {
       toast.success("Tarjeta actualizada");
       onChanged();
@@ -191,7 +192,7 @@ function ServiceCardsEditor({
     onError: (e) => toast.error(e.message),
   });
 
-  const deleteCardMut = trpc.awsServices.deleteCard.useMutation({
+  const deleteCardMut = useTrpcMutation(trpc.awsServices.deleteCard, {
     onSuccess: () => {
       toast.success("Tarjeta eliminada");
       onChanged();
@@ -427,14 +428,15 @@ export default function ClubServiciosAdminPage() {
   const confirm = useConfirm();
   const { mode: viewMode, setMode: setViewMode } =
     useAdminViewMode("club-servicios");
-  const { data: services, refetch, isLoading } =
+  const { data: servicesRaw, refetch, isLoading } =
     trpc.awsServices.listForAdmin.useQuery();
+  const services = servicesRaw as ServiceRow[] | undefined;
   const [open, setOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState<ServiceFormState>(emptyServiceForm);
   const [slugTouched, setSlugTouched] = useState(false);
 
-  const createMut = trpc.awsServices.create.useMutation({
+  const createMut = useTrpcMutation(trpc.awsServices.create, {
     onSuccess: () => {
       toast.success("Servicio creado");
       void refetch();
@@ -446,7 +448,7 @@ export default function ClubServiciosAdminPage() {
     onError: (e) => toast.error(e.message),
   });
 
-  const updateMut = trpc.awsServices.update.useMutation({
+  const updateMut = useTrpcMutation(trpc.awsServices.update, {
     onSuccess: () => {
       toast.success("Servicio actualizado");
       void refetch();
@@ -458,7 +460,7 @@ export default function ClubServiciosAdminPage() {
     onError: (e) => toast.error(e.message),
   });
 
-  const deleteMut = trpc.awsServices.delete.useMutation({
+  const deleteMut = useTrpcMutation(trpc.awsServices.delete, {
     onSuccess: () => {
       toast.success("Servicio eliminado");
       void refetch();

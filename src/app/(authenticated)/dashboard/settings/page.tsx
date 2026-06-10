@@ -17,6 +17,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useTranslation } from "@/hooks/useTranslation";
 import { CLUB, getSiteUrl } from "@/lib/club-brand";
+import { useTrpcMutation } from "@/utils/trpc-shallow";
 import { trpc } from "@/utils/trpc";
 import { Building2, Globe, Mail, Save, Settings } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -150,7 +151,7 @@ export default function SettingsPage() {
     }
   }, [companyInfo]);
 
-  const updateCompanyInfo = trpc.companyInfo.update.useMutation({
+  const updateCompanyInfo = useTrpcMutation(trpc.companyInfo.update, {
     onSuccess: () => {
       toast.success("Información de la empresa actualizada exitosamente");
       refetch();

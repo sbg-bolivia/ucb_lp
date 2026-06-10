@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { optimizeImageForUpload } from "@/lib/image-optimize";
 import type { S3UploadFolder } from "@/lib/s3-constants";
 import { cn } from "@/lib/utils";
+import { useTrpcMutation } from "@/utils/trpc-shallow";
 import { trpc } from "@/utils/trpc";
 import { ImagePlus, Link2, Loader2, Trash2 } from "lucide-react";
 import Image from "next/image";
@@ -44,7 +45,7 @@ export function S3ImageUploadField({
   const [previewError, setPreviewError] = useState(false);
 
   const { data: s3Status } = trpc.uploads.isConfigured.useQuery();
-  const presignMut = trpc.uploads.getPresignedImageUrl.useMutation();
+  const presignMut = useTrpcMutation(trpc.uploads.getPresignedImageUrl);
 
   const s3Enabled = s3Status?.enabled === true;
   const hasPreview = Boolean(value.trim()) && !previewError;
@@ -77,11 +78,11 @@ export function S3ImageUploadField({
         | "image/webp"
         | "image/gif";
 
-      const { uploadUrl, publicUrl } = await presignMut.mutateAsync({
+      const { uploadUrl, publicUrl } = (await presignMut.mutateAsync({
         folder,
         fileName: uploadFile.name,
         contentType,
-      });
+      })) as { uploadUrl: string; publicUrl: string };
 
       const res = await fetch(uploadUrl, {
         method: "PUT",

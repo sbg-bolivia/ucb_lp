@@ -39,6 +39,7 @@ import {
   REGISTRATION_TYPE_LABELS,
 } from "@/lib/event-labels";
 import type { EventStatus, RegistrationType } from "@prisma/client";
+import { useTrpcMutation } from "@/utils/trpc-shallow";
 import { trpc } from "@/utils/trpc";
 import { AdminListLoading } from "@/components/dashboard/AdminListLoading";
 import { AdminPageHeader } from "@/components/dashboard/AdminPageHeader";
@@ -150,7 +151,7 @@ export default function ClubEventosAdminPage() {
     if (events) setOrderedIds(events.map((e) => e.id));
   }, [events]);
 
-  const createMut = trpc.clubEvents.create.useMutation({
+  const createMut = useTrpcMutation(trpc.clubEvents.create, {
     onSuccess: () => {
       toast.success("Evento creado");
       void refetch();
@@ -161,7 +162,7 @@ export default function ClubEventosAdminPage() {
     onError: (e) => toast.error(e.message),
   });
 
-  const updateMut = trpc.clubEvents.update.useMutation({
+  const updateMut = useTrpcMutation(trpc.clubEvents.update, {
     onSuccess: () => {
       toast.success("Evento actualizado");
       void refetch();
@@ -172,7 +173,7 @@ export default function ClubEventosAdminPage() {
     onError: (e) => toast.error(e.message),
   });
 
-  const deleteMut = trpc.clubEvents.delete.useMutation({
+  const deleteMut = useTrpcMutation(trpc.clubEvents.delete, {
     onSuccess: () => {
       toast.success("Evento eliminado");
       void refetch();
@@ -180,7 +181,7 @@ export default function ClubEventosAdminPage() {
     onError: (e) => toast.error(e.message),
   });
 
-  const reorderMut = trpc.clubEvents.reorder.useMutation({
+  const reorderMut = useTrpcMutation(trpc.clubEvents.reorder, {
     onSuccess: () => toast.success("Orden actualizado"),
     onError: (e) => toast.error(e.message),
   });
