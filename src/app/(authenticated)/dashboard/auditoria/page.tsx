@@ -1,6 +1,5 @@
 "use client";
 
-import { AdminListLoading } from "@/components/dashboard/AdminListLoading";
 import { AdminPageHeader } from "@/components/dashboard/AdminPageHeader";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -67,6 +66,34 @@ function shortUserAgent(ua: string | null | undefined) {
   return `${ua.slice(0, 57)}…`;
 }
 
+type AuditLogRow = {
+  id: string;
+  createdAt: Date | string;
+  userName: string | null;
+  userEmail: string;
+  action: AuditAction;
+  actionLabel: string;
+  resourceLabel: string;
+  summary: string;
+  procedure: string | null;
+  ipAddress: string | null;
+  userAgent: string | null;
+  resourceId: string | null;
+  changes: unknown;
+};
+
+type AuditListFilters = {
+  users: Array<{ userId: string; userEmail: string; userName: string | null }>;
+  resources: Array<{ value: string; label: string }>;
+  actions: Array<{ value: string; label: string }>;
+};
+
+type AuditListResult = {
+  items: AuditLogRow[];
+  nextCursor?: string;
+  filters: AuditListFilters;
+};
+
 export default function AuditoriaPage() {
   const [userId, setUserId] = useState<string>("all");
   const [action, setAction] = useState<string>("all");
@@ -88,13 +115,13 @@ export default function AuditoriaPage() {
     [userId, action, resource, searchDebounced]
   );
 
-  const { data, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } =
-    trpc.auditLogs.list.useInfiniteQuery(queryInput, {
-      getNextPageParam: (last) => last.nextCursor,
-    });
+  // Evita TS2589 (profundidad tRPC + Zod) con tipo de respuesta explícito
+  const { data: listResult, isLoading } =
+    trpc.auditLogs.list.useQuery(queryInput);
+  const data = listResult as AuditListResult | undefined;
 
-  const rows = data?.pages.flatMap((p) => p.items) ?? [];
-  const filters = data?.pages[0]?.filters;
+  const rows = data?.items ?? [];
+  const filters = data?.filters;
 
   const applySearch = () => setSearchDebounced(search.trim());
 
@@ -191,7 +218,7 @@ export default function AuditoriaPage() {
       </Card>
 
       {isLoading ? (
-        <AdminListLoading />
+        <div className="h-64 animate-pulse rounded-2xl border border-border/70 bg-muted/30" />
       ) : (
         <Card className="rounded-2xl border-border/70 overflow-hidden">
           <Table>
@@ -326,18 +353,6 @@ export default function AuditoriaPage() {
               )}
             </TableBody>
           </Table>
-          {hasNextPage ? (
-            <div className="border-t p-4 text-center">
-              <Button
-                type="button"
-                variant="outline"
-                disabled={isFetchingNextPage}
-                onClick={() => fetchNextPage()}
-              >
-                {isFetchingNextPage ? "Cargando…" : "Cargar más"}
-              </Button>
-            </div>
-          ) : null}
         </Card>
       )}
     </div>

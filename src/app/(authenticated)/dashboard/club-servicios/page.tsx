@@ -434,7 +434,6 @@ export default function ClubServiciosAdminPage() {
   const [form, setForm] = useState<ServiceFormState>(emptyServiceForm);
   const [slugTouched, setSlugTouched] = useState(false);
 
-  // @ts-expect-error TS2589 — profundidad de tipos Zod + tRPC en awsServices.create
   const createMut = trpc.awsServices.create.useMutation({
     onSuccess: () => {
       toast.success("Servicio creado");

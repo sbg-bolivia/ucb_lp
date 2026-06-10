@@ -39,7 +39,7 @@ export async function GET() {
   const hasDatabaseUrl = Boolean(databaseUrl);
   const hadQuotes =
     Boolean(rawDatabaseUrl?.trim()) &&
-    rawDatabaseUrl!.trim() !== databaseUrl;
+    rawDatabaseUrl?.trim() !== databaseUrl;
 
   const hasSiteUrl = Boolean(
     normalizeEnvValue(process.env.SITE_URL) ||
