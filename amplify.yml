@@ -11,6 +11,12 @@ frontend:
             echo "ERROR: DATABASE_URL no está definida en Amplify → Environment variables"
             exit 1
           fi
+          case "$DATABASE_URL" in
+            \"*\"|\'*\')
+              echo "AVISO: DATABASE_URL tiene comillas literales; quítalas en la consola de Amplify"
+              ;;
+          esac
+          echo "DATABASE_URL detectada en build (longitud ${#DATABASE_URL})"
         - pnpm prisma generate
         - pnpm prisma migrate deploy
         - |
@@ -24,12 +30,24 @@ frontend:
             GOOGLE_ANALYTICS_PRIVATE_KEY; do
             val="$(printenv "$key" || true)"
             if [ -n "$val" ]; then
+              # Quitar comillas literales si se copiaron desde un .env
+              case "$val" in
+                \"*\") val="${val#\"}"; val="${val%\"}" ;;
+                \'*\') val="${val#\'}"; val="${val%\'}" ;;
+              esac
               printf '%s=%s\n' "$key" "$val" >> .env.production
             fi
           done
     build:
       commands:
         - pnpm run build
+    postBuild:
+      commands:
+        - |
+          if [ -f .env.production ]; then
+            cp .env.production .next/.env.production
+            echo ".env.production copiado a .next/ para runtime SSR"
+          fi
   artifacts:
     baseDirectory: .next
     files:

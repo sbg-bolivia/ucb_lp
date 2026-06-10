@@ -35,7 +35,7 @@ pnpm validate  # lint + typecheck
 
    | Variable | Ejemplo en producción |
    |----------|------------------------|
-   | `DATABASE_URL` | `postgresql://user:pass@endpoint.rds.amazonaws.com:5432/sbgbo_prod?sslmode=require` |
+   | `DATABASE_URL` | `postgresql://user:pass@endpoint.rds.amazonaws.com:5432/sbgbo_prod?sslmode=require` (sin comillas `"` en Amplify) |
    | `SITE_URL` | `https://main.d240jy2g4jz3mm.amplifyapp.com` (o `https://sbgbo.com`) |
    | `NEXT_PUBLIC_SITE_URL` | La misma URL pública |
    | `BETTER_AUTH_SECRET` | Secreto fuerte (32+ bytes) |

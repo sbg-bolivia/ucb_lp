@@ -1,4 +1,7 @@
+import { normalizeRuntimeEnv } from "@/lib/normalize-env";
 import { PrismaClient } from "@prisma/client";
+
+normalizeRuntimeEnv();
 
 type GlobalWithPrisma = typeof globalThis & {
   prisma?: PrismaClient;
