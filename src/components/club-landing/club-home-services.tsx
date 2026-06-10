@@ -9,22 +9,22 @@ const services = [
     icon: Users,
     title: "Comunidad",
     text: "Conectamos estudiantes apasionados por la tecnología para colaborar, compartir y crecer juntos.",
-    accent: "from-[#00C8FF]/20 to-[#00C8FF]/5",
-    iconColor: "text-[#00C8FF]",
+    accent: "from-[var(--aws-orange)]/15 to-[var(--aws-orange)]/5",
+    iconColor: "text-[var(--aws-orange)]",
   },
   {
     icon: BookOpen,
     title: "Aprendizaje",
     text: "Organizamos workshops, charlas y sesiones prácticas para aprender las tecnologías de AWS.",
-    accent: "from-[#7E2CFF]/20 to-[#7E2CFF]/5",
-    iconColor: "text-[#A855F7]",
+    accent: "from-[var(--aws-ink)]/20 to-[var(--surface-soft)]/30",
+    iconColor: "text-[var(--text-muted)] dark:text-[var(--text-main)]",
   },
   {
     icon: Code2,
     title: "Proyectos",
     text: "Desarrollamos soluciones reales en la nube que generan impacto en nuestra comunidad y más allá.",
-    accent: "from-[#A855F7]/20 to-[#A855F7]/5",
-    iconColor: "text-[#A855F7]",
+    accent: "from-[var(--aws-orange)]/10 to-[var(--aws-ink)]/15",
+    iconColor: "text-[var(--aws-orange)]",
   },
 ] as const;
 
@@ -65,7 +65,7 @@ export function ClubHomeServices() {
           viewport={{ once: true, margin: "-100px" }}
           transition={{ duration: 0.8, ease: "easeOut" }}
         >
-          <p className="text-sm font-bold uppercase tracking-[0.3em] text-[#A855F7]">
+          <p className="text-sm font-bold uppercase tracking-[0.3em] text-[var(--aws-orange)]">
             Qué hacemos
           </p>
           <h2 className="mt-4 text-4xl font-extrabold tracking-tighter text-slate-900 dark:text-white sm:text-5xl md:text-6xl">

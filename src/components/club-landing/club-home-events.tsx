@@ -108,10 +108,7 @@ export function ClubHomeEvents() {
             {featured.map((event, index) => {
               const badge = formatDateBadge(event.startsAt);
               const online = isOnlineLocation(event.location);
-              const accent =
-                index % 2 === 0
-                  ? "from-[#00C8FF]/10"
-                  : "from-[#7E2CFF]/10";
+              const accent = "from-[var(--aws-orange)]/8";
 
               return (
                 <motion.article
@@ -142,7 +139,7 @@ export function ClubHomeEvents() {
                         <span className="text-xl font-bold leading-none">
                           {badge.day}
                         </span>
-                        <span className="mt-1 text-[10px] font-bold uppercase tracking-wider text-[#00C8FF]">
+                        <span className="mt-1 text-[10px] font-bold uppercase tracking-wider text-[var(--aws-orange)]">
                           {badge.month}
                         </span>
                       </div>
@@ -174,7 +171,7 @@ export function ClubHomeEvents() {
                     >
                       <Link
                         href={`/eventos/${event.id}`}
-                        className="transition-colors hover:text-[#00C8FF]"
+                        className="transition-colors duration-300 hover:text-[var(--aws-orange)]"
                       >
                         {event.title}
                       </Link>
@@ -184,7 +181,7 @@ export function ClubHomeEvents() {
                       <div
                         className={`mt-4 flex items-center gap-2 ${clubTheme.textMuted}`}
                       >
-                        <MapPin className="h-4 w-4 shrink-0 text-[#7E2CFF]" />
+                        <MapPin className="h-4 w-4 shrink-0 text-[var(--aws-orange)]" />
                         <span className="text-sm">{event.location}</span>
                       </div>
                     ) : null}

@@ -27,7 +27,7 @@ export function ClubHomeStats() {
               key={s.label}
               className="flex items-center gap-3 rounded-2xl px-4 py-5 text-left sm:px-5 hover:bg-white/5 transition-colors"
             >
-              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#00C8FF]/15 to-[#7E2CFF]/20 text-[#00C8FF] shadow-[0_0_20px_rgba(0,200,255,0.12)]">
+              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[var(--aws-orange)]/12 text-[var(--aws-orange)]">
                 <s.icon className="h-5 w-5" strokeWidth={1.75} />
               </span>
               <div>

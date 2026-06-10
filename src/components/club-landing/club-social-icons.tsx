@@ -1,5 +1,20 @@
 /** Iconos de marca para redes (sin dependencia extra). */
 
+/** Logo Meetup oficial — círculo con «m» estilizada. */
+export function MeetupLogo({ className }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 32 32"
+      fill="currentColor"
+      role="img"
+      aria-hidden
+    >
+      <path d="M16.607 2.001c-7.06 0-12.785 5.725-12.785 12.785 0 7.06 5.725 12.785 12.785 12.785 7.06 0 12.785-5.725 12.785-12.785 0-7.06-5.725-12.785-12.785-12.785zm5.394 17.278h-2.896v-8.33l-4.113 8.33h-1.82l-4.113-8.33v8.33H6.163V9.721h3.47l4.47 9.05 4.47-9.05h3.47v9.558z" />
+    </svg>
+  );
+}
+
 export function TiktokGlyph({ className }: { className?: string }) {
   return (
     <svg

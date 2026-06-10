@@ -34,8 +34,8 @@ export function ClubLoader() {
   useEffect(() => {
     const idle = window.setTimeout(() => {
       if (!startedRef.current) setVisible(false);
-    }, 700);
-    const safety = window.setTimeout(() => setVisible(false), 3500);
+    }, 500);
+    const safety = window.setTimeout(() => setVisible(false), 2200);
     return () => {
       window.clearTimeout(idle);
       window.clearTimeout(safety);
@@ -57,7 +57,7 @@ export function ClubLoader() {
       {visible ? (
         <motion.div
           key="club-loader"
-          className="fixed inset-0 z-[200] flex flex-col items-center justify-center bg-[#07060f]"
+          className="fixed inset-0 z-[200] flex flex-col items-center justify-center bg-[var(--brand-dark)]"
           initial={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
@@ -70,7 +70,7 @@ export function ClubLoader() {
 
           <div className="relative flex flex-col items-center gap-10 px-6">
             <div className="relative flex h-44 w-44 items-center justify-center sm:h-52 sm:w-52">
-              <span className="club-loader-ring absolute inset-0 rounded-full border-[3px] border-transparent border-t-[#00C8FF] border-r-[#7E2CFF]" />
+              <span className="club-loader-ring absolute inset-0 rounded-full border-[3px] border-transparent border-t-[var(--aws-orange)] border-r-[var(--aws-ink)]" />
               <span className="absolute inset-4 rounded-full border border-white/10" />
               <Image
                 src={CLUB_LOGO.white}
@@ -85,7 +85,7 @@ export function ClubLoader() {
             <div className="w-72 sm:w-80">
               <div className="relative h-2 w-full overflow-hidden rounded-full bg-white/10">
                 <motion.div
-                  className="absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-[#00C8FF] via-[#7E2CFF] to-[#A855F7]"
+                  className="absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-[#E88B00] via-[var(--aws-orange)] to-[#FFAD33]"
                   initial={{ width: "0%" }}
                   animate={{ width: `${pct}%` }}
                   transition={{ duration: 0.3, ease: "easeOut" }}

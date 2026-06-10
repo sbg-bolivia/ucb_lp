@@ -20,7 +20,7 @@ export function ClubSectionHeader({
 
   return (
     <motion.header className={`max-w-3xl ${alignClass}`} {...fadeUpProps}>
-      <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#00C8FF]">
+      <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--aws-orange)]">
         {eyebrow}
       </p>
       <h2 className="mt-3 text-3xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-4xl">

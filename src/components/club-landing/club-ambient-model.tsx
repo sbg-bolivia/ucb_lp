@@ -1,13 +1,30 @@
 "use client";
 
 import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 
 import { ClubSiteModel } from "./club-site-model";
 
 /** Marca 3D fija en páginas internas (el home usa el hero completo). */
 export function ClubAmbientModel() {
   const pathname = usePathname();
-  if (pathname === "/") return null;
+  const [enabled, setEnabled] = useState(false);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(min-width: 1024px)");
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const update = () =>
+      setEnabled(mq.matches && !reduced.matches);
+    update();
+    mq.addEventListener("change", update);
+    reduced.addEventListener("change", update);
+    return () => {
+      mq.removeEventListener("change", update);
+      reduced.removeEventListener("change", update);
+    };
+  }, []);
+
+  if (pathname === "/" || !enabled) return null;
 
   return (
     <div

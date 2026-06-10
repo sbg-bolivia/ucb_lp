@@ -2,6 +2,21 @@
 
 @variant dark (&:where(.dark *));
 
+:root {
+  --brand-dark: #0f172a;
+  --aws-ink: #232f3e;
+  --aws-orange: #ff9900;
+  --surface: #111827;
+  --surface-soft: #1e293b;
+  --text-main: #f8fafc;
+  --text-muted: #cbd5e1;
+  --border-soft: rgba(255, 255, 255, 0.1);
+  --bg: #f8fafc;
+  --text: #0f172a;
+  --card: #ffffff;
+  --muted: #64748b;
+}
+
 @theme {
   --font-family-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   --font-family-heading: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
@@ -41,8 +56,13 @@
 }
 
 .dark {
+  --bg: var(--brand-dark);
+  --text: var(--text-main);
+  --card: var(--surface-soft);
+  --muted: var(--text-muted);
+
   /* Colors for dark mode */
-  --color-background: #050608;
+  --color-background: #0f172a;
   --color-foreground: hsl(0 0% 98%);
   --color-card: hsl(220, 15%, 10%);
   --color-card-foreground: hsl(0 0% 98%);
@@ -131,21 +151,21 @@ body {
   inset: -10%;
   background: radial-gradient(
       circle at 20% 30%,
-      rgba(0, 200, 255, 0.25),
+      rgba(255, 153, 0, 0.12),
       transparent 45%
     ),
     radial-gradient(
       circle at 80% 50%,
-      rgba(126, 44, 255, 0.28),
+      rgba(35, 47, 62, 0.35),
       transparent 48%
     ),
     radial-gradient(
       circle at 45% 80%,
-      rgba(168, 85, 247, 0.22),
+      rgba(15, 23, 42, 0.4),
       transparent 52%
     );
   filter: blur(100px);
-  animation: club-aurora 14s ease-in-out infinite;
+  animation: club-aurora 18s ease-in-out infinite;
   pointer-events: none;
 }
 
@@ -153,17 +173,17 @@ body {
 .club-aurora-light {
   background: radial-gradient(
       circle at 18% 28%,
-      rgba(0, 200, 255, 0.18),
+      rgba(255, 153, 0, 0.1),
       transparent 42%
     ),
     radial-gradient(
       circle at 78% 45%,
-      rgba(126, 44, 255, 0.14),
+      rgba(35, 47, 62, 0.08),
       transparent 46%
     ),
     radial-gradient(
       circle at 50% 82%,
-      rgba(168, 85, 247, 0.12),
+      rgba(148, 163, 184, 0.12),
       transparent 50%
     );
   filter: blur(90px);
@@ -224,7 +244,7 @@ html:not(.dark) .club-cursor-field-hero {
   position: relative;
   width: 100%;
   height: 100%;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .club-hero-model-stage::before {
@@ -239,8 +259,8 @@ html:not(.dark) .club-cursor-field-hero {
   border-radius: 50%;
   background: radial-gradient(
     ellipse at center,
-    rgba(126, 44, 255, 0.35) 0%,
-    rgba(0, 200, 255, 0.15) 45%,
+    rgba(255, 153, 0, 0.22) 0%,
+    rgba(35, 47, 62, 0.35) 45%,
     transparent 75%
   );
   filter: blur(16px);
@@ -250,8 +270,8 @@ html:not(.dark) .club-cursor-field-hero {
 html:not(.dark) .club-hero-model-stage::before {
   background: radial-gradient(
     ellipse at center,
-    rgba(126, 44, 255, 0.2) 0%,
-    rgba(0, 200, 255, 0.08) 50%,
+    rgba(255, 153, 0, 0.18) 0%,
+    rgba(35, 47, 62, 0.08) 50%,
     transparent 75%
   );
 }
@@ -261,7 +281,7 @@ html:not(.dark) .club-hero-model-stage::before {
   z-index: 2;
   width: 100%;
   height: 100%;
-  overflow: hidden;
+  overflow: visible;
   cursor: grab;
 }
 
@@ -281,7 +301,7 @@ html:not(.dark) .club-hero-model-stage::before {
 .club-ambient-model-inner {
   width: 100%;
   height: 100%;
-  filter: drop-shadow(0 0 40px rgba(126, 44, 255, 0.15));
+  filter: drop-shadow(0 0 32px rgba(255, 153, 0, 0.12));
 }
 
 html:not(.dark) .club-ambient-model {

@@ -10,7 +10,8 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { useClubLinks } from "@/hooks/useClubLinks";
-import { Menu, Users } from "lucide-react";
+import { ClubMeetupButton } from "@/components/club-landing/club-meetup-button";
+import { Menu } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
@@ -21,21 +22,6 @@ import { ClubNavLogo } from "./club-logo";
 import { clubTheme } from "./club-theme";
 import { ClubThemeToggle } from "./club-theme-toggle";
 
-function MeetupGlyph({ className }: { className?: string }) {
-  return (
-    <svg
-      className={className}
-      viewBox="0 0 24 24"
-      fill="currentColor"
-      role="img"
-      aria-label="Meetup"
-    >
-      <title>Meetup</title>
-      <path d="M20.5 6.5c-.7 0-1.3.6-1.3 1.3s.6 1.3 1.3 1.3 1.3-.6 1.3-1.3-.6-1.3-1.3-1.3zm-1.9 3.4c0-.2-.2-.4-.4-.4h-1.7c-.2 0-.4.2-.4.4v7.6c0 .2.2.4.4.4h1.7c.2 0 .4-.2.4-.4v-7.6zm-4.5-.1h-1.7c-.2 0-.4.2-.4.4v4.9l-2.4-5.1c-.1-.2-.3-.3-.5-.3h-1.5c-.2 0-.4.2-.4.4v7.6c0 .2.2.4.4.4h1.7c.2 0 .4-.2.4-.4v-4.9l2.4 5.1c.1.2.3.3.5.3h1.5c.2 0 .4-.2.4-.4V10c0-.2-.2-.4-.4-.4zm-8.3 0H4.1c-.2 0-.4.2-.4.4v7.6c0 .2.2.4.4.4h1.7c.2 0 .4-.2.4-.4V14h1.8c1.8 0 3.2-1.4 3.2-3.2 0-1.7-1.4-3.1-3.2-3.1zm0 4.4H6.2v-2.6h1.8c.7 0 1.3.6 1.3 1.3s-.6 1.3-1.3 1.3z" />
-    </svg>
-  );
-}
-
 export function ClubLandingNavbar() {
   const NAV_LINKS = getClubNavLinks();
   const [open, setOpen] = useState(false);
@@ -45,13 +31,10 @@ export function ClubLandingNavbar() {
   const links = useClubLinks();
 
   const handleJoin = () => {
-    if (isAuthenticated) {
-      router.push("/dashboard");
-      setOpen(false);
-      return;
-    }
     if (links.meetupUrl) {
       window.open(links.meetupUrl, "_blank", "noopener,noreferrer");
+    } else if (isAuthenticated) {
+      router.push("/dashboard");
     } else if (links.whatsappUrl) {
       window.open(links.whatsappUrl, "_blank", "noopener,noreferrer");
     } else {
@@ -67,7 +50,7 @@ export function ClubLandingNavbar() {
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${clubTheme.navBar}`}
     >
       <div
-        className="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-[#00C8FF]/15 to-transparent"
+        className="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-[var(--aws-orange)]/20 to-transparent"
         aria-hidden
       />
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-3 px-4 sm:gap-4 sm:px-6 lg:px-8">
@@ -99,18 +82,23 @@ export function ClubLandingNavbar() {
 
         <div className="flex shrink-0 items-center justify-end gap-2 sm:gap-2.5 lg:min-w-[220px] lg:gap-3">
           <ClubThemeToggle />
-          <Button
-            type="button"
-            onClick={handleJoin}
-            className={`h-9 gap-2 rounded-full border-0 bg-gradient-to-r px-4 text-xs font-bold text-white shadow-[0_4px_20px_rgba(126,44,255,0.15)] sm:text-xs ${clubTheme.gradientButton} transition hover:opacity-95 hover:shadow-[0_4px_25px_rgba(126,44,255,0.3)] hover:-translate-y-0.5 active:scale-[0.98]`}
-          >
-            {links.meetupUrl ? (
-              <MeetupGlyph className="h-4 w-4 shrink-0" />
-            ) : (
-              <Users className="h-4 w-4 shrink-0" />
-            )}
-            {isAuthenticated ? "Panel" : "Únete al grupo"}
-          </Button>
+          {links.meetupUrl ? (
+            <ClubMeetupButton
+              href={links.meetupUrl}
+              size="sm"
+              className="hidden sm:inline-flex"
+            >
+              Únete en Meetup
+            </ClubMeetupButton>
+          ) : (
+            <Button
+              type="button"
+              onClick={handleJoin}
+              className={`h-9 rounded-full px-4 text-xs font-bold ${clubTheme.gradientButton}`}
+            >
+              {isAuthenticated ? "Panel" : "Únete"}
+            </Button>
+          )}
 
           <Sheet open={open} onOpenChange={setOpen}>
             <SheetTrigger asChild>

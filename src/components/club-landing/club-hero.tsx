@@ -22,38 +22,41 @@ import { isClubFeatureEnabled } from "@/lib/club-features";
 
 import { clubTheme } from "./club-theme";
 import { ClubCursorField } from "./club-cursor-field";
+import { ClubMeetupButton } from "./club-meetup-button";
 import { ClubSiteModel } from "./club-site-model";
 
 const SLIDE_COUNT = 2;
 const SLIDE_KEYS = ["slide-3d", "slide-portal"] as const;
 const AUTO_INTERVAL_MS = 9000;
-/** Mismo recuadro en ambos slides; solo se anima posición con spring. */
+/** Contenedor cuadrado — evita recorte rectangular del canvas 3D */
+const modelSizeLg = "min(480px, min(42vw, 48vh))";
+const modelSizeSm = "min(320px, 88vw)";
 const MODEL_BOX_LG = {
-  width: "min(540px, 42vw)",
-  height: "min(84vh, 800px)",
+  width: modelSizeLg,
+  height: modelSizeLg,
 } as const;
 const MODEL_BOX_SM = {
-  width: "min(300px, 88vw)",
-  height: "min(42vh, 380px)",
+  width: modelSizeSm,
+  height: modelSizeSm,
 } as const;
 const MODEL_TRANSITION = {
   type: "spring" as const,
-  stiffness: 72,
-  damping: 24,
-  mass: 0.85,
+  stiffness: 38,
+  damping: 32,
+  mass: 1.1,
 };
 
 const textVariants = {
   enter: (dir: number) => ({
     opacity: 0,
-    x: dir > 0 ? 32 : -32,
-    filter: "blur(6px)",
+    x: dir > 0 ? 24 : -24,
+    filter: "blur(4px)",
   }),
   center: { opacity: 1, x: 0, filter: "blur(0px)" },
   exit: (dir: number) => ({
     opacity: 0,
-    x: dir > 0 ? -32 : 32,
-    filter: "blur(6px)",
+    x: dir > 0 ? -24 : 24,
+    filter: "blur(4px)",
   }),
 };
 
@@ -111,7 +114,7 @@ export function ClubHero() {
   };
 
   const joinLabel = links.meetupUrl
-    ? "Ir a Meetup"
+    ? "Únete en Meetup"
     : isAuthenticated
       ? "Ir al panel"
       : null;
@@ -147,15 +150,15 @@ export function ClubHero() {
           };
 
   const navBtnClass = isLight
-    ? "border-black/10 bg-white/80 text-slate-800 shadow-lg backdrop-blur-md hover:border-[#00C8FF]/50 hover:bg-white"
-    : "border-white/15 bg-black/40 text-white backdrop-blur-sm hover:border-[#00C8FF]/40 hover:bg-black/60";
+    ? "border-black/10 bg-white/80 text-slate-800 shadow-lg backdrop-blur-md hover:border-[var(--aws-orange)]/40 hover:bg-white"
+    : "border-white/15 bg-black/40 text-white backdrop-blur-sm hover:border-[var(--aws-orange)]/35 hover:bg-black/60";
 
   return (
     <section
-      className={`relative z-25 isolate h-[calc(100dvh-4rem)] max-h-[calc(100dvh-4rem)] overflow-hidden transition-colors duration-700 ${
+      className={`relative z-25 isolate h-[calc(100dvh-4rem)] max-h-[calc(100dvh-4rem)] overflow-x-clip overflow-y-visible transition-colors duration-700 ${
         isLight
-          ? "bg-gradient-to-b from-[#f5f5f7] via-[#eef2ff] to-[#f5f5f7] text-slate-900"
-          : "bg-[#050608] text-white"
+          ? "bg-gradient-to-b from-[#f8fafc] via-slate-100 to-[#f8fafc] text-slate-900"
+          : "bg-[var(--brand-dark)] text-[var(--text-main)]"
       }`}
       aria-roledescription="carousel"
       aria-label="Hero principal"
@@ -182,12 +185,12 @@ export function ClubHero() {
 
       {/* Modelo 3D — delante del fondo, con espacio para no recortar */}
       <motion.div
-        className="pointer-events-none absolute z-20"
+        className="pointer-events-none absolute z-20 overflow-visible"
         initial={false}
         animate={modelLayout}
         transition={MODEL_TRANSITION}
       >
-        <div className="club-hero-model-stage pointer-events-auto flex h-full w-full flex-col items-center justify-center py-1">
+        <div className="club-hero-model-stage pointer-events-auto flex aspect-square h-full max-h-full w-full max-w-full flex-col items-center justify-center p-2 sm:p-3">
           <div className="club-hero-model-canvas min-h-0 w-full flex-1">
             {mounted ? (
               <ClubSiteModel
@@ -205,7 +208,7 @@ export function ClubHero() {
               isLight ? "text-slate-500" : "text-zinc-400"
             }`}
           >
-            <Rotate3d className="h-3 w-3 text-[#A855F7]" />
+            <Rotate3d className="h-3 w-3 text-[var(--aws-orange)]" />
             Arrastra para rotar
           </p>
         </div>
@@ -222,11 +225,11 @@ export function ClubHero() {
               initial="enter"
               animate="center"
               exit="exit"
-              transition={{ duration: 0.65, ease: clubEase }}
+              transition={{ duration: 0.85, ease: clubEase }}
               className="flex h-full w-full flex-col items-center justify-between text-center"
             >
               <div className="relative z-30 w-full max-w-4xl shrink-0 pt-2">
-                <p className="mb-3 text-sm font-bold uppercase tracking-[0.35em] text-[#00C8FF] sm:text-base">
+                <p className="mb-3 text-sm font-bold uppercase tracking-[0.35em] text-[var(--aws-orange)] sm:text-base">
                   {CLUB.heroLine1}
                 </p>
                 <h1
@@ -236,23 +239,32 @@ export function ClubHero() {
                 >
                   Construye.
                   <br />
-                  <span className="bg-gradient-to-br from-[#00C8FF] via-[#7E2CFF] to-[#A855F7] bg-clip-text text-transparent">
-                    Aprende.
-                  </span>
+                  <span className="text-[var(--aws-orange)]">Aprende.</span>
                 </h1>
               </div>
 
               <div className="min-h-0 flex-1 w-full" aria-hidden />
 
               <div className="pointer-events-auto relative z-30 shrink-0 pb-2">
-                <Button
-                  size="lg"
-                  onClick={primaryJoin}
-                  className="group h-14 rounded-full border-none bg-gradient-to-r from-[#FF512F] to-[#DD2476] px-10 text-base font-bold text-white shadow-[0_0_32px_rgba(221,36,118,0.3)] transition-all duration-300 hover:-translate-y-0.5 hover:scale-[1.02] sm:px-12 sm:text-lg"
-                >
-                  {joinLabel ?? "Únete a la élite"}
-                  <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1 sm:h-5 sm:w-5" />
-                </Button>
+                {links.meetupUrl ? (
+                  <ClubMeetupButton
+                    href={links.meetupUrl}
+                    size="lg"
+                    showExternal
+                    className="min-w-[220px] sm:min-w-[260px]"
+                  >
+                    Únete en Meetup
+                  </ClubMeetupButton>
+                ) : (
+                  <Button
+                    size="lg"
+                    onClick={primaryJoin}
+                    className={`group h-14 min-w-[220px] rounded-full border-none px-12 text-base sm:min-w-[260px] sm:px-14 sm:text-lg ${clubTheme.ctaButtonLong} hover:-translate-y-0.5`}
+                  >
+                    {joinLabel ?? "Forma parte del club"}
+                    <ArrowRight className="ml-2 h-4 w-4 transition-transform duration-500 ease-out group-hover:translate-x-1 sm:h-5 sm:w-5" />
+                  </Button>
+                )}
               </div>
             </motion.div>
           ) : (
@@ -263,7 +275,7 @@ export function ClubHero() {
               initial="enter"
               animate="center"
               exit="exit"
-              transition={{ duration: 0.65, ease: clubEase }}
+              transition={{ duration: 0.85, ease: clubEase }}
               className={`grid h-full w-full max-w-7xl items-center gap-6 ${
                 isLg
                   ? "grid-cols-[1fr_min(480px,40vw)] lg:gap-10"
@@ -284,7 +296,7 @@ export function ClubHero() {
                       : "bg-white/5 text-zinc-300"
                   } ${isLg ? "" : "mx-auto"}`}
                 >
-                  <Cloud className="h-4 w-4 text-[#00C8FF]" strokeWidth={2} />
+                  <Cloud className="h-4 w-4 text-[var(--aws-orange)]" strokeWidth={2} />
                   AWS Student Builder Group
                 </div>
 
@@ -294,9 +306,7 @@ export function ClubHero() {
                   } ${isLg ? "" : "text-center"}`}
                 >
                   Construye. Aprende.{" "}
-                  <span className="bg-gradient-to-r from-[#00C8FF] via-[#7E2CFF] to-[#A855F7] bg-clip-text text-transparent">
-                    Lanza.
-                  </span>
+                  <span className="text-[var(--aws-orange)]">Lanza.</span>
                 </h1>
 
                 <p
@@ -314,15 +324,26 @@ export function ClubHero() {
                     isLg ? "justify-start" : "items-center justify-center"
                   }`}
                 >
-                  <Button
-                    type="button"
-                    size="lg"
-                    onClick={primaryJoin}
-                    className={`group h-12 rounded-full bg-gradient-to-r px-8 text-base font-semibold text-white sm:h-14 ${clubTheme.gradientButton}`}
-                  >
-                    {joinLabel ?? "Únete a la comunidad"}
-                    <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-                  </Button>
+                  {links.meetupUrl ? (
+                    <ClubMeetupButton
+                      href={links.meetupUrl}
+                      size="lg"
+                      showExternal
+                      className="min-w-[200px] sm:min-w-[240px]"
+                    >
+                      Únete en Meetup
+                    </ClubMeetupButton>
+                  ) : (
+                    <Button
+                      type="button"
+                      size="lg"
+                      onClick={primaryJoin}
+                      className={`group h-12 min-w-[200px] rounded-full px-10 text-base font-semibold sm:h-14 sm:min-w-[240px] ${clubTheme.ctaButtonLong}`}
+                    >
+                      {joinLabel ?? "Forma parte del club"}
+                      <ArrowRight className="ml-2 h-4 w-4 transition-transform duration-500 ease-out group-hover:translate-x-0.5" />
+                    </Button>
+                  )}
                   <Button
                     type="button"
                     size="lg"
@@ -391,9 +412,9 @@ export function ClubHero() {
             key={slideKey}
             type="button"
             onClick={() => goTo(i)}
-            className={`h-1.5 rounded-full transition-all duration-500 ${
+            className={`h-1.5 rounded-full transition-all duration-700 ease-out ${
               i === activeSlide
-                ? "w-7 bg-[#00C8FF]"
+                ? "w-7 bg-[var(--aws-orange)]"
                 : isLight
                   ? "w-1.5 bg-black/20 hover:bg-black/30"
                   : "w-1.5 bg-white/30 hover:bg-white/45"

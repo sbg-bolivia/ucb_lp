@@ -57,11 +57,11 @@ export function ClubAwsCommunitiesSection() {
   return (
     <section
       id="comunidades-aws"
-      className={`border-t border-violet-200/60 px-4 py-20 sm:px-6 sm:py-28 dark:border-white/10 ${clubTheme.sectionSoft}`}
+      className={`border-t border-[var(--border-soft)] px-4 py-20 sm:px-6 sm:py-28 ${clubTheme.sectionSoft}`}
     >
       <div className="mx-auto max-w-7xl">
         <motion.div className="mx-auto mb-12 max-w-3xl text-center" {...fadeUpProps}>
-          <p className="text-sm font-bold uppercase tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-[#3b41ff] to-[#6a11cb]">
+          <p className="text-sm font-bold uppercase tracking-widest text-[var(--aws-orange)]">
             Ecosistema AWS en Bolivia
           </p>
           <h2
@@ -83,7 +83,7 @@ export function ClubAwsCommunitiesSection() {
           />
           <div>
             <div className="mb-5 flex items-center gap-2">
-              <Globe2 className="h-5 w-5 text-[#7E2CFF]" />
+              <Globe2 className="h-5 w-5 text-[var(--aws-orange)]" />
               <h3 className={`text-lg font-bold ${clubTheme.textHeading}`}>
                 Listado por región
               </h3>

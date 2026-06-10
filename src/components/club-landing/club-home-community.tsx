@@ -47,7 +47,7 @@ export function ClubHomeCommunity() {
                   href={s.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex h-11 w-11 items-center justify-center rounded-full border border-black/[0.08] bg-black/[0.03] text-[#7E2CFF] transition-all hover:scale-110 hover:border-[#7E2CFF]/20 hover:bg-[#7E2CFF]/10 dark:border-white/[0.05] dark:bg-white/[0.02] dark:text-[#A855F7]"
+                  className="flex h-11 w-11 items-center justify-center rounded-full border border-[var(--border-soft)] bg-[var(--surface-soft)] text-[var(--aws-orange)] transition-all duration-300 hover:scale-110 hover:border-[var(--aws-orange)]/30 hover:bg-[var(--aws-orange)]/10"
                   aria-label={s.label}
                 >
                   <s.icon className="h-5 w-5" />
@@ -58,7 +58,7 @@ export function ClubHomeCommunity() {
                   href={L.tiktokUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex h-11 w-11 items-center justify-center rounded-full border border-black/[0.08] bg-black/[0.03] transition-all hover:scale-110 hover:border-[#7E2CFF]/20 hover:bg-[#7E2CFF]/10 dark:border-white/[0.05] dark:bg-white/[0.02]"
+                  className="flex h-11 w-11 items-center justify-center rounded-full border border-[var(--border-soft)] bg-[var(--surface-soft)] transition-all duration-300 hover:scale-110 hover:border-[var(--aws-orange)]/30 hover:bg-[var(--aws-orange)]/10"
                   aria-label="TikTok"
                 >
                   <TiktokGlyph className="h-5 w-5" />
@@ -84,10 +84,10 @@ export function ClubHomeCommunity() {
                 {
                   val: "120+",
                   lbl: "miembros activos",
-                  color: "text-[#00C8FF]",
+                  color: "text-[var(--aws-orange)]",
                 },
-                { val: "6+", lbl: "universidades", color: "text-[#7E2CFF]" },
-                { val: "3", lbl: "ciudades", color: "text-[#A855F7]" },
+                { val: "6+", lbl: "universidades", color: "text-[var(--text-muted)]" },
+                { val: "3", lbl: "ciudades", color: "text-[var(--text-muted)]" },
               ].map((item) => (
                 <motion.div
                   key={item.lbl}
@@ -118,7 +118,7 @@ export function ClubHomeCommunity() {
             className={`flex flex-col justify-between p-8 sm:p-10 ${clubTheme.card}`}
           >
             {/* Large Quote Marks Icon / Indicator */}
-            <span className="text-6xl text-[#00C8FF]/20 font-serif leading-none select-none">
+            <span className="text-6xl text-[var(--aws-orange)]/15 font-serif leading-none select-none">
               “
             </span>
 
@@ -140,7 +140,7 @@ export function ClubHomeCommunity() {
                 <cite className={`not-italic text-sm font-bold block ${clubTheme.textHeading}`}>
                   Camila R.
                 </cite>
-                <span className="text-[10px] font-semibold text-[#00C8FF] uppercase tracking-wider block mt-0.5">
+                <span className="text-[10px] font-semibold text-[var(--aws-orange)] uppercase tracking-wider block mt-0.5">
                   Estudiante y Builder Cloud
                 </span>
               </div>
@@ -172,7 +172,7 @@ export function ClubHomeCommunity() {
 
               <Link
                 href="/equipo"
-                className="inline-flex items-center gap-1 text-xs font-bold text-[#00C8FF] hover:underline uppercase tracking-wider group/team"
+                className="inline-flex items-center gap-1 text-xs font-bold text-[var(--aws-orange)] hover:underline uppercase tracking-wider group/team"
               >
                 Conoce al equipo
                 <span className="inline-block transition-transform duration-200 group-hover/team:translate-x-0.5">

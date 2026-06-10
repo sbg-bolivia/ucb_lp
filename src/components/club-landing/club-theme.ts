@@ -1,39 +1,38 @@
 /**
- * Paleta landing (SBG builder):
- * - Cyan: #00C8FF
- * - Purple: #7E2CFF
- * - Magenta: #A855F7
- * - Dark: #0C0D12
- * Modo claro: se mantiene, pero el foco del marketing es dark.
- * Modo oscuro vía clase `dark` en <html> (next-themes).
+ * Identidad AWS Student Builder Group UCB
+ * Proporción: 70% azul oscuro · 20% neutros claros · 10% naranja AWS
  */
 export const clubTheme = {
   pageBg:
-    "bg-[#f5f5f7] text-[#1d1d1f] dark:bg-[#050608] dark:text-zinc-100 selection:bg-cyan-500/10",
+    "bg-[var(--bg)] text-[var(--text)] dark:bg-[var(--brand-dark)] dark:text-[var(--text-main)]",
   navBar:
-    "border-b border-black/[0.04] bg-white/70 backdrop-blur-xl dark:border-white/[0.02] dark:bg-[#050608]/65",
+    "border-b border-slate-200/80 bg-white/85 backdrop-blur-xl dark:border-[var(--border-soft)] dark:bg-[var(--aws-ink)]/90",
   navLinkIdle:
-    "text-slate-500 hover:text-black dark:text-zinc-400 dark:hover:text-white transition-all duration-300",
+    "text-slate-600 hover:text-[var(--aws-ink)] dark:text-[var(--text-muted)] dark:hover:text-[var(--text-main)] transition-all duration-300",
   navLinkActive:
-    "bg-black/5 text-black border border-black/5 dark:bg-white/10 dark:text-white dark:border-white/5",
-  card: "rounded-[2.5rem] bg-white shadow-[0_20px_50px_-12px_rgba(0,0,0,0.06)] border border-transparent dark:border-white/[0.03] dark:bg-white/[0.01] dark:shadow-[inset_0_1px_1px_rgba(255,255,255,0.01)]",
+    "bg-slate-100 text-[var(--aws-ink)] border border-slate-200 dark:bg-[var(--surface-soft)] dark:text-[var(--text-main)] dark:border-[var(--border-soft)]",
+  card: "rounded-2xl bg-[var(--card)] shadow-sm border border-slate-200/80 dark:rounded-2xl dark:bg-[var(--surface-soft)] dark:border-[var(--border-soft)] dark:shadow-none",
   cardHover:
-    "transition-all duration-400 hover:shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1)] hover:scale-[1.01] dark:hover:border-white/[0.06] dark:hover:bg-white/[0.02] dark:hover:shadow-[inset_0_1px_1px_rgba(255,255,255,0.02)]",
-  textMuted: "text-slate-500 dark:text-zinc-400",
-  textHeading: "text-[#1d1d1f] dark:text-white",
-  accentLine: "bg-black dark:bg-white",
-  /** Capa sobre imagen hero: dark + halo. Mantenemos oscuro en hero para contraste del 3D */
-  gradientHeroOverlay: "from-[#050608]/98 via-transparent to-[#050608]/98",
-  /** Botones primarios: clean solid black or gradient button */
-  gradientButton: "from-[#00C8FF] via-[#7E2CFF] to-[#A855F7]",
-  /** Banda CTA: halo cyan–violet (coherente con el hero) */
+    "transition-all duration-400 hover:shadow-md hover:border-[var(--aws-orange)]/25 dark:hover:border-[var(--aws-orange)]/30",
+  textMuted: "text-[var(--muted)] dark:text-[var(--text-muted)]",
+  textHeading: "text-[var(--text)] dark:text-[var(--text-main)]",
+  accentLine: "bg-[var(--aws-orange)]",
+  gradientHeroOverlay:
+    "from-[var(--brand-dark)]/95 via-transparent to-[var(--brand-dark)]/95",
+  /** Botón primario — naranja AWS sólido */
+  gradientButton:
+    "bg-[var(--aws-orange)] hover:bg-[#E88B00] text-[#0F172A] font-bold",
+  /** Banda CTA */
   gradientCta:
-    "border border-[#00C8FF]/12 bg-gradient-to-br from-[#e8f6ff] via-white to-[#f0e8ff] shadow-[0_28px_64px_-24px_rgba(126,44,255,0.18)] dark:border-white/[0.06] dark:bg-gradient-to-br dark:from-[#0b1220] dark:via-[#0d0a18] dark:to-[#050608] dark:shadow-[0_32px_80px_-28px_rgba(0,200,255,0.2)]",
+    "border border-slate-200 bg-[var(--bg)] shadow-lg dark:border-[var(--border-soft)] dark:bg-[var(--surface)]",
   meetupHighlight:
-    "bg-[#F05663] hover:bg-[#e04552] text-white shadow-md ring-1 ring-white/10",
-  sectionSoft: "bg-transparent",
-  sectionTint: "bg-transparent",
-  /** Padding vertical compacto entre secciones del marketing */
+    "bg-[#F05663] hover:bg-[#e04552] text-white shadow-md",
+  sectionSoft: "bg-[var(--bg)] dark:bg-[var(--brand-dark)]",
+  sectionTint: "bg-slate-50 dark:bg-[var(--surface)]",
+  sectionDark: "bg-[var(--aws-ink)] text-[var(--text-main)]",
   sectionY: "px-4 py-10 sm:px-6 sm:py-14",
   sectionYCompact: "px-4 py-8 sm:px-6 sm:py-10",
+  /** Botón CTA con gradiente naranja animado al hover */
+  ctaButtonLong:
+    "bg-[length:320%_100%] bg-gradient-to-r from-[#E88B00] via-[#FF9900] via-[#FFAD33] via-[#FFC966] to-[#E88B00] text-[#0F172A] font-bold transition-[background-position,transform,box-shadow] duration-700 ease-in-out hover:bg-[position:100%_0] hover:shadow-[0_8px_28px_rgba(255,153,0,0.35)]",
 } as const;

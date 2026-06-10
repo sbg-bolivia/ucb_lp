@@ -17,9 +17,9 @@ const BURST_MS = 700;
 const FADE_MS = 900;
 const MIN_MOVE_PX = 6;
 
-const COLOR_A = new THREE.Color("#00C8FF");
-const COLOR_B = new THREE.Color("#7E2CFF");
-const COLOR_C = new THREE.Color("#A855F7");
+const COLOR_A = new THREE.Color("#FF9900");
+const COLOR_B = new THREE.Color("#64748B");
+const COLOR_C = new THREE.Color("#232F3E");
 
 type Particle = {
   x: number;
@@ -62,6 +62,10 @@ export function ClubCursorField({ className = "" }: { className?: string }) {
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
+
+    const mobile = window.matchMedia("(max-width: 767px)");
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
+    if (mobile.matches || reduced.matches) return;
 
     let width = Math.max(1, container.clientWidth);
     let height = Math.max(1, container.clientHeight);

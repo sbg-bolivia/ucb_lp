@@ -50,7 +50,7 @@ function ModelLoadingFallback() {
 function ModelUnavailableFallback() {
   return (
     <div className="flex h-full min-h-[200px] flex-col items-center justify-center gap-2 text-center">
-      <Cloud className="h-14 w-14 text-[#7E2CFF]/40" />
+      <Cloud className="h-14 w-14 text-[var(--aws-orange)]/40" />
       <p className="max-w-[220px] text-xs text-zinc-400">
         Vista 3D no disponible en este dispositivo
       </p>
@@ -80,7 +80,7 @@ function Model({
     const size = box.getSize(new THREE.Vector3());
     const center = box.getCenter(new THREE.Vector3());
     const maxDim = Math.max(size.x, size.y, size.z) || 1;
-    const scale = 7 / maxDim;
+    const scale = 5.8 / maxDim;
     clone.position.set(-center.x * scale, -center.y * scale, -center.z * scale);
     clone.scale.setScalar(scale);
     clone.traverse((obj) => {
@@ -116,20 +116,20 @@ function StageRings({ compact }: { compact?: boolean }) {
   useFrame((_, delta) => {
     if (ringsRef.current) ringsRef.current.rotation.z += delta * 0.12;
   });
-  const radii = compact ? [1.35, 1.75] : [1.55, 2.05, 2.55];
+  const radii = compact ? [1.2, 1.55] : [1.4, 1.85, 2.25];
   return (
     <group
       ref={ringsRef}
-      position={[0, -0.82, 0]}
+      position={[0, -0.72, 0]}
       rotation={[Math.PI / 2, 0, 0]}
     >
       {radii.map((r, i) => (
         <mesh key={r}>
-          <torusGeometry args={[r, 0.012, 16, 96]} />
+          <torusGeometry args={[r, 0.01, 12, compact ? 48 : 64]} />
           <meshBasicMaterial
-            color={i % 2 === 0 ? "#00C8FF" : "#7E2CFF"}
+            color={i % 2 === 0 ? "#FF9900" : "#64748B"}
             transparent
-            opacity={0.5 - i * 0.12}
+            opacity={0.45 - i * 0.1}
             blending={THREE.AdditiveBlending}
           />
         </mesh>
@@ -145,9 +145,9 @@ function SceneLights({ lightMode }: { lightMode: "light" | "dark" }) {
       <ambientLight intensity={isLight ? 0.85 : 0.65} />
       <hemisphereLight
         args={[
-          isLight ? "#e8f4ff" : "#bcd4ff",
-          isLight ? "#c4b5fd" : "#1a0b3a",
-          isLight ? 1.1 : 0.8,
+          isLight ? "#e8f4ff" : "#94a3b8",
+          isLight ? "#cbd5e1" : "#0f172a",
+          isLight ? 1.1 : 0.75,
         ]}
       />
       <directionalLight
@@ -157,18 +157,13 @@ function SceneLights({ lightMode }: { lightMode: "light" | "dark" }) {
       />
       <pointLight
         position={[-5, 2, 3]}
-        intensity={isLight ? 45 : 60}
-        color="#00C8FF"
+        intensity={isLight ? 35 : 45}
+        color="#FF9900"
       />
       <pointLight
         position={[5, -1, 4]}
-        intensity={isLight ? 40 : 55}
-        color="#7E2CFF"
-      />
-      <pointLight
-        position={[0, 4, -4]}
         intensity={isLight ? 30 : 40}
-        color="#A855F7"
+        color="#94A3B8"
       />
     </>
   );
@@ -189,6 +184,15 @@ export type ClubHeroModelProps = {
   onInteractingChange?: (interacting: boolean) => void;
 };
 
+let preloadStarted = false;
+
+/** Precarga diferida del GLB (~11 MB) — llamar solo cuando el hero entra en viewport. */
+export function preloadHeroModel() {
+  if (preloadStarted || typeof window === "undefined") return;
+  preloadStarted = true;
+  useGLTF.preload(MODEL_URL);
+}
+
 export function ClubHeroModel({
   autoRotate = true,
   lightMode = "dark",
@@ -201,7 +205,6 @@ export function ClubHeroModel({
   const isAmbient = variant === "ambient";
 
   useEffect(() => {
-    useGLTF.preload(MODEL_URL);
     const mq = window.matchMedia("(max-width: 767px)");
     const update = () => setIsMobile(mq.matches);
     update();
@@ -227,16 +230,17 @@ export function ClubHeroModel({
         <Canvas
           camera={{
             position: isAmbient
-              ? [0, 0.02, isMobile ? 10.5 : 9.4]
-              : [0, 0.02, isMobile ? 9.2 : 8.1],
-            fov: isAmbient ? (isMobile ? 34 : 30) : isMobile ? 36 : 32,
+              ? [0, 0.05, isMobile ? 11.2 : 10.2]
+              : [0, 0.05, isMobile ? 10.4 : 9.2],
+            fov: isAmbient ? (isMobile ? 32 : 28) : isMobile ? 34 : 30,
           }}
-          dpr={isMobile ? 1 : isAmbient ? [1, 1.5] : [1, 1.75]}
+          dpr={isMobile ? 1 : [1, 1.15]}
           gl={{
-            antialias: !isMobile,
+            antialias: false,
             alpha: true,
-            powerPreference: isMobile ? "default" : "high-performance",
+            powerPreference: "low-power",
           }}
+          performance={{ min: 0.5, max: 1 }}
           style={{ width: "100%", height: "100%", touchAction: "none" }}
         >
           <CanvasBackground />
