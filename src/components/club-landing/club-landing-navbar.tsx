@@ -87,9 +87,7 @@ export function ClubLandingNavbar() {
               href={links.meetupUrl}
               size="sm"
               className="hidden sm:inline-flex"
-            >
-              Únete en Meetup
-            </ClubMeetupButton>
+            />
           ) : (
             <Button
               type="button"

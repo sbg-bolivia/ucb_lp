@@ -1,3 +1,4 @@
+import { ClubAboutCta } from "@/components/club-landing/club-about-cta";
 import { ClubAboutPage } from "@/components/club-landing/club-about-page";
 import { ClubAwsCommunitiesSection } from "@/components/club-landing/club-aws-communities-section";
 import { clubPageMeta } from "@/lib/club-page-meta";
@@ -14,6 +15,7 @@ export default function NosotrosPage() {
       <h1 className="sr-only">Nosotros</h1>
       <ClubAboutPage />
       <ClubAwsCommunitiesSection />
+      <ClubAboutCta />
     </>
   );
 }

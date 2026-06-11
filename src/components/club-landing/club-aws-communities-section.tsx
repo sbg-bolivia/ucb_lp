@@ -18,7 +18,7 @@ const ClubCommunitiesMapInner = dynamic(
     ssr: false,
     loading: () => (
       <div
-        className={`flex h-[min(420px,55vh)] items-center justify-center rounded-[2rem] border border-dashed border-sky-300/50 ${clubTheme.textMuted}`}
+        className={`flex h-full min-h-[280px] items-center justify-center rounded-2xl border border-dashed border-slate-300 dark:border-[var(--border-soft)] ${clubTheme.textMuted}`}
       >
         Cargando mapa…
       </div>
@@ -43,7 +43,7 @@ export function ClubAwsCommunitiesSection() {
   if (isLoading) {
     return (
       <section
-        className={`border-t border-violet-200/60 px-4 py-16 sm:px-6 dark:border-white/10 ${clubTheme.sectionSoft}`}
+        className={`border-t border-slate-200 px-4 py-14 sm:px-6 dark:border-[var(--border-soft)] ${clubTheme.sectionSoft}`}
       >
         <p className={`text-center text-sm ${clubTheme.textMuted}`}>
           Cargando comunidades…
@@ -57,34 +57,37 @@ export function ClubAwsCommunitiesSection() {
   return (
     <section
       id="comunidades-aws"
-      className={`border-t border-[var(--border-soft)] px-4 py-20 sm:px-6 sm:py-28 ${clubTheme.sectionSoft}`}
+      className={`border-t border-slate-200 py-8 sm:py-10 dark:border-[var(--border-soft)] ${clubTheme.sectionSoft}`}
     >
-      <div className="mx-auto max-w-7xl">
-        <motion.div className="mx-auto mb-12 max-w-3xl text-center" {...fadeUpProps}>
-          <p className="text-sm font-bold uppercase tracking-widest text-[var(--aws-orange)]">
+      <div className={clubTheme.container}>
+        <motion.div className="mb-8 max-w-2xl" {...fadeUpProps}>
+          <p className="text-xs font-bold uppercase tracking-widest text-[var(--aws-orange)]">
             Ecosistema AWS en Bolivia
           </p>
-          <h2
-            className={`mt-3 text-3xl font-bold tracking-tight sm:text-4xl ${clubTheme.textHeading}`}
-          >
+          <h2 className={`mt-2 text-2xl font-bold tracking-tight sm:text-3xl ${clubTheme.textHeading}`}>
             Otras comunidades AWS
           </h2>
-          <p className={`mt-5 text-lg ${clubTheme.textMuted}`}>
+          <p className={`mt-3 text-sm sm:text-base ${clubTheme.textMuted}`}>
             Student Builder Groups, User Groups y Cloud Clubs con los que
             colaboramos o nos inspiran en el país.
           </p>
         </motion.div>
 
-        <div className="grid gap-10 lg:grid-cols-2 lg:items-start lg:gap-12">
-          <ClubCommunitiesMapInner
-            communities={list}
-            selectedId={selectedId}
-            onSelect={setSelectedId}
-          />
-          <div>
-            <div className="mb-5 flex items-center gap-2">
+        <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)] lg:items-stretch lg:gap-8">
+          <div className="lg:sticky lg:top-24 lg:self-start">
+            <div className="h-[min(360px,50vh)] lg:h-[min(520px,calc(100vh-9rem))]">
+              <ClubCommunitiesMapInner
+                communities={list}
+                selectedId={selectedId}
+                onSelect={setSelectedId}
+              />
+            </div>
+          </div>
+
+          <div className="flex min-h-0 flex-col">
+            <div className="mb-4 flex items-center gap-2">
               <Globe2 className="h-5 w-5 text-[var(--aws-orange)]" />
-              <h3 className={`text-lg font-bold ${clubTheme.textHeading}`}>
+              <h3 className={`text-base font-bold ${clubTheme.textHeading}`}>
                 Listado por región
               </h3>
             </div>

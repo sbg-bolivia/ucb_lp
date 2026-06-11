@@ -29,8 +29,8 @@ const SLIDE_COUNT = 2;
 const SLIDE_KEYS = ["slide-3d", "slide-portal"] as const;
 const AUTO_INTERVAL_MS = 9000;
 /** Contenedor cuadrado — evita recorte rectangular del canvas 3D */
-const modelSizeLg = "min(480px, min(42vw, 48vh))";
-const modelSizeSm = "min(320px, 88vw)";
+const modelSizeLg = "min(560px, min(48vw, 54vh))";
+const modelSizeSm = "min(360px, 92vw)";
 const MODEL_BOX_LG = {
   width: modelSizeLg,
   height: modelSizeLg,
@@ -114,7 +114,7 @@ export function ClubHero() {
   };
 
   const joinLabel = links.meetupUrl
-    ? "Únete en Meetup"
+    ? "Meetup"
     : isAuthenticated
       ? "Ir al panel"
       : null;
@@ -233,7 +233,7 @@ export function ClubHero() {
                   {CLUB.heroLine1}
                 </p>
                 <h1
-                  className={`text-5xl font-extrabold leading-[0.92] tracking-tighter sm:text-7xl lg:text-8xl ${
+                  className={`text-4xl font-extrabold leading-[0.95] tracking-tight sm:text-5xl lg:text-6xl ${
                     isLight ? "text-slate-900" : "text-white"
                   }`}
                 >
@@ -251,10 +251,8 @@ export function ClubHero() {
                     href={links.meetupUrl}
                     size="lg"
                     showExternal
-                    className="min-w-[220px] sm:min-w-[260px]"
-                  >
-                    Únete en Meetup
-                  </ClubMeetupButton>
+                    className="min-w-[160px] sm:min-w-[180px]"
+                  />
                 ) : (
                   <Button
                     size="lg"
@@ -301,7 +299,7 @@ export function ClubHero() {
                 </div>
 
                 <h1
-                  className={`text-4xl font-bold leading-[1.02] tracking-tight sm:text-5xl lg:text-6xl xl:text-7xl ${
+                  className={`text-3xl font-bold leading-[1.05] tracking-tight sm:text-4xl lg:text-5xl ${
                     isLight ? "text-slate-900" : "text-white"
                   } ${isLg ? "" : "text-center"}`}
                 >
@@ -329,10 +327,8 @@ export function ClubHero() {
                       href={links.meetupUrl}
                       size="lg"
                       showExternal
-                      className="min-w-[200px] sm:min-w-[240px]"
-                    >
-                      Únete en Meetup
-                    </ClubMeetupButton>
+                      className="min-w-[160px] sm:min-w-[180px]"
+                    />
                   ) : (
                     <Button
                       type="button"

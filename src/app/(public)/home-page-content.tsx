@@ -44,12 +44,12 @@ const ClubHomeCommunity = dynamic(
   { loading: () => <SectionPlaceholder /> }
 );
 
-const ClubCtaBand = dynamic(
+const ClubHomeCampusGallery = dynamic(
   () =>
-    import("@/components/club-landing/club-cta-band").then(
-      (m) => m.ClubCtaBand
+    import("@/components/club-landing/club-home-campus-gallery").then(
+      (m) => m.ClubHomeCampusGallery
     ),
-  { loading: () => <SectionPlaceholder short /> }
+  { loading: () => <SectionPlaceholder /> }
 );
 
 function SectionPlaceholder({ short }: { short?: boolean }) {
@@ -92,8 +92,8 @@ export function HomePageContent() {
       <div style={{ contentVisibility: "auto", containIntrinsicSize: "800px" }}>
         <ClubHomeCommunity />
       </div>
-      <div style={{ contentVisibility: "auto", containIntrinsicSize: "400px" }}>
-        <ClubCtaBand />
+      <div style={{ contentVisibility: "auto", containIntrinsicSize: "600px" }}>
+        <ClubHomeCampusGallery />
       </div>
     </>
   );

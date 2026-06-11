@@ -80,7 +80,7 @@ function Model({
     const size = box.getSize(new THREE.Vector3());
     const center = box.getCenter(new THREE.Vector3());
     const maxDim = Math.max(size.x, size.y, size.z) || 1;
-    const scale = 5.8 / maxDim;
+    const scale = 6.5 / maxDim;
     clone.position.set(-center.x * scale, -center.y * scale, -center.z * scale);
     clone.scale.setScalar(scale);
     clone.traverse((obj) => {
@@ -231,7 +231,7 @@ export function ClubHeroModel({
           camera={{
             position: isAmbient
               ? [0, 0.05, isMobile ? 11.2 : 10.2]
-              : [0, 0.05, isMobile ? 10.4 : 9.2],
+              : [0, 0.05, isMobile ? 9.8 : 8.6],
             fov: isAmbient ? (isMobile ? 32 : 28) : isMobile ? 34 : 30,
           }}
           dpr={isMobile ? 1 : [1, 1.15]}

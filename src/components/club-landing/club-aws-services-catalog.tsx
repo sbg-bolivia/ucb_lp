@@ -214,11 +214,11 @@ export function ClubAwsServicesCatalog() {
 
     <div className="mb-14">
 
-      <motion.div className="mx-auto mb-8 max-w-3xl" {...fadeUpProps}>
+      <motion.div className="mb-8 w-full" {...fadeUpProps}>
 
         <h2
 
-          className={`text-2xl font-bold tracking-tight sm:text-3xl md:text-4xl ${clubTheme.textHeading}`}
+          className={`text-2xl font-bold tracking-tight sm:text-3xl ${clubTheme.textHeading}`}
 
         >
 
@@ -270,7 +270,7 @@ export function ClubAwsServicesCatalog() {
 
       ) : (
 
-        <ul className="mx-auto grid max-w-6xl gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
 
           {pageItems.map((svc) => {
 
@@ -292,7 +292,7 @@ export function ClubAwsServicesCatalog() {
 
                 >
 
-                  <span className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-[var(--aws-ink)] text-[var(--aws-orange)] dark:bg-[var(--surface)]">
+                  <span className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-slate-100 text-[var(--aws-orange)] dark:bg-[var(--surface)]">
 
                     <Icon className="h-6 w-6" strokeWidth={1.5} />
 

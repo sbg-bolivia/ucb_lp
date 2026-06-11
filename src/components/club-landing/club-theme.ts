@@ -29,7 +29,9 @@ export const clubTheme = {
     "bg-[#F05663] hover:bg-[#e04552] text-white shadow-md",
   sectionSoft: "bg-[var(--bg)] dark:bg-[var(--brand-dark)]",
   sectionTint: "bg-slate-50 dark:bg-[var(--surface)]",
-  sectionDark: "bg-[var(--aws-ink)] text-[var(--text-main)]",
+  sectionDark:
+    "bg-[var(--bg)] text-[var(--text)] dark:bg-[var(--aws-ink)] dark:text-[var(--text-main)]",
+  container: "mx-auto w-full max-w-7xl px-4 sm:px-6",
   sectionY: "px-4 py-10 sm:px-6 sm:py-14",
   sectionYCompact: "px-4 py-8 sm:px-6 sm:py-10",
   /** Botón CTA con gradiente naranja animado al hover */

@@ -4,7 +4,8 @@ import { AWS_COMMUNITY_TYPE_LABELS } from "@/lib/aws-labels";
 import { safeExternalHref } from "@/lib/event-registration-url";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
-import { useEffect, useMemo, useRef } from "react";
+import { useTheme } from "next-themes";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   MapContainer,
   Marker,
@@ -32,14 +33,14 @@ const defaultIcon = L.icon({
 
 const ownGroupIcon = L.divIcon({
   className: "",
-  html: `<div style="width:14px;height:14px;border-radius:50%;background:linear-gradient(135deg,#00C8FF,#7E2CFF);border:2px solid white;box-shadow:0 2px 8px rgba(0,0,0,.35)"></div>`,
+  html: `<div style="width:14px;height:14px;border-radius:50%;background:linear-gradient(135deg,#FF9900,#E88B00);border:2px solid white;box-shadow:0 2px 8px rgba(0,0,0,.45)"></div>`,
   iconSize: [14, 14],
   iconAnchor: [7, 7],
 });
 
 const selectedIcon = L.divIcon({
   className: "",
-  html: `<div style="width:18px;height:18px;border-radius:50%;background:linear-gradient(135deg,#00C8FF,#7E2CFF);border:3px solid white;box-shadow:0 0 0 3px rgba(59,65,255,.45),0 4px 12px rgba(0,0,0,.35)"></div>`,
+  html: `<div style="width:18px;height:18px;border-radius:50%;background:linear-gradient(135deg,#FF9900,#FFC966);border:3px solid white;box-shadow:0 0 0 3px rgba(255,153,0,.4),0 4px 12px rgba(0,0,0,.45)"></div>`,
   iconSize: [18, 18],
   iconAnchor: [9, 9],
 });
@@ -118,7 +119,7 @@ function CommunityMarker({
                 href={website}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-xs font-semibold text-[#3b41ff] hover:underline"
+                className="text-xs font-semibold text-[var(--aws-orange)] hover:underline"
               >
                 Sitio web
               </a>
@@ -140,11 +141,30 @@ function CommunityMarker({
   );
 }
 
+function ThemeTileLayer({ isDark }: { isDark: boolean }) {
+  return (
+    <TileLayer
+      key={isDark ? "dark" : "light"}
+      attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/">CARTO</a>'
+      url={
+        isDark
+          ? "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+          : "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
+      }
+    />
+  );
+}
+
 export default function ClubCommunitiesMapInner({
   communities,
   selectedId,
   onSelect,
 }: Props) {
+  const { resolvedTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+  const isDark = !mounted || resolvedTheme !== "light";
+
   const withCoords = useMemo(
     () =>
       communities.filter((c) => c.latitude != null && c.longitude != null),
@@ -164,18 +184,15 @@ export default function ClubCommunitiesMapInner({
     : null;
 
   return (
-    <div className="relative z-0 h-[min(420px,55vh)] w-full overflow-hidden rounded-[2rem] border border-black/5 dark:border-white/10">
+    <div className="relative z-0 h-full w-full overflow-hidden rounded-2xl border border-slate-200 shadow-lg dark:border-[var(--border-soft)]">
       <MapContainer
         center={BOLIVIA_CENTER}
         zoom={6}
         scrollWheelZoom={false}
-        className="h-full w-full rounded-[2rem]"
-        style={{ background: "#e8eef5" }}
+        className="h-full w-full rounded-2xl"
+        style={{ background: isDark ? "#1a2332" : "#e8eef5" }}
       >
-        <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        />
+        <ThemeTileLayer isDark={isDark} />
         {flyTarget ? (
           <MapFlyTo position={flyTarget} zoom={FOCUS_ZOOM} />
         ) : null}

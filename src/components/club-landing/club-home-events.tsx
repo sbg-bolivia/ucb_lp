@@ -13,17 +13,16 @@ const containerVariants: import("motion/react").Variants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
-    transition: { staggerChildren: 0.15, delayChildren: 0.1 },
+    transition: { staggerChildren: 0.1, delayChildren: 0.08 },
   },
 };
 
 const cardVariants: import("motion/react").Variants = {
-  hidden: { opacity: 0, scale: 0.95, filter: "blur(15px)" },
+  hidden: { opacity: 0, y: 14 },
   visible: {
     opacity: 1,
-    scale: 1,
-    filter: "blur(0px)",
-    transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] },
+    y: 0,
+    transition: { duration: 0.55, ease: [0.16, 1, 0.3, 1] },
   },
 };
 
@@ -65,14 +64,11 @@ export function ClubHomeEvents() {
     undefined,
     { staleTime: 120_000 }
   );
-  const featured = (events ?? []).slice(0, 3);
+  const featured = (events ?? []).slice(0, 4);
 
   return (
-    <section
-      className={`bg-transparent ${clubTheme.sectionY} ${clubTheme.pageBg}`}
-      style={{ perspective: "1500px" }}
-    >
-      <div className="mx-auto max-w-7xl">
+    <section className={`bg-transparent ${clubTheme.sectionY} ${clubTheme.pageBg}`}>
+      <div className={clubTheme.container}>
         <ClubSectionHeader
           eyebrow="Eventos destacados"
           title="Lo que viene"
@@ -80,125 +76,112 @@ export function ClubHomeEvents() {
         />
 
         {isLoading ? (
-          <p className={`mt-10 text-center text-sm ${clubTheme.textMuted}`}>
-            Cargando eventos…
-          </p>
+          <p className={`mt-8 text-sm ${clubTheme.textMuted}`}>Cargando eventos…</p>
         ) : featured.length === 0 ? (
           <div
-            className={`mt-10 rounded-2xl border border-dashed px-6 py-12 text-center ${clubTheme.card}`}
+            className={`mt-8 rounded-2xl border border-dashed px-6 py-10 text-center ${clubTheme.card}`}
           >
-            <p className={`text-lg font-semibold ${clubTheme.textHeading}`}>
+            <p className={`text-base font-semibold ${clubTheme.textHeading}`}>
               Pronto publicaremos eventos
             </p>
             <p className={`mt-2 text-sm ${clubTheme.textMuted}`}>
               Gestiona el calendario desde el panel de administración.
             </p>
-            <Button asChild className="mt-6 rounded-full">
+            <Button asChild className="mt-5 rounded-full">
               <Link href="/eventos">Ver calendario</Link>
             </Button>
           </div>
         ) : (
-          <motion.div
-            className="mt-10 grid gap-12 lg:gap-16"
+          <motion.ul
+            className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-4"
             variants={containerVariants}
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
+            viewport={{ once: true, margin: "-60px" }}
           >
             {featured.map((event, index) => {
               const badge = formatDateBadge(event.startsAt);
               const online = isOnlineLocation(event.location);
-              const accent = "from-[var(--aws-orange)]/8";
 
               return (
-                <motion.article
-                  key={event.id}
-                  variants={cardVariants}
-                  className={`club-glass group relative flex flex-col overflow-hidden rounded-[2rem] border border-black/[0.06] bg-white shadow-xl dark:border-white/5 dark:bg-[#0C0D12] lg:flex-row ${clubTheme.cardHover}`}
-                >
-                  <div
-                    className={`absolute inset-0 bg-gradient-to-br ${accent} to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100`}
-                  />
-
-                  <div className="relative block h-64 w-full shrink-0 overflow-hidden lg:h-auto lg:w-2/5">
-                    <Link href={`/eventos/${event.id}`}>
-                      <div className="h-full w-full">
-                        <Image
-                          src={event.imageUrl?.trim() || FALLBACK_IMAGE}
-                          alt={event.title}
-                          fill
-                          className="object-cover transition-transform duration-700 group-hover:scale-110"
-                          sizes="(max-width: 1024px) 100vw, 40vw"
-                          priority={index === 0}
-                          loading={index === 0 ? undefined : "lazy"}
-                        />
-                      </div>
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-80 lg:bg-gradient-to-r dark:from-[#0C0D12]" />
-
-                      <div className="absolute left-6 top-6 flex h-16 w-16 flex-col items-center justify-center rounded-2xl border border-white/20 bg-black/40 text-white shadow-xl backdrop-blur-md">
-                        <span className="text-xl font-bold leading-none">
+                <motion.li key={event.id} variants={cardVariants}>
+                  <article
+                    className={`flex h-full flex-col overflow-hidden rounded-xl ${clubTheme.card} ${clubTheme.cardHover}`}
+                  >
+                    <Link
+                      href={`/eventos/${event.id}`}
+                      className="relative block aspect-[4/3] overflow-hidden bg-slate-100 dark:bg-[var(--surface)]"
+                    >
+                      <Image
+                        src={event.imageUrl?.trim() || FALLBACK_IMAGE}
+                        alt={event.title}
+                        fill
+                        className="object-contain object-center transition-transform duration-500 group-hover:scale-[1.02]"
+                        sizes="(max-width: 640px) 50vw, 25vw"
+                        priority={index === 0}
+                        loading={index === 0 ? undefined : "lazy"}
+                      />
+                      <div className="absolute left-3 top-3 flex h-12 w-12 flex-col items-center justify-center rounded-lg bg-white/95 text-[var(--aws-ink)] shadow-md dark:bg-[var(--surface-soft)] dark:text-[var(--text-main)]">
+                        <span className="text-sm font-bold leading-none">
                           {badge.day}
                         </span>
-                        <span className="mt-1 text-[10px] font-bold uppercase tracking-wider text-[var(--aws-orange)]">
+                        <span className="mt-0.5 text-[9px] font-bold uppercase tracking-wide text-[var(--aws-orange)]">
                           {badge.month}
                         </span>
                       </div>
                     </Link>
-                  </div>
 
-                  <div className="relative flex flex-1 flex-col justify-center p-8 sm:p-10 lg:pl-12">
-                    <div className="flex flex-wrap items-center gap-3">
-                      <span
-                        className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-medium ${clubTheme.textMuted} border-black/[0.08] bg-black/[0.03] dark:border-white/10 dark:bg-white/5`}
-                      >
-                        {online ? (
-                          <Video className="h-3.5 w-3.5" />
-                        ) : (
-                          <MapPin className="h-3.5 w-3.5" />
-                        )}
-                        {online ? "Online" : "Presencial"}
-                      </span>
-                      <span
-                        className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-medium ${clubTheme.textMuted} border-black/[0.08] bg-black/[0.03] dark:border-white/10 dark:bg-white/5`}
-                      >
-                        <Calendar className="h-3.5 w-3.5" />
-                        {formatTimeRange(event.startsAt, event.endsAt)}
-                      </span>
-                    </div>
-
-                    <h3
-                      className={`mt-6 text-2xl font-bold tracking-tight sm:text-3xl lg:text-4xl ${clubTheme.textHeading}`}
-                    >
-                      <Link
-                        href={`/eventos/${event.id}`}
-                        className="transition-colors duration-300 hover:text-[var(--aws-orange)]"
-                      >
-                        {event.title}
-                      </Link>
-                    </h3>
-
-                    {event.location ? (
-                      <div
-                        className={`mt-4 flex items-center gap-2 ${clubTheme.textMuted}`}
-                      >
-                        <MapPin className="h-4 w-4 shrink-0 text-[var(--aws-orange)]" />
-                        <span className="text-sm">{event.location}</span>
+                    <div className="flex flex-1 flex-col p-4">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <span
+                          className={`inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[11px] font-medium ${clubTheme.textMuted} border-slate-200 bg-slate-50 dark:border-[var(--border-soft)] dark:bg-white/5`}
+                        >
+                          {online ? (
+                            <Video className="h-3 w-3" />
+                          ) : (
+                            <MapPin className="h-3 w-3" />
+                          )}
+                          {online ? "Online" : "Presencial"}
+                        </span>
+                        <span
+                          className={`inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[11px] font-medium ${clubTheme.textMuted} border-slate-200 bg-slate-50 dark:border-[var(--border-soft)] dark:bg-white/5`}
+                        >
+                          <Calendar className="h-3 w-3" />
+                          {formatTimeRange(event.startsAt, event.endsAt)}
+                        </span>
                       </div>
-                    ) : null}
 
-                    <div className="relative z-20 mt-10 flex flex-wrap gap-4">
-                      <Button
-                        asChild
-                        className="rounded-full bg-slate-900 px-8 text-white hover:bg-slate-800 dark:bg-white dark:text-black dark:hover:bg-zinc-200"
-                      >
-                        <Link href={`/eventos/${event.id}`}>Ver detalles</Link>
-                      </Button>
+                      <h3 className={`mt-3 text-base font-bold leading-snug ${clubTheme.textHeading}`}>
+                        <Link
+                          href={`/eventos/${event.id}`}
+                          className="transition-colors duration-300 hover:text-[var(--aws-orange)]"
+                        >
+                          {event.title}
+                        </Link>
+                      </h3>
+
+                      {event.location ? (
+                        <p className={`mt-2 line-clamp-1 text-xs ${clubTheme.textMuted}`}>
+                          {event.location}
+                        </p>
+                      ) : null}
+
+                      <div className="mt-4">
+                        <Button
+                          asChild
+                          variant="outline"
+                          size="sm"
+                          className="h-8 rounded-full text-xs"
+                        >
+                          <Link href={`/eventos/${event.id}`}>Ver detalles</Link>
+                        </Button>
+                      </div>
                     </div>
-                  </div>
-                </motion.article>
+                  </article>
+                </motion.li>
               );
             })}
-          </motion.div>
+          </motion.ul>
         )}
       </div>
     </section>

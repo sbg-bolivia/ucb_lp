@@ -2,6 +2,7 @@
 
 import { fadeUpProps } from "@/lib/club-motion";
 import { motion } from "motion/react";
+import { clubTheme } from "./club-theme";
 
 type ClubSectionHeaderProps = {
   eyebrow: string;
@@ -19,15 +20,15 @@ export function ClubSectionHeader({
   const alignClass = align === "center" ? "text-center mx-auto" : "text-left";
 
   return (
-    <motion.header className={`max-w-3xl ${alignClass}`} {...fadeUpProps}>
+    <motion.header className={`w-full ${alignClass}`} {...fadeUpProps}>
       <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--aws-orange)]">
         {eyebrow}
       </p>
-      <h2 className="mt-3 text-3xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-4xl">
+      <h2 className={`mt-2 text-2xl font-bold tracking-tight sm:text-3xl ${clubTheme.textHeading}`}>
         {title}
       </h2>
       {description ? (
-        <p className="mt-4 text-base leading-relaxed text-slate-600 dark:text-zinc-400 sm:text-lg">
+        <p className={`mt-3 text-sm leading-relaxed sm:text-base ${clubTheme.textMuted}`}>
           {description}
         </p>
       ) : null}

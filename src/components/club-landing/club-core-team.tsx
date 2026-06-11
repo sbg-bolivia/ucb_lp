@@ -15,6 +15,14 @@ import { useMemo, useState } from "react";
 
 import { clubTheme } from "./club-theme";
 
+function isLeaderRole(role: string) {
+  return /presidente|presidenta|líder|lider|lead/i.test(role);
+}
+
+function pickLeader(members: CoreTeamMember[]) {
+  return members.find((m) => isLeaderRole(m.role)) ?? members[0];
+}
+
 function SocialLink({
   href,
   label,
@@ -31,67 +39,72 @@ function SocialLink({
       target="_blank"
       rel="noopener noreferrer"
       aria-label={label}
-      className="flex h-9 w-9 items-center justify-center rounded-full border border-violet-200 bg-white text-slate-600 transition hover:border-[#3b41ff] hover:bg-violet-50 hover:text-[#3b41ff] hover:scale-110 active:scale-95 dark:border-violet-600 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:border-violet-400 dark:hover:bg-zinc-700 dark:hover:text-violet-200"
+      className="flex h-6 w-6 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-600 transition hover:border-[var(--aws-orange)] hover:bg-[var(--aws-orange)]/10 hover:text-[var(--aws-orange)] dark:border-[var(--border-soft)] dark:bg-[var(--surface)] dark:text-zinc-300"
     >
       {children}
     </Link>
   );
 }
 
-function MemberCard({ member }: { member: CoreTeamMember }) {
+function MemberCard({
+  member,
+  featured = false,
+}: {
+  member: CoreTeamMember;
+  featured?: boolean;
+}) {
   const [imgFailed, setImgFailed] = useState(false);
   const showImage = Boolean(member.image?.trim()) && !imgFailed;
   const initials = getInitials(member.name) || "?";
 
+  const photoSize = featured
+    ? "h-16 w-16 sm:h-[4.5rem] sm:w-[4.5rem]"
+    : "h-12 w-12 sm:h-14 sm:w-14";
+
   return (
     <motion.article
       variants={staggerItem}
-      className={`flex flex-col items-center text-center ${clubTheme.card} ${clubTheme.cardHover} p-6 sm:p-7`}
+      className={`flex flex-col items-center text-center ${clubTheme.card} ${clubTheme.cardHover} ${
+        featured ? "p-3 sm:p-3.5" : "p-2.5 sm:p-3"
+      }`}
     >
-      <div className="relative h-28 w-28 overflow-hidden rounded-2xl border-2 border-violet-200/80 shadow-inner shadow-violet-500/10 dark:border-violet-600/50 sm:h-32 sm:w-32">
+      <div
+        className={`relative overflow-hidden rounded-2xl border-2 border-[var(--aws-orange)]/30 shadow-sm ${photoSize}`}
+      >
         {showImage ? (
           <Image
             src={member.image as string}
             alt={member.name}
             fill
-            className="object-cover"
-            sizes="128px"
+            className="object-cover object-[center_25%]"
+            sizes={featured ? "72px" : "56px"}
             onError={() => setImgFailed(true)}
           />
         ) : (
           <div
-            className={`flex h-full w-full items-center justify-center bg-gradient-to-br ${clubTheme.gradientButton} text-xl font-bold text-white sm:text-2xl`}
+            className={`flex h-full w-full items-center justify-center bg-gradient-to-br ${clubTheme.gradientButton} text-xl font-bold text-white`}
           >
             {initials}
           </div>
         )}
       </div>
       <h3
-        className={`mt-4 text-lg font-bold sm:text-xl ${clubTheme.textHeading}`}
+        className={`mt-1.5 font-bold ${featured ? "text-sm sm:text-base" : "text-xs sm:text-sm"} ${clubTheme.textHeading}`}
       >
         {member.name}
       </h3>
-      <p className="text-sm font-medium text-[#5c27c4] dark:text-violet-300">
+      <p className="text-[10px] font-medium leading-tight text-[var(--aws-orange)] sm:text-xs">
         {member.role}
       </p>
-      <div className="mt-4 flex flex-wrap justify-center gap-2">
-        <SocialLink
-          href={member.linkedin ?? ""}
-          label={`LinkedIn de ${member.name}`}
-        >
-          <Linkedin className="h-4 w-4" />
+      <div className="mt-1.5 flex flex-wrap justify-center gap-1">
+        <SocialLink href={member.linkedin ?? ""} label={`LinkedIn de ${member.name}`}>
+          <Linkedin className="h-3 w-3" />
         </SocialLink>
-        <SocialLink
-          href={member.instagram ?? ""}
-          label={`Instagram de ${member.name}`}
-        >
-          <Instagram className="h-4 w-4" />
+        <SocialLink href={member.instagram ?? ""} label={`Instagram de ${member.name}`}>
+          <Instagram className="h-3 w-3" />
         </SocialLink>
-        <SocialLink
-          href={member.github ?? ""}
-          label={`GitHub de ${member.name}`}
-        >
-          <Github className="h-4 w-4" />
+        <SocialLink href={member.github ?? ""} label={`GitHub de ${member.name}`}>
+          <Github className="h-3 w-3" />
         </SocialLink>
       </div>
     </motion.article>
@@ -109,52 +122,59 @@ export function ClubCoreTeam() {
     return CORE_TEAM_MEMBERS;
   }, [tenant]);
 
+  const leader = useMemo(() => pickLeader(members), [members]);
+  const rest = useMemo(
+    () => members.filter((m) => m.id !== leader?.id),
+    [members, leader]
+  );
+
   return (
     <section
       id="equipo"
-      className={`relative ${clubTheme.sectionY} ${clubTheme.sectionSoft}`}
+      className={`relative pt-8 pb-10 sm:pt-10 sm:pb-12 ${clubTheme.sectionSoft}`}
     >
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_70%_40%_at_50%_0%,rgba(59,65,255,0.07),transparent)]" />
-
-      <div className="relative mx-auto max-w-7xl">
-        <motion.div
-          className="mx-auto mb-14 max-w-3xl text-center"
-          {...fadeUpProps}
-        >
-          <p className="text-sm font-bold uppercase tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-[#3b41ff] to-[#6a11cb]">
+      <div className={`relative ${clubTheme.container}`}>
+        <motion.div className="mx-auto mb-6 max-w-2xl text-center" {...fadeUpProps}>
+          <p className="text-xs font-bold uppercase tracking-widest text-[var(--aws-orange)]">
             Core team
           </p>
-          <h2
-            className={`mt-3 text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl ${clubTheme.textHeading}`}
-          >
+          <h2 className={`mt-2 text-2xl font-bold tracking-tight sm:text-3xl ${clubTheme.textHeading}`}>
             Quién impulsa el {CLUB.shortName}
           </h2>
-          <p className={`mt-4 text-lg ${clubTheme.textMuted}`}>
+          <p className={`mt-2 text-sm sm:text-base ${clubTheme.textMuted}`}>
             {members.length === 1
               ? "Quien coordina talleres, eventos y la comunidad del club."
               : `Un equipo de ${members.length} personas que coordina talleres, eventos y la comunidad del club.`}
           </p>
         </motion.div>
 
-        <motion.div
-          className={`grid gap-6 sm:grid-cols-2 ${
-            members.length <= 2
-              ? "lg:grid-cols-2"
-              : members.length <= 3
-                ? "lg:grid-cols-3"
-                : members.length === 4
-                  ? "lg:grid-cols-4"
-                  : "lg:grid-cols-5"
-          }`}
-          variants={staggerContainer}
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: true, margin: "-40px" }}
-        >
-          {members.map((member) => (
-            <MemberCard key={member.id} member={member} />
-          ))}
-        </motion.div>
+        {leader ? (
+          <motion.div
+            className="mb-4 flex justify-center"
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+          >
+            <div className="w-full max-w-[160px] sm:max-w-[180px]">
+              <MemberCard member={leader} featured />
+            </div>
+          </motion.div>
+        ) : null}
+
+        {rest.length > 0 ? (
+          <motion.div
+            className="grid grid-cols-2 gap-2 sm:grid-cols-3 sm:gap-2.5 lg:grid-cols-5"
+            variants={staggerContainer}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, margin: "-40px" }}
+          >
+            {rest.map((member) => (
+              <MemberCard key={member.id} member={member} />
+            ))}
+          </motion.div>
+        ) : null}
       </div>
     </section>
   );

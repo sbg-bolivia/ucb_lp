@@ -18,7 +18,7 @@ export function ClubCommunitiesList({
   onSelect: (id: string) => void;
 }) {
   return (
-    <ul className="space-y-3">
+    <ul className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
       {communities.map((c) => {
         const isSelected = c.id === selectedId;
         const hasCoords = c.latitude != null && c.longitude != null;
@@ -34,49 +34,43 @@ export function ClubCommunitiesList({
               }}
               disabled={!hasCoords}
               className={cn(
-                `w-full text-left p-4 sm:p-5 transition-all ${clubTheme.card}`,
-                c.isOwnGroup && "ring-2 ring-[#00C8FF]/30",
+                `w-full text-left p-3 transition-all ${clubTheme.card}`,
+                c.isOwnGroup && "ring-2 ring-[var(--aws-orange)]/30",
                 isSelected &&
-                  "ring-2 ring-[#3b41ff]/50 shadow-md shadow-[#3b41ff]/10",
+                  "ring-2 ring-[var(--aws-orange)]/50 shadow-md shadow-[var(--aws-orange)]/10",
                 hasCoords
                   ? "cursor-pointer hover:shadow-md"
                   : "cursor-default opacity-90"
               )}
             >
-              <div className="flex flex-wrap items-start justify-between gap-2">
-                <div>
-                  <p className="text-xs font-semibold uppercase tracking-wide text-[#3b41ff] dark:text-violet-300">
+              <div className="flex items-start justify-between gap-2">
+                <div className="min-w-0">
+                  <p className="text-[10px] font-semibold uppercase tracking-wide text-[var(--aws-orange)]">
                     {AWS_COMMUNITY_TYPE_LABELS[c.communityType]}
                     {c.isOwnGroup ? " · Tu comunidad" : ""}
                   </p>
                   <h3
-                    className={`mt-1 text-base font-bold sm:text-lg ${clubTheme.textHeading}`}
+                    className={`mt-0.5 line-clamp-2 text-sm font-bold leading-snug ${clubTheme.textHeading}`}
                   >
                     {c.name}
                   </h3>
                 </div>
                 <p
-                  className={`flex items-center gap-1 text-xs ${clubTheme.textMuted}`}
+                  className={`flex shrink-0 items-center gap-0.5 text-[10px] ${clubTheme.textMuted}`}
                 >
-                  <MapPin className="h-3.5 w-3.5" />
+                  <MapPin className="h-3 w-3" />
                   {c.city}
-                  {c.department ? `, ${c.department}` : ""}
                 </p>
               </div>
-              {c.university ? (
-                <p className={`mt-1.5 text-sm ${clubTheme.textMuted}`}>
-                  {c.university}
-                </p>
-              ) : null}
               {c.description ? (
                 <p
-                  className={`mt-1.5 line-clamp-2 text-sm leading-relaxed ${clubTheme.textMuted}`}
+                  className={`mt-1.5 line-clamp-1 text-xs leading-relaxed ${clubTheme.textMuted}`}
                 >
                   {c.description}
                 </p>
               ) : null}
               <div
-                className="mt-2.5 flex flex-wrap gap-3"
+                className="mt-2 flex flex-wrap gap-2"
                 onClick={(e) => e.stopPropagation()}
                 onKeyDown={(e) => e.stopPropagation()}
               >
@@ -85,10 +79,10 @@ export function ClubCommunitiesList({
                     href={website}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1 text-xs font-semibold text-[#3b41ff] hover:underline dark:text-violet-300"
+                    className="inline-flex items-center gap-0.5 text-[10px] font-semibold text-[var(--aws-orange)] hover:underline"
                   >
-                    <ExternalLink className="h-3.5 w-3.5" />
-                    Sitio web
+                    <ExternalLink className="h-3 w-3" />
+                    Web
                   </a>
                 ) : null}
                 {meetup ? (
@@ -96,16 +90,11 @@ export function ClubCommunitiesList({
                     href={meetup}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1 text-xs font-semibold text-[#F05663] hover:underline"
+                    className="inline-flex items-center gap-0.5 text-[10px] font-semibold text-[#F05663] hover:underline"
                   >
-                    <ExternalLink className="h-3.5 w-3.5" />
+                    <ExternalLink className="h-3 w-3" />
                     Meetup
                   </a>
-                ) : null}
-                {hasCoords ? (
-                  <span className="text-[10px] font-medium uppercase tracking-wide text-[#3b41ff]/70">
-                    Ver en mapa
-                  </span>
                 ) : null}
               </div>
             </button>
