@@ -1,47 +1,31 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
+import { isEventPast } from "@/lib/event-timing";
 import { trpc } from "@/utils/trpc";
-import { Calendar, MapPin, Video } from "lucide-react";
-import { motion } from "motion/react";
+import { ArrowRight, Calendar, MapPin, Video } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { ClubSectionHeader } from "./club-section-header";
+import { useMemo } from "react";
+
 import { clubTheme } from "./club-theme";
-
-const containerVariants: import("motion/react").Variants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: { staggerChildren: 0.1, delayChildren: 0.08 },
-  },
-};
-
-const cardVariants: import("motion/react").Variants = {
-  hidden: { opacity: 0, y: 14 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.55, ease: [0.16, 1, 0.3, 1] },
-  },
-};
 
 function formatDateBadge(startsAt: Date | string | null) {
   if (!startsAt) return { day: "—", month: "TBD" };
   const d = new Date(startsAt);
-  const day = d.getDate().toString();
-  const month = new Intl.DateTimeFormat("es-BO", { month: "short" })
-    .format(d)
-    .toUpperCase()
-    .replace(".", "");
-  return { day, month };
+  return {
+    day: String(d.getDate()),
+    month: new Intl.DateTimeFormat("es-BO", { month: "short" })
+      .format(d)
+      .toUpperCase()
+      .replace(".", ""),
+  };
 }
 
-function formatTimeRange(
+function formatTimeShort(
   startsAt: Date | string | null,
   endsAt: Date | string | null
 ) {
-  if (!startsAt) return "Horario por confirmar";
+  if (!startsAt) return "Por confirmar";
   const fmt = new Intl.DateTimeFormat("es-BO", {
     hour: "2-digit",
     minute: "2-digit",
@@ -53,135 +37,171 @@ function formatTimeRange(
 
 function isOnlineLocation(location: string | null | undefined) {
   if (!location) return false;
-  return /zoom|online|virtual|remot/i.test(location);
+  return /zoom|online|virtual|remot|meet/i.test(location);
 }
 
 const FALLBACK_IMAGE =
-  "https://images.unsplash.com/photo-1540575467067-178ab98d8357?auto=format&fit=crop&w=900&q=80";
+  "https://images.unsplash.com/photo-1540575467067-178ab98d8357?auto=format&fit=crop&w=640&q=70";
 
 export function ClubHomeEvents() {
   const { data: events, isLoading } = trpc.clubEvents.listPublic.useQuery(
     undefined,
-    { staleTime: 120_000 }
+    { staleTime: 180_000, refetchOnWindowFocus: false }
   );
-  const featured = (events ?? []).slice(0, 4);
+
+  const featured = useMemo(() => {
+    const list = events ?? [];
+    const upcoming = list
+      .filter((e) => !isEventPast(e))
+      .sort((a, b) => {
+        const ta = a.startsAt ? new Date(a.startsAt).getTime() : Number.POSITIVE_INFINITY;
+        const tb = b.startsAt ? new Date(b.startsAt).getTime() : Number.POSITIVE_INFINITY;
+        return ta - tb;
+      });
+
+    if (upcoming.length > 0) return upcoming.slice(0, 4);
+
+    return [...list]
+      .sort((a, b) => {
+        const ta = a.startsAt ? new Date(a.startsAt).getTime() : 0;
+        const tb = b.startsAt ? new Date(b.startsAt).getTime() : 0;
+        return tb - ta;
+      })
+      .slice(0, 4);
+  }, [events]);
+
+  const showingPast = featured.length > 0 && featured.every((e) => isEventPast(e));
 
   return (
-    <section className={`bg-transparent ${clubTheme.sectionY} ${clubTheme.pageBg}`}>
+    <section className={`bg-transparent ${clubTheme.sectionYCompact} ${clubTheme.pageBg}`}>
       <div className={clubTheme.container}>
-        <ClubSectionHeader
-          eyebrow="Eventos destacados"
-          title="Lo que viene"
-          description="Talleres presenciales y online con labs reales en AWS."
-        />
+        <div className="mb-4 flex flex-wrap items-end justify-between gap-2">
+          <div>
+            <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[var(--aws-orange)]">
+              Eventos destacados
+            </p>
+            <h2 className={`mt-1 text-xl font-bold sm:text-2xl ${clubTheme.textHeading}`}>
+              Lo que viene
+            </h2>
+            {showingPast ? (
+              <p className={`mt-1 text-xs ${clubTheme.textMuted}`}>
+                Últimos eventos del club
+              </p>
+            ) : (
+              <p className={`mt-1 hidden text-xs sm:block ${clubTheme.textMuted}`}>
+                Talleres presenciales y online con labs en AWS.
+              </p>
+            )}
+          </div>
+          <Link
+            href="/eventos"
+            className="inline-flex items-center gap-1 text-xs font-semibold text-[var(--aws-orange)] transition hover:text-[#E88B00]"
+          >
+            Ver todos
+            <ArrowRight className="h-3.5 w-3.5" />
+          </Link>
+        </div>
 
         {isLoading ? (
-          <p className={`mt-8 text-sm ${clubTheme.textMuted}`}>Cargando eventos…</p>
+          <div className="grid gap-2.5 sm:grid-cols-2 lg:grid-cols-4">
+            {[1, 2, 3, 4].map((i) => (
+              <div
+                key={i}
+                className="h-[168px] animate-pulse rounded-xl bg-black/[0.04] dark:bg-white/[0.04]"
+                aria-hidden
+              />
+            ))}
+          </div>
         ) : featured.length === 0 ? (
           <div
-            className={`mt-8 rounded-2xl border border-dashed px-6 py-10 text-center ${clubTheme.card}`}
+            className={`rounded-xl border border-dashed px-4 py-6 text-center ${clubTheme.card}`}
           >
-            <p className={`text-base font-semibold ${clubTheme.textHeading}`}>
+            <p className={`text-sm font-semibold ${clubTheme.textHeading}`}>
               Pronto publicaremos eventos
             </p>
-            <p className={`mt-2 text-sm ${clubTheme.textMuted}`}>
-              Gestiona el calendario desde el panel de administración.
-            </p>
-            <Button asChild className="mt-5 rounded-full">
-              <Link href="/eventos">Ver calendario</Link>
-            </Button>
+            <Link
+              href="/eventos"
+              className="mt-3 inline-flex text-xs font-semibold text-[var(--aws-orange)]"
+            >
+              Ir al calendario →
+            </Link>
           </div>
         ) : (
-          <motion.ul
-            className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-4"
-            variants={containerVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-60px" }}
-          >
+          <ul className="mx-auto grid max-w-5xl gap-2.5 sm:grid-cols-2 lg:grid-cols-4">
             {featured.map((event, index) => {
               const badge = formatDateBadge(event.startsAt);
-              const online = isOnlineLocation(event.location);
+              const online = event.isOnline || isOnlineLocation(event.location);
+              const past = isEventPast(event);
+              const href = `/eventos/${event.id}`;
 
               return (
-                <motion.li key={event.id} variants={cardVariants}>
+                <li key={event.id}>
                   <article
-                    className={`flex h-full flex-col overflow-hidden rounded-xl ${clubTheme.card} ${clubTheme.cardHover}`}
+                    className={`group flex h-full flex-col overflow-hidden rounded-xl ${clubTheme.card} transition-shadow hover:shadow-md`}
                   >
                     <Link
-                      href={`/eventos/${event.id}`}
-                      className="relative block aspect-[4/3] overflow-hidden bg-slate-100 dark:bg-[var(--surface)]"
+                      href={href}
+                      className="relative block aspect-[16/10] overflow-hidden bg-[var(--bg-soft-blue)] dark:bg-[var(--surface)]"
                     >
                       <Image
                         src={event.imageUrl?.trim() || FALLBACK_IMAGE}
-                        alt={event.title}
+                        alt=""
                         fill
-                        className="object-cover object-center transition-transform duration-500 group-hover:scale-[1.03]"
-                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                        className="object-cover object-center"
+                        sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 240px"
+                        quality={70}
+                        loading={index < 2 ? "eager" : "lazy"}
                         priority={index === 0}
-                        loading={index === 0 ? undefined : "lazy"}
                       />
-                      <div className="absolute left-3 top-3 flex h-12 w-12 flex-col items-center justify-center rounded-lg bg-white/95 text-[var(--aws-ink)] shadow-md dark:bg-[var(--surface-soft)] dark:text-[var(--text-main)]">
-                        <span className="text-sm font-bold leading-none">
+                      <div className="absolute left-2 top-2 flex h-9 w-9 flex-col items-center justify-center rounded-md bg-white/95 text-[var(--aws-ink)] shadow-sm dark:bg-[var(--surface-soft)] dark:text-[var(--text-main)]">
+                        <span className="text-[11px] font-bold leading-none">
                           {badge.day}
                         </span>
-                        <span className="mt-0.5 text-[9px] font-bold uppercase tracking-wide text-[var(--aws-orange)]">
+                        <span className="mt-0.5 text-[7px] font-bold uppercase text-[var(--aws-orange)]">
                           {badge.month}
                         </span>
                       </div>
+                      {past ? (
+                        <span className="absolute right-2 top-2 rounded-full bg-black/55 px-1.5 py-0.5 text-[8px] font-bold uppercase text-white">
+                          Pasado
+                        </span>
+                      ) : null}
                     </Link>
 
-                    <div className="flex flex-1 flex-col p-4">
-                      <div className="flex flex-wrap items-center gap-2">
+                    <div className="flex flex-1 flex-col p-2.5">
+                      <div className="flex flex-wrap gap-1">
                         <span
-                          className={`inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[11px] font-medium ${clubTheme.textMuted} border-slate-200 bg-slate-50 dark:border-[var(--border-soft)] dark:bg-white/5`}
+                          className={`inline-flex items-center gap-0.5 rounded-full border px-1.5 py-0.5 text-[9px] font-medium ${clubTheme.textMuted} border-[var(--border-soft)] bg-white/50 dark:bg-white/5`}
                         >
                           {online ? (
-                            <Video className="h-3 w-3" />
+                            <Video className="h-2.5 w-2.5" />
                           ) : (
-                            <MapPin className="h-3 w-3" />
+                            <MapPin className="h-2.5 w-2.5" />
                           )}
                           {online ? "Online" : "Presencial"}
                         </span>
                         <span
-                          className={`inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[11px] font-medium ${clubTheme.textMuted} border-slate-200 bg-slate-50 dark:border-[var(--border-soft)] dark:bg-white/5`}
+                          className={`inline-flex items-center gap-0.5 rounded-full border px-1.5 py-0.5 text-[9px] font-medium ${clubTheme.textMuted} border-[var(--border-soft)] bg-white/50 dark:bg-white/5`}
                         >
-                          <Calendar className="h-3 w-3" />
-                          {formatTimeRange(event.startsAt, event.endsAt)}
+                          <Calendar className="h-2.5 w-2.5" />
+                          {formatTimeShort(event.startsAt, event.endsAt)}
                         </span>
                       </div>
 
-                      <h3 className={`mt-3 text-base font-bold leading-snug ${clubTheme.textHeading}`}>
+                      <h3 className={`mt-1.5 line-clamp-2 text-xs font-bold leading-snug ${clubTheme.textHeading}`}>
                         <Link
-                          href={`/eventos/${event.id}`}
-                          className="transition-colors duration-300 hover:text-[var(--aws-orange)]"
+                          href={href}
+                          className="transition-colors hover:text-[var(--aws-orange)]"
                         >
                           {event.title}
                         </Link>
                       </h3>
-
-                      {event.location ? (
-                        <p className={`mt-2 line-clamp-1 text-xs ${clubTheme.textMuted}`}>
-                          {event.location}
-                        </p>
-                      ) : null}
-
-                      <div className="mt-4">
-                        <Button
-                          asChild
-                          variant="outline"
-                          size="sm"
-                          className="h-8 rounded-full text-xs"
-                        >
-                          <Link href={`/eventos/${event.id}`}>Ver detalles</Link>
-                        </Button>
-                      </div>
                     </div>
                   </article>
-                </motion.li>
+                </li>
               );
             })}
-          </motion.ul>
+          </ul>
         )}
       </div>
     </section>

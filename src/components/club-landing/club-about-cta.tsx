@@ -2,8 +2,7 @@
 
 import { ClubMeetupButton } from "@/components/club-landing/club-meetup-button";
 import { useClubLinks } from "@/hooks/useClubLinks";
-import { UNIVERSITY_IMAGES } from "@/lib/university-assets";
-import Image from "next/image";
+import { Cloud } from "lucide-react";
 import { clubTheme } from "./club-theme";
 
 export function ClubAboutCta() {
@@ -11,27 +10,26 @@ export function ClubAboutCta() {
 
   return (
     <section className={`${clubTheme.container} pb-10 sm:pb-12`}>
-      <div className="relative min-h-[260px] overflow-hidden rounded-2xl sm:min-h-[280px]">
-        <Image
-          src={UNIVERSITY_IMAGES.enComunidad}
-          alt="Estudiantes del club trabajando juntos"
-          fill
-          className="object-cover object-[center_40%]"
-          sizes="100vw"
-        />
-        <div className="absolute inset-0 bg-[var(--aws-ink)]/55 dark:bg-[var(--aws-ink)]/65" />
-        <div className="relative z-10 flex flex-col items-start justify-center px-6 py-10 sm:px-10 sm:py-12 lg:max-w-xl">
-          <h3 className="text-xl font-bold text-white sm:text-2xl">
-            ¿Quieres ser parte del cambio?
-          </h3>
-          <p className="mt-2 text-sm text-[var(--text-muted)] sm:text-base">
-            Únete a nuestra comunidad y empieza tu viaje en la nube con el
-            equipo del campus.
-          </p>
-          {links.meetupUrl ? (
-            <div className="mt-6">
-              <ClubMeetupButton href={links.meetupUrl} size="lg" showExternal />
+      <div
+        className="relative overflow-hidden rounded-[1.75rem] border border-[var(--border-soft)] bg-gradient-to-r from-[var(--pastel-violet-soft)] via-[rgba(255,248,240,0.95)] to-[var(--bg-soft-blue)] p-8 sm:p-10 dark:from-[var(--surface)] dark:via-[var(--surface-soft)] dark:to-[var(--surface)]"
+      >
+        <div className="flex flex-col items-start gap-6 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-start gap-4">
+            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[var(--ucb-blue)]/10 text-[var(--ucb-blue)]">
+              <Cloud className="h-6 w-6" />
             </div>
+            <div>
+              <h3 className={`text-xl font-bold sm:text-2xl ${clubTheme.textHeading}`}>
+                ¿Quieres ser parte del cambio?
+              </h3>
+              <p className={`mt-2 text-sm sm:text-base ${clubTheme.textMuted}`}>
+                Únete a nuestra comunidad y empieza tu viaje en la nube con el
+                equipo del campus.
+              </p>
+            </div>
+          </div>
+          {links.meetupUrl ? (
+            <ClubMeetupButton href={links.meetupUrl} size="lg" showExternal />
           ) : null}
         </div>
       </div>

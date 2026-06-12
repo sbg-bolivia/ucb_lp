@@ -129,6 +129,10 @@ model ClubEvent {
   isOnline         Boolean            @default(false)
   attendeeCount    Int?
   promoVideoUrl    String?
+  /// Afiche / flyer para eventos ya realizados
+  pastFlyerUrl     String?
+  /// Fotos y videos del evento: [{ "url": "...", "type": "image"|"video" }]
+  recapGallery     Json?
   isFeatured       Boolean            @default(false)
   /// Para sync Meetup futuro (requiere Meetup Pro)
   meetupEventId    String?            @unique

@@ -102,7 +102,7 @@ export function ClubLandingNavbar() {
             <SheetTrigger asChild>
               <button
                 type="button"
-                className="inline-flex rounded-xl p-2.5 text-slate-700 transition hover:bg-violet-100 dark:text-zinc-200 dark:hover:bg-white/10 lg:hidden"
+                className="inline-flex rounded-xl border border-transparent p-2.5 text-[var(--text-secondary)] transition hover:border-[var(--border-soft)] hover:bg-white/40 dark:text-zinc-200 dark:hover:border-white/10 dark:hover:bg-white/10 lg:hidden"
                 aria-label="Abrir menú"
               >
                 <Menu className="h-6 w-6" />

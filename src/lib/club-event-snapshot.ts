@@ -1,4 +1,4 @@
-import type { ClubEvent } from "@prisma/client";
+import type { ClubEvent, Prisma } from "@prisma/client";
 
 export type ClubEventSnapshot = {
   title: string;
@@ -14,6 +14,8 @@ export type ClubEventSnapshot = {
   isOnline: boolean;
   isFeatured: boolean;
   promoVideoUrl: string | null;
+  pastFlyerUrl: string | null;
+  recapGallery: Prisma.InputJsonValue | null;
   isPublished: boolean;
   category: string | null;
   sortOrder: number;
@@ -34,6 +36,8 @@ export function eventToSnapshot(event: ClubEvent): ClubEventSnapshot {
     isOnline: event.isOnline,
     isFeatured: event.isFeatured,
     promoVideoUrl: event.promoVideoUrl,
+    pastFlyerUrl: event.pastFlyerUrl,
+    recapGallery: (event.recapGallery as Prisma.InputJsonValue | null) ?? null,
     isPublished: event.isPublished,
     category: event.category,
     sortOrder: event.sortOrder,
@@ -55,6 +59,8 @@ export function snapshotToEventData(snapshot: ClubEventSnapshot) {
     isOnline: snapshot.isOnline,
     isFeatured: snapshot.isFeatured,
     promoVideoUrl: snapshot.promoVideoUrl,
+    pastFlyerUrl: snapshot.pastFlyerUrl,
+    recapGallery: snapshot.recapGallery ?? undefined,
     isPublished: snapshot.isPublished,
     category: snapshot.category ?? null,
     sortOrder: snapshot.sortOrder,

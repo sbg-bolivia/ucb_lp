@@ -22,6 +22,7 @@ import { isClubFeatureEnabled } from "@/lib/club-features";
 
 import { clubTheme } from "./club-theme";
 import { ClubCursorField } from "./club-cursor-field";
+import { ClubHeroClouds } from "./club-hero-clouds";
 import { ClubMeetupButton } from "./club-meetup-button";
 import { ClubSiteModel } from "./club-site-model";
 
@@ -155,7 +156,7 @@ export function ClubHero() {
 
   return (
     <section
-      className={`relative z-25 isolate h-[calc(100dvh-4rem)] max-h-[calc(100dvh-4rem)] overflow-x-clip overflow-y-visible transition-colors duration-700 ${
+      className={`relative z-25 isolate h-[min(78dvh,680px)] min-h-[520px] max-h-[720px] overflow-x-clip overflow-y-visible transition-colors duration-700 ${
         isLight
           ? "bg-gradient-to-b from-[#f8fafc] via-slate-100 to-[#f8fafc] text-slate-900"
           : "bg-[var(--brand-dark)] text-[var(--text-main)]"
@@ -168,8 +169,9 @@ export function ClubHero() {
       <ClubCursorField className="club-cursor-field-hero" />
 
       <div className="pointer-events-none absolute inset-0" aria-hidden>
+        {isLight ? <ClubHeroClouds /> : null}
         <div
-          className={`club-aurora ${isLight ? "club-aurora-light opacity-80" : "opacity-70"}`}
+          className={`club-aurora ${isLight ? "club-aurora-light opacity-50" : "opacity-70"}`}
         />
         <div
           className={`absolute inset-0 club-grid ${isLight ? "opacity-35" : "opacity-30"}`}

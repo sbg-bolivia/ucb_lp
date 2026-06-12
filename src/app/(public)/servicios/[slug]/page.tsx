@@ -1,6 +1,7 @@
 "use client";
 
 import { clubTheme } from "@/components/club-landing/club-theme";
+import { ClubPageLoading } from "@/components/club-landing/club-page-loading";
 import { Button } from "@/components/ui/button";
 import {
   AWS_DIFFICULTY_LABELS,
@@ -87,8 +88,8 @@ export default function ServicioDetallePage() {
 
   if (isLoading) {
     return (
-      <section className={`${clubTheme.sectionY} text-center ${clubTheme.pageBg}`}>
-        <p className={clubTheme.textMuted}>Cargando servicio…</p>
+      <section className={clubTheme.pageBg}>
+        <ClubPageLoading label="Cargando servicio…" />
       </section>
     );
   }

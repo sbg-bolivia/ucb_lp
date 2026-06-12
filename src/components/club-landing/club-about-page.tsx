@@ -3,54 +3,85 @@
 import { CLUB } from "@/lib/club-brand";
 import { fadeUpProps } from "@/lib/club-motion";
 import { UNIVERSITY_IMAGES } from "@/lib/university-assets";
-import { Eye, Target } from "lucide-react";
+import { Cloud, Eye, Heart, Sparkles, Target } from "lucide-react";
 import { motion } from "motion/react";
 import Image from "next/image";
 
 import { clubTheme } from "./club-theme";
+import { ClubPastelBlobs } from "./club-pastel-blobs";
 
-const STATS = [
-  { value: "4+", label: "Años de trayectoria" },
-  { value: "120+", label: "Miembros activos" },
-  { value: "25+", label: "Eventos realizados" },
-  { value: "15+", label: "Talleres AWS" },
-] as const;
-
-const GALLERY = [
-  { src: UNIVERSITY_IMAGES.communityDay, alt: "Community Day en el campus", position: "object-center" },
-  { src: UNIVERSITY_IMAGES.awsCommunityDay2024, alt: "AWS Community Day 2024", position: "object-center" },
-  { src: UNIVERSITY_IMAGES.goldenJackets, alt: "Golden Jackets del club", position: "object-[center_70%]" },
-  { src: UNIVERSITY_IMAGES.awsUgLeads, alt: "Líderes AWS User Group", position: "object-center" },
-  { src: UNIVERSITY_IMAGES.auditorio, alt: "Auditorio UCB", position: "object-[center_30%]" },
-  { src: UNIVERSITY_IMAGES.communityDay2, alt: "Actividad en comunidad", position: "object-center" },
+const VALUES = [
+  {
+    icon: Target,
+    title: "Nuestra misión",
+    description:
+      "Empoderar a estudiantes para construir soluciones reales en la nube, con práctica guiada y proyectos que suman al portafolio.",
+    tint: "text-[var(--aws-orange)] bg-[var(--aws-orange)]/12 dark:bg-[var(--aws-orange)]/18 dark:text-[var(--aws-orange)]",
+  },
+  {
+    icon: Eye,
+    title: "Nuestra visión",
+    description:
+      "Ser la comunidad estudiantil de referencia en cloud computing en Bolivia, conectada al ecosistema global de AWS.",
+    tint: "text-[var(--ucb-blue)] bg-[var(--ucb-blue-soft)]/35 dark:bg-sky-500/15 dark:text-sky-300",
+  },
+  {
+    icon: Heart,
+    title: "Nuestros valores",
+    description:
+      "Colaboración, curiosidad y aprendizaje práctico. Creemos en compartir conocimiento y crecer en equipo.",
+    tint: "text-[var(--pastel-violet)] bg-[var(--pastel-violet-soft)] dark:bg-violet-500/15 dark:text-violet-300",
+  },
 ] as const;
 
 export function ClubAboutPage() {
   return (
     <>
-      <section
-        className={`relative overflow-hidden border-b border-[var(--border-soft)] ${clubTheme.sectionSoft}`}
-      >
-        <div className="pointer-events-none absolute inset-0" aria-hidden>
-          <div className="absolute inset-y-0 right-0 w-1/2 bg-[var(--bg)] dark:bg-[var(--surface)]" />
-        </div>
-
-        <div className={`relative ${clubTheme.container} grid items-center gap-8 py-10 sm:py-12 lg:grid-cols-2 lg:gap-12`}>
+      <section className={`relative overflow-hidden ${clubTheme.sectionY}`}>
+        <ClubPastelBlobs subtle />
+        <div
+          className={`relative ${clubTheme.container} grid items-center gap-10 lg:grid-cols-2 lg:gap-14`}
+        >
           <motion.div {...fadeUpProps} className="relative z-10">
-            <p className="text-xs font-bold uppercase tracking-widest text-[var(--aws-orange)]">
-              Sobre nosotros
-            </p>
             <h2
-              className={`mt-2 text-2xl font-bold tracking-tight sm:text-3xl md:text-4xl ${clubTheme.textHeading}`}
+              className={`text-3xl font-bold tracking-tight sm:text-4xl ${clubTheme.textHeading}`}
             >
-              El puente entre la universidad y el{" "}
-              <span className="text-[var(--aws-orange)]">ecosistema cloud</span>
+              Sobre nosotros
             </h2>
-            <p className={`mt-4 text-base leading-relaxed ${clubTheme.textMuted}`}>
-              Somos el {CLUB.shortName} en {CLUB.city}: estudiantes que exploran
-              AWS, construyen portafolio y se preparan para oportunidades reales
-              en tecnología — sin importar la carrera.
+            <p className="mt-3 text-lg font-medium text-[var(--ucb-blue)] dark:text-sky-300">
+              Estudiantes construyendo el futuro en la nube.
             </p>
+            <p className={`mt-4 text-base leading-relaxed ${clubTheme.textMuted}`}>
+              Somos el {CLUB.shortName} en {CLUB.city}: una comunidad que conecta
+              el campus con el ecosistema AWS, sin importar tu carrera.
+            </p>
+
+            <ul className="mt-8 space-y-5">
+              {VALUES.map((item, i) => (
+                <motion.li
+                  key={item.title}
+                  className="flex gap-4"
+                  initial={{ opacity: 0, x: -12 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.06, duration: 0.45 }}
+                >
+                  <div
+                    className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl ${item.tint}`}
+                  >
+                    <item.icon className="h-5 w-5" strokeWidth={1.75} />
+                  </div>
+                  <div>
+                    <h3 className={`font-bold ${clubTheme.textHeading}`}>
+                      {item.title}
+                    </h3>
+                    <p className={`mt-1 text-sm leading-relaxed ${clubTheme.textMuted}`}>
+                      {item.description}
+                    </p>
+                  </div>
+                </motion.li>
+              ))}
+            </ul>
           </motion.div>
 
           <motion.div
@@ -61,10 +92,10 @@ export function ClubAboutPage() {
             transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
           >
             <div
-              className="absolute -right-2 top-6 hidden h-[88%] w-[88%] rounded-[2rem] border-2 border-[var(--aws-orange)]/70 lg:block"
+              className="absolute -right-3 top-1/2 hidden h-[78%] w-14 -translate-y-1/2 rounded-[50%] bg-[var(--pastel-violet)]/35 blur-md dark:bg-[var(--pastel-violet)]/20 lg:block"
               aria-hidden
             />
-            <div className="relative aspect-[4/3] overflow-hidden rounded-2xl border border-[var(--border-soft)] shadow-lg">
+            <div className="relative aspect-[4/3] overflow-hidden rounded-[2rem] border border-[var(--border-soft)] shadow-[var(--shadow-soft)]">
               <Image
                 src={UNIVERSITY_IMAGES.entrada}
                 alt="Campus UCB La Paz"
@@ -74,82 +105,47 @@ export function ClubAboutPage() {
                 priority
               />
             </div>
+
+            <div
+              className="absolute -bottom-4 left-4 right-4 flex items-center gap-3 rounded-2xl border border-[var(--border-soft)] bg-[rgba(255,248,240,0.95)] p-4 shadow-lg backdrop-blur-sm sm:left-6 sm:right-auto sm:max-w-xs dark:bg-[var(--surface-soft)]"
+            >
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[var(--ucb-blue)]/10 text-[var(--ucb-blue)] dark:bg-sky-500/15 dark:text-sky-300">
+                <Sparkles className="h-5 w-5" />
+              </div>
+              <div>
+                <p className={`text-sm font-bold leading-snug ${clubTheme.textHeading}`}>
+                  Universidad Católica Boliviana &quot;San Pablo&quot;
+                </p>
+                <p className={`text-xs ${clubTheme.textMuted}`}>
+                  La Paz · Cochabamba · Santa Cruz · Tarija
+                </p>
+              </div>
+            </div>
           </motion.div>
         </div>
       </section>
 
-      <section className={`${clubTheme.sectionTint} py-8 sm:py-10`}>
-        <div className={`${clubTheme.container} grid max-w-5xl gap-4 sm:grid-cols-2`}>
-          <motion.article className={`p-6 ${clubTheme.card}`} {...fadeUpProps}>
-            <Target className="h-7 w-7 text-[var(--aws-orange)]" />
-            <h3 className={`mt-3 text-lg font-bold ${clubTheme.textHeading}`}>
-              Nuestra misión
-            </h3>
-            <p className={`mt-2 text-sm leading-relaxed ${clubTheme.textMuted}`}>
-              Empoderar a estudiantes para construir soluciones reales en la nube,
-              con práctica guiada, mentoría entre pares y proyectos que suman al
-              portafolio profesional.
-            </p>
-          </motion.article>
-          <motion.article
-            className={`p-6 ${clubTheme.card}`}
-            initial={{ opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.06 }}
+      <section className={`relative overflow-hidden ${clubTheme.sectionTint} py-10 sm:py-12`}>
+        <ClubPastelBlobs subtle />
+        <div className={`relative ${clubTheme.container}`}>
+          <motion.div
+            className="flex flex-col items-start gap-4 rounded-[1.75rem] border border-[var(--border-soft)] bg-gradient-to-r from-[var(--pastel-violet-soft)] via-[rgba(255,248,240,0.92)] to-[var(--bg-soft-blue)] p-6 sm:flex-row sm:items-center sm:justify-between sm:p-8 dark:from-[var(--surface)] dark:via-[var(--surface-soft)] dark:to-[var(--surface)]"
+            {...fadeUpProps}
           >
-            <Eye className="h-7 w-7 text-[var(--aws-orange)]" />
-            <h3 className={`mt-3 text-lg font-bold ${clubTheme.textHeading}`}>
-              Nuestra visión
-            </h3>
-            <p className={`mt-2 text-sm leading-relaxed ${clubTheme.textMuted}`}>
-              Ser la comunidad estudiantil de referencia en cloud computing en
-              Bolivia, conectada al ecosistema global de AWS y a las oportunidades
-              del mercado tecnológico.
-            </p>
-          </motion.article>
-        </div>
-      </section>
-
-      <section className="py-6 sm:py-8">
-        <div className={`${clubTheme.container} max-w-5xl rounded-2xl px-5 py-6 sm:px-8 sm:py-7 ${clubTheme.card}`}>
-          <div className="grid grid-cols-2 gap-6 sm:grid-cols-4">
-            {STATS.map((s) => (
-              <div key={s.label} className="text-center">
-                <p className="text-xl font-bold text-[var(--aws-orange)] sm:text-2xl">
-                  {s.value}
-                </p>
-                <p className={`mt-0.5 text-xs sm:text-sm ${clubTheme.textMuted}`}>{s.label}</p>
+            <div className="flex items-start gap-4">
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[var(--ucb-blue)]/10 text-[var(--ucb-blue)] dark:bg-sky-500/15 dark:text-sky-300">
+                <Cloud className="h-6 w-6" />
               </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="pb-8 sm:pb-10">
-        <div className={`${clubTheme.container} mb-5 max-w-6xl`}>
-          <h3 className={`text-xl font-bold sm:text-2xl ${clubTheme.textHeading}`}>
-            Vida en el campus
-          </h3>
-          <p className={`mt-1 text-sm ${clubTheme.textMuted}`}>
-            Talleres, community days y momentos del {CLUB.shortName}.
-          </p>
-        </div>
-        <div className={`${clubTheme.container} grid max-w-6xl grid-cols-2 gap-2.5 sm:grid-cols-3 sm:gap-3`}>
-          {GALLERY.map((item) => (
-            <div
-              key={item.src}
-              className="group relative aspect-[4/3] overflow-hidden rounded-lg sm:rounded-xl"
-            >
-              <Image
-                src={item.src}
-                alt={item.alt}
-                fill
-                className={`object-cover ${item.position} transition-transform duration-500 group-hover:scale-[1.03]`}
-                sizes="(max-width: 640px) 50vw, 33vw"
-              />
+              <div>
+                <p className={`text-lg font-bold sm:text-xl ${clubTheme.textHeading}`}>
+                  Construimos más que proyectos, construimos comunidad.
+                </p>
+                <p className={`mt-1 text-sm ${clubTheme.textMuted}`}>
+                  Si tienes curiosidad y ganas de aprender, este es tu lugar.
+                </p>
+              </div>
             </div>
-          ))}
+          </motion.div>
         </div>
       </section>
     </>

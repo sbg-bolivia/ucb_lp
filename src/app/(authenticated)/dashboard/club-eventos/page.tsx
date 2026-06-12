@@ -43,6 +43,12 @@ import {
   EVENT_STATUS_LABELS,
   REGISTRATION_TYPE_LABELS,
 } from "@/lib/event-labels";
+import type { ClubEventAdmin } from "@/lib/club-event-types";
+import {
+  linesToRecapGallery,
+  parseRecapGallery,
+  recapGalleryToLines,
+} from "@/lib/event-recap";
 import type { EventStatus, RegistrationType } from "@prisma/client";
 import { useTrpcMutation } from "@/utils/trpc-shallow";
 import { trpc } from "@/utils/trpc";
@@ -70,30 +76,10 @@ type FormState = {
   isOnline: boolean;
   isFeatured: boolean;
   promoVideoUrl: string;
+  pastFlyerUrl: string;
+  recapGalleryLines: string;
   isPublished: boolean;
   category: EventCategoryValue | "";
-};
-
-/** Fila devuelta por tRPC (fechas pueden venir como string serializado). */
-type ClubEventRow = {
-  id: string;
-  tenantId: string;
-  title: string;
-  description: string | null;
-  startsAt: Date | string | null;
-  endsAt: Date | string | null;
-  location: string | null;
-  imageUrl: string | null;
-  externalUrl: string | null;
-  registrationUrl: string | null;
-  registrationType: RegistrationType;
-  status: EventStatus;
-  isOnline: boolean;
-  isFeatured: boolean;
-  promoVideoUrl: string | null;
-  isPublished: boolean;
-  category: string | null;
-  sortOrder: number;
 };
 
 const REGISTRATION_TYPES = Object.keys(
@@ -115,11 +101,13 @@ const emptyForm: FormState = {
   isOnline: false,
   isFeatured: false,
   promoVideoUrl: "",
+  pastFlyerUrl: "",
+  recapGalleryLines: "",
   isPublished: true,
   category: "",
 };
 
-function eventToForm(e: ClubEventRow): FormState {
+function eventToForm(e: ClubEventAdmin): FormState {
   return {
     title: e.title,
     description: e.description ?? "",
@@ -134,6 +122,8 @@ function eventToForm(e: ClubEventRow): FormState {
     isOnline: e.isOnline ?? false,
     isFeatured: e.isFeatured ?? false,
     promoVideoUrl: e.promoVideoUrl ?? "",
+    pastFlyerUrl: e.pastFlyerUrl ?? "",
+    recapGalleryLines: recapGalleryToLines(parseRecapGallery(e.recapGallery)),
     isPublished: e.isPublished,
     category:
       e.category &&
@@ -196,10 +186,10 @@ export default function ClubEventosAdminPage() {
     onError: (e) => toast.error(e.message),
   });
 
-  const sorted = useMemo(() => {
+  const sorted = useMemo((): ClubEventAdmin[] => {
     if (!events) return [];
     const map = new Map(events.map((e) => [e.id, e]));
-    const result: typeof events = [];
+    const result: ClubEventAdmin[] = [];
     for (const id of orderedIds) {
       const item = map.get(id);
       if (item) result.push(item);
@@ -220,7 +210,7 @@ export default function ClubEventosAdminPage() {
     setOpen(true);
   };
 
-  const openEdit = (e: ClubEventRow, readOnly = false) => {
+  const openEdit = (e: ClubEventAdmin, readOnly = false) => {
     setEditingId(e.id);
     setViewOnly(readOnly);
     setForm(eventToForm(e));
@@ -247,6 +237,8 @@ export default function ClubEventosAdminPage() {
       isOnline: form.isOnline,
       isFeatured: form.isFeatured,
       promoVideoUrl: form.promoVideoUrl.trim() || null,
+      pastFlyerUrl: form.pastFlyerUrl.trim() || null,
+      recapGallery: linesToRecapGallery(form.recapGalleryLines),
       isPublished: form.isPublished,
       category: form.category || null,
     };
@@ -260,7 +252,7 @@ export default function ClubEventosAdminPage() {
 
   const busy = createMut.isPending || updateMut.isPending;
 
-  const handleDelete = async (ev: ClubEventRow) => {
+  const handleDelete = async (ev: ClubEventAdmin) => {
     const ok = await confirm({
       title: "Eliminar evento",
       description: `¿Eliminar «${ev.title}»? Esta acción no se puede deshacer.`,
@@ -671,6 +663,35 @@ export default function ClubEventosAdminPage() {
               }
               placeholder="Sube MP4/WebM a S3 o pega URL (YouTube, etc.)"
             />
+            <EventImageUploadField
+              id="ev-past-flyer"
+              label="Flyer / afiche (eventos pasados)"
+              folder="events"
+              value={form.pastFlyerUrl}
+              onChange={(url) =>
+                setForm((f) => ({ ...f, pastFlyerUrl: url }))
+              }
+            />
+            <div className="space-y-2">
+              <Label htmlFor="ev-recap">
+                Fotos y videos del evento (una URL por línea)
+              </Label>
+              <Textarea
+                id="ev-recap"
+                value={form.recapGalleryLines}
+                onChange={(e) =>
+                  setForm((f) => ({ ...f, recapGalleryLines: e.target.value }))
+                }
+                rows={4}
+                placeholder={
+                  "https://.../foto1.jpg\nhttps://.../recap.mp4\nhttps://youtu.be/..."
+                }
+              />
+              <p className="text-xs text-muted-foreground">
+                Galería «Así se vivió el evento» en la página pública. Imágenes
+                o videos (S3, YouTube, etc.).
+              </p>
+            </div>
             <div className="flex flex-wrap gap-6">
               <div className="flex items-center gap-2">
                 <Checkbox

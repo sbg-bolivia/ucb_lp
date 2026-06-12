@@ -1,6 +1,5 @@
 "use client";
 
-import { useClubLinks } from "@/hooks/useClubLinks";
 import { CLUB } from "@/lib/club-brand";
 import {
   clubEase,
@@ -8,12 +7,12 @@ import {
   staggerItem,
 } from "@/lib/club-motion";
 import { UNIVERSITY_IMAGES } from "@/lib/university-assets";
-import { CalendarDays, Code2, GraduationCap, PartyPopper } from "lucide-react";
+import { ArrowRight, CalendarDays, Code2, GraduationCap, PartyPopper, Users } from "lucide-react";
 import { motion } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
 
-import { ClubMeetupButton } from "./club-meetup-button";
+import { ClubPastelBlobs } from "./club-pastel-blobs";
 import { ClubSiteBanners } from "./club-site-banners";
 import { ClubPublishedEvents } from "./club-published-events";
 import { clubTheme } from "./club-theme";
@@ -50,26 +49,14 @@ const blocks = [
 ] as const;
 
 export function ClubActivities() {
-  const links = useClubLinks();
-
   return (
     <>
       <ClubSiteBanners placement="EVENTS_PAGE" variant="page" />
       <section
         id="actividades"
-        className={`relative overflow-hidden ${clubTheme.sectionY} ${clubTheme.sectionDark}`}
+        className={`relative overflow-hidden ${clubTheme.sectionY} ${clubTheme.sectionSoft}`}
       >
-        <div className="pointer-events-none absolute inset-0" aria-hidden>
-          <Image
-            src={UNIVERSITY_IMAGES.communityDay}
-            alt=""
-            fill
-            className="object-cover opacity-[0.12] dark:opacity-[0.08]"
-            sizes="100vw"
-          />
-          <div className="absolute inset-0 bg-gradient-to-b from-[var(--bg)] via-[var(--bg)]/98 to-slate-100 dark:from-[var(--aws-ink)] dark:via-[var(--aws-ink)]/95 dark:to-[var(--brand-dark)]" />
-        </div>
-
+        <ClubPastelBlobs />
         <div className={`relative ${clubTheme.container}`}>
           <ClubPublishedEvents />
 
@@ -86,19 +73,19 @@ export function ClubActivities() {
                 variants={staggerItem}
                 whileHover={{ y: -3 }}
                 transition={{ duration: 0.35, ease: clubEase }}
-                className={`group relative overflow-hidden rounded-xl ${clubTheme.card} ${clubTheme.cardHover}`}
+                className={`group relative overflow-hidden rounded-2xl ${clubTheme.card} ${clubTheme.cardHover}`}
               >
                 <div className="relative h-32 w-full overflow-hidden">
                   <Image
                     src={b.image}
                     alt=""
                     fill
-                    className="object-cover object-center transition-transform duration-500 group-hover:scale-[1.03]"
+                    className="object-cover object-center transition-transform duration-500 group-hover:scale-[1.04]"
                     sizes="(max-width: 640px) 50vw, 25vw"
                   />
                 </div>
                 <div className="p-4">
-                  <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[var(--aws-orange)]/15 text-[var(--aws-orange)]">
+                  <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[var(--aws-orange)]/15 text-[var(--aws-orange)]">
                     <b.icon className="h-4 w-4" strokeWidth={1.5} />
                   </div>
                   <h3 className={`mt-3 text-base font-bold ${clubTheme.textHeading}`}>
@@ -113,29 +100,30 @@ export function ClubActivities() {
           </motion.div>
 
           <motion.div
-            className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row sm:flex-wrap"
+            className="mt-10 flex flex-col items-center justify-between gap-4 rounded-[1.75rem] border border-[var(--border-soft)] bg-gradient-to-r from-[var(--bg-cream)] via-[rgba(255,248,240,0.95)] to-[var(--bg-soft-blue)] p-6 sm:flex-row sm:p-8 dark:from-[var(--surface)] dark:via-[var(--surface-soft)] dark:to-[var(--surface)]"
             initial={{ opacity: 0, y: 16 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.6, ease: clubEase }}
           >
-            {links.meetupUrl ? (
-              <ClubMeetupButton href={links.meetupUrl} size="lg" showExternal>
-                Meetup — eventos del {CLUB.shortName}
-              </ClubMeetupButton>
-            ) : (
-              <Link
-                href="/unete"
-                className={`inline-flex min-h-[44px] items-center justify-center gap-2 rounded-full px-7 py-3 text-sm font-bold text-white ${clubTheme.meetupHighlight}`}
-              >
-                Ver enlace Meetup en Únete
-              </Link>
-            )}
+            <div className="flex items-start gap-4">
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[var(--aws-orange)]/15 text-[var(--aws-orange)]">
+                <Users className="h-6 w-6" />
+              </div>
+              <div>
+                <p className={`text-lg font-bold ${clubTheme.textHeading}`}>
+                  ¿Quieres proponer un evento?
+                </p>
+                <p className={`mt-1 text-sm ${clubTheme.textMuted}`}>
+                  Escríbenos y lo sumamos al calendario del {CLUB.shortName}.
+                </p>
+              </div>
+            </div>
             <Link
-              href="/unete"
-              className={`inline-flex items-center rounded-full border px-5 py-2.5 text-sm font-semibold transition-colors duration-300 hover:border-[var(--aws-orange)]/40 ${clubTheme.card} ${clubTheme.textHeading}`}
+              href="/#unete"
+              className="inline-flex items-center gap-2 rounded-full border-2 border-[var(--aws-orange)] bg-[rgba(255,248,240,0.9)] px-6 py-3 text-sm font-bold text-[var(--aws-orange)] transition hover:bg-[var(--aws-orange)] hover:text-[var(--ucb-blue-dark)] dark:bg-[var(--surface-soft)]"
             >
-              WhatsApp, TikTok y más redes
+              Proponer evento
+              <ArrowRight className="h-4 w-4" />
             </Link>
           </motion.div>
         </div>

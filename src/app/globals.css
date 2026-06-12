@@ -8,13 +8,36 @@
   --aws-orange: #ff9900;
   --surface: #111827;
   --surface-soft: #1e293b;
-  --text-main: #f8fafc;
-  --text-muted: #cbd5e1;
-  --border-soft: rgba(255, 255, 255, 0.1);
-  --bg: #f8fafc;
-  --text: #0f172a;
-  --card: #ffffff;
-  --muted: #64748b;
+  --text-main: #15263d;
+  --text-muted: #67748e;
+  --border-soft: #ced7e3;
+
+  /* Modo claro — paleta pastel institucional */
+  --bg-main: #eaf3fb;
+  --bg-soft-blue: #ddeaf6;
+  --bg-cream: #fff4e4;
+  --bg-warm: #f9eee4;
+  --bg-card: #fff8f0;
+  --ucb-blue: #1b4f8a;
+  --ucb-blue-dark: #15263d;
+  --ucb-blue-soft: #aecae9;
+  --ucb-yellow: #ffd166;
+  --ucb-yellow-soft: #fff1c7;
+  --aws-orange-soft: #f9ad6b;
+  --aws-orange-pastel: #f9d3b1;
+  --pastel-violet: #bc9dda;
+  --pastel-violet-soft: #efe5fa;
+  --pastel-pink: #e5b5ac;
+  --pastel-pink-soft: #fbe8e4;
+  --pastel-blue: #96b6dd;
+  --text-secondary: #40566f;
+  --border-warm: #ebdad5;
+  --shadow-soft: 0 18px 45px rgba(21, 38, 61, 0.1);
+
+  --bg: var(--bg-main);
+  --text: var(--ucb-blue-dark);
+  --card: var(--bg-card);
+  --muted: var(--text-muted);
 }
 
 @theme {
@@ -22,44 +45,47 @@
   --font-family-heading: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 
   /* Colors for light mode */
-  --color-background: #fbfbfd;
-  --color-foreground: hsl(240 10% 12%);
-  --color-card: hsl(0 0% 100%);
-  --color-card-foreground: hsl(240 10% 3.9%);
-  --color-popover: hsl(0 0% 100%);
-  --color-popover-foreground: hsl(240 10% 3.9%);
-  --color-primary: #060c20;
-  --color-primary-foreground: hsl(0 0% 98%);
-  --color-secondary: #0072cf;
-  --color-secondary-foreground: hsl(0 0% 98%);
-  --color-muted: hsl(240 4.8% 95.9%);
-  --color-muted-foreground: hsl(240 3.8% 46.1%);
-  --color-accent: #7ecfc3;
-  --color-accent-foreground: hsl(0 0% 98%);
+  --color-background: #eaf3fb;
+  --color-foreground: #15263d;
+  --color-card: #fff8f0;
+  --color-card-foreground: #15263d;
+  --color-popover: #fff8f0;
+  --color-popover-foreground: #15263d;
+  --color-primary: #1b4f8a;
+  --color-primary-foreground: #fff8f0;
+  --color-secondary: #96b6dd;
+  --color-secondary-foreground: #15263d;
+  --color-muted: #f9eee4;
+  --color-muted-foreground: #67748e;
+  --color-accent: #f9d3b1;
+  --color-accent-foreground: #15263d;
   --color-destructive: hsl(0 84.2% 60.2%);
   --color-destructive-foreground: hsl(0 0% 98%);
-  --color-border: hsl(140 15.9% 92%);
-  --color-input: hsl(240 5.9% 90%);
-  --color-ring: #0072cf;
+  --color-border: #ced7e3;
+  --color-input: #ebdad5;
+  --color-ring: #1b4f8a;
 
   /* Sidebar colors for light mode */
-  --sidebar: hsl(0 0% 100%);
-  --sidebar-foreground: hsl(240 10% 3.9%);
-  --sidebar-primary: hsl(215, 40%, 42%);
-  --sidebar-primary-foreground: hsl(0 0% 98%);
-  --sidebar-accent: hsl(215, 40%, 96%);
-  --sidebar-accent-foreground: hsl(215, 40%, 20%);
-  --sidebar-border: hsl(240 5.9% 85%);
-  --sidebar-ring: hsl(215, 40%, 42%);
+  --sidebar: #fff8f0;
+  --sidebar-foreground: #15263d;
+  --sidebar-primary: #1b4f8a;
+  --sidebar-primary-foreground: #fff8f0;
+  --sidebar-accent: #eaf3fb;
+  --sidebar-accent-foreground: #1b4f8a;
+  --sidebar-border: #ced7e3;
+  --sidebar-ring: #1b4f8a;
 
   --radius: 0.6rem;
 }
 
 .dark {
   --bg: var(--brand-dark);
-  --text: var(--text-main);
+  --text: #f8fafc;
+  --text-main: #f8fafc;
+  --text-muted: #cbd5e1;
   --card: var(--surface-soft);
   --muted: var(--text-muted);
+  --border-soft: rgba(255, 255, 255, 0.1);
 
   /* Colors for dark mode */
   --color-background: #0f172a;
@@ -123,6 +149,15 @@ body {
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
+html:not(.dark) body {
+  background:
+    radial-gradient(circle at 8% 20%, rgba(174, 202, 233, 0.45), transparent 32%),
+    radial-gradient(circle at 88% 18%, rgba(249, 211, 177, 0.55), transparent 34%),
+    radial-gradient(circle at 72% 78%, rgba(188, 157, 218, 0.22), transparent 35%),
+    linear-gradient(135deg, #eaf3fb 0%, #fff4e4 48%, #ddeaf6 100%);
+  color: #15263d;
+}
+
 /* Custom animations and utilities */
 @keyframes club-aurora {
   0%,
@@ -173,20 +208,40 @@ body {
 .club-aurora-light {
   background: radial-gradient(
       circle at 18% 28%,
-      rgba(255, 153, 0, 0.1),
+      rgba(249, 173, 107, 0.18),
       transparent 42%
     ),
     radial-gradient(
       circle at 78% 45%,
-      rgba(35, 47, 62, 0.08),
+      rgba(150, 182, 221, 0.35),
       transparent 46%
     ),
     radial-gradient(
       circle at 50% 82%,
-      rgba(148, 163, 184, 0.12),
+      rgba(188, 157, 218, 0.2),
       transparent 50%
     );
   filter: blur(90px);
+}
+
+@keyframes club-cloud-drift {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  33% {
+    transform: translate3d(2%, -1.5%, 0) scale(1.04);
+  }
+  66% {
+    transform: translate3d(-1.5%, 2%, 0) scale(0.98);
+  }
+}
+
+.club-hero-cloud {
+  border-radius: 50%;
+  filter: blur(48px);
+  animation: club-cloud-drift 22s ease-in-out infinite;
+  will-change: transform;
 }
 
 .club-grid {
@@ -205,17 +260,17 @@ body {
 html:not(.dark) .club-grid {
   background-image: linear-gradient(
       to right,
-      rgba(0, 114, 207, 0.04) 1px,
+      rgba(27, 79, 138, 0.05) 1px,
       transparent 1px
-    ), linear-gradient(to bottom, rgba(0, 114, 207, 0.04) 1px, transparent 1px);
+    ),
+    linear-gradient(to bottom, rgba(27, 79, 138, 0.05) 1px, transparent 1px);
 }
 
 .club-glass {
-  border: 1px solid rgba(226, 232, 240, 0.7);
-  background: rgba(255, 255, 255, 0.55);
-  backdrop-filter: blur(20px) saturate(180%);
-  box-shadow: 0 10px 30px -10px rgba(15, 23, 42, 0.05), inset 0 1px 1px
-    rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(206, 215, 227, 0.75);
+  background: rgba(255, 248, 240, 0.86);
+  backdrop-filter: blur(18px) saturate(160%);
+  box-shadow: 0 14px 35px rgba(21, 38, 61, 0.08);
 }
 
 .dark .club-glass {
@@ -641,5 +696,26 @@ html:not(.dark) .club-ambient-model {
     animation: parallax-stats linear both;
     animation-timeline: view();
     /* By default view() ranges from when it enters to when it exits */
+  }
+}
+
+@keyframes club-page-enter {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 8px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.club-page-enter {
+  animation: club-page-enter 0.38s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .club-page-enter {
+    animation: none;
   }
 }

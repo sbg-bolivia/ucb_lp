@@ -1,4 +1,4 @@
-import type { ClubEvent } from "@prisma/client";
+import type { ClubEvent, Prisma } from "@prisma/client";
 import { EventStatus, RegistrationType } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
@@ -7,6 +7,7 @@ import {
   snapshotToEventData,
   type ClubEventSnapshot,
 } from "../../lib/club-event-snapshot";
+import type { ClubEventAdmin, ClubEventPublic } from "../../lib/club-event-types";
 import { EVENT_CATEGORY_VALUES } from "../../lib/event-category";
 import { prisma } from "../../lib/db";
 import { hasAdminOrContentPermission } from "../../services/rbacService";
@@ -36,6 +37,16 @@ const clubEventCreateSchema = z.object({
   isOnline: z.boolean().optional(),
   isFeatured: z.boolean().optional(),
   promoVideoUrl: optionalUrl,
+  pastFlyerUrl: optionalUrl,
+  recapGallery: z
+    .array(
+      z.object({
+        url: z.string().min(1).max(2000),
+        type: z.enum(["image", "video"]),
+      })
+    )
+    .optional()
+    .nullable(),
   isPublished: z.boolean().optional(),
   category: z
     .enum(EVENT_CATEGORY_VALUES as unknown as [string, ...string[]])
@@ -79,7 +90,7 @@ async function saveEventVersion(event: ClubEvent, changedById: string) {
     data: {
       eventId: event.id,
       versionNumber,
-      snapshot: eventToSnapshot(event),
+      snapshot: eventToSnapshot(event) as object,
       changedById,
     },
   });
@@ -98,28 +109,30 @@ async function saveEventVersion(event: ClubEvent, changedById: string) {
 }
 
 export const clubEventsRouter = router({
-  listPublic: publicProcedure.query(async () => {
+  listPublic: publicProcedure.query(async (): Promise<ClubEventPublic[]> => {
     const tenantId = await getFirstActiveTenantId();
     if (!tenantId) return [];
 
-    return prisma.clubEvent.findMany({
+    const rows = await prisma.clubEvent.findMany({
       where: { tenantId, isPublished: true },
       orderBy: [{ sortOrder: "asc" }, { startsAt: "desc" }],
     });
+    return rows as unknown as ClubEventPublic[];
   }),
 
   getPublic: publicProcedure
     .input(z.object({ id: z.string().uuid() }))
-    .query(async ({ input }) => {
+    .query(async ({ input }): Promise<ClubEventPublic | null> => {
       const tenantId = await getFirstActiveTenantId();
       if (!tenantId) return null;
 
-      return prisma.clubEvent.findFirst({
+      const row = await prisma.clubEvent.findFirst({
         where: { id: input.id, tenantId, isPublished: true },
       });
+      return row as unknown as ClubEventPublic | null;
     }),
 
-  listForAdmin: protectedProcedure.query(async ({ ctx }) => {
+  listForAdmin: protectedProcedure.query(async ({ ctx }): Promise<ClubEventAdmin[]> => {
     if (!ctx.user.tenantId) {
       throw new TRPCError({ code: "BAD_REQUEST", message: "Sin tenant" });
     }
@@ -129,10 +142,11 @@ export const clubEventsRouter = router({
       PermissionAction.READ
     );
 
-    return prisma.clubEvent.findMany({
+    const rows = await prisma.clubEvent.findMany({
       where: { tenantId: ctx.user.tenantId },
       orderBy: [{ sortOrder: "asc" }, { startsAt: "desc" }],
     });
+    return rows as unknown as ClubEventAdmin[];
   }),
 
   listVersions: protectedProcedure
@@ -171,7 +185,7 @@ export const clubEventsRouter = router({
 
   create: protectedProcedure
     .input(clubEventCreateSchema)
-    .mutation(async ({ ctx, input }) => {
+    .mutation(async ({ ctx, input }): Promise<ClubEventAdmin> => {
       if (!ctx.user.tenantId) {
         throw new TRPCError({ code: "BAD_REQUEST", message: "Sin tenant" });
       }
@@ -189,7 +203,7 @@ export const clubEventsRouter = router({
         _max: { sortOrder: true },
       });
 
-      return prisma.clubEvent.create({
+      const created = await prisma.clubEvent.create({
         data: {
           tenantId: ctx.user.tenantId,
           title: input.title,
@@ -205,16 +219,19 @@ export const clubEventsRouter = router({
           isOnline: input.isOnline ?? false,
           isFeatured: input.isFeatured ?? false,
           promoVideoUrl: input.promoVideoUrl ?? null,
+          pastFlyerUrl: input.pastFlyerUrl ?? null,
+          recapGallery: input.recapGallery ?? undefined,
           isPublished: input.isPublished ?? true,
           category: input.category ?? null,
           sortOrder: input.sortOrder ?? (maxOrder._max.sortOrder ?? -1) + 1,
         },
       });
+      return created as unknown as ClubEventAdmin;
     }),
 
   update: protectedProcedure
     .input(clubEventUpdateSchema)
-    .mutation(async ({ ctx, input }) => {
+    .mutation(async ({ ctx, input }): Promise<ClubEventAdmin> => {
       if (!ctx.user.tenantId) {
         throw new TRPCError({ code: "BAD_REQUEST", message: "Sin tenant" });
       }
@@ -259,14 +276,19 @@ export const clubEventsRouter = router({
       if (patch.isFeatured !== undefined) data.isFeatured = patch.isFeatured;
       if (patch.promoVideoUrl !== undefined)
         data.promoVideoUrl = patch.promoVideoUrl;
+      if (patch.pastFlyerUrl !== undefined)
+        data.pastFlyerUrl = patch.pastFlyerUrl;
+      if (patch.recapGallery !== undefined)
+        data.recapGallery = patch.recapGallery;
       if (patch.isPublished !== undefined) data.isPublished = patch.isPublished;
       if (patch.category !== undefined) data.category = patch.category;
       if (patch.sortOrder !== undefined) data.sortOrder = patch.sortOrder;
 
-      return prisma.clubEvent.update({
+      const updated = await prisma.clubEvent.update({
         where: { id },
         data,
       });
+      return updated as unknown as ClubEventAdmin;
     }),
 
   restoreVersion: protectedProcedure
@@ -296,7 +318,7 @@ export const clubEventsRouter = router({
       const snapshot = version.snapshot as ClubEventSnapshot;
       return prisma.clubEvent.update({
         where: { id: version.eventId },
-        data: snapshotToEventData(snapshot),
+        data: snapshotToEventData(snapshot) as Prisma.ClubEventUpdateInput,
       });
     }),
 

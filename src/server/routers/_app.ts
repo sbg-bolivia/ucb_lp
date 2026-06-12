@@ -3,6 +3,7 @@ import { auditLogsRouter } from "./auditLogs";
 import { awsCommunitiesRouter } from "./awsCommunities";
 import { awsServicesRouter } from "./awsServices";
 import { clubEventsRouter } from "./clubEvents";
+import { clubInquiriesRouter } from "./clubInquiries";
 import { clubProjectsRouter } from "./clubProjects";
 import { companyInfoRouter } from "./companyInfo";
 import { dashboardStatsRouter } from "./dashboardStats";
@@ -18,6 +19,7 @@ export const appRouter = router({
   rbac: rbacRouter,
   companyInfo: companyInfoRouter,
   clubEvents: clubEventsRouter,
+  clubInquiries: clubInquiriesRouter,
   clubProjects: clubProjectsRouter,
   awsServices: awsServicesRouter,
   awsCommunities: awsCommunitiesRouter,

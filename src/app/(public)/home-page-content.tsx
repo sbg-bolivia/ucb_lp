@@ -52,6 +52,14 @@ const ClubHomeCampusGallery = dynamic(
   { loading: () => <SectionPlaceholder /> }
 );
 
+const ClubHomeJoin = dynamic(
+  () =>
+    import("@/components/club-landing/club-home-join").then(
+      (m) => m.ClubHomeJoin
+    ),
+  { loading: () => <SectionPlaceholder short /> }
+);
+
 function SectionPlaceholder({ short }: { short?: boolean }) {
   return (
     <div
@@ -79,7 +87,7 @@ export function HomePageContent() {
       <div style={{ contentVisibility: "auto", containIntrinsicSize: "800px" }}>
         <ClubHomeServices />
       </div>
-      <div style={{ contentVisibility: "auto", containIntrinsicSize: "800px" }}>
+      <div style={{ contentVisibility: "auto", containIntrinsicSize: "360px" }}>
         <ClubHomeEvents />
       </div>
       {isClubFeatureEnabled("projects") ? (
@@ -91,6 +99,9 @@ export function HomePageContent() {
       ) : null}
       <div style={{ contentVisibility: "auto", containIntrinsicSize: "800px" }}>
         <ClubHomeCommunity />
+      </div>
+      <div style={{ contentVisibility: "auto", containIntrinsicSize: "700px" }}>
+        <ClubHomeJoin />
       </div>
       <div style={{ contentVisibility: "auto", containIntrinsicSize: "600px" }}>
         <ClubHomeCampusGallery />

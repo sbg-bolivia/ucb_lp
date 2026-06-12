@@ -182,7 +182,7 @@ export function ClubBenefits() {
             ¿Listo para vivir estos beneficios?
           </p>
           <Link
-            href="/unete"
+            href="/#unete"
             className={`mt-4 inline-flex items-center justify-center rounded-full bg-gradient-to-r px-8 py-3 text-sm font-semibold text-white shadow-lg transition hover:opacity-95 active:scale-[0.98] ${clubTheme.gradientButton}`}
           >
             Únete por Meetup y redes

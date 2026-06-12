@@ -95,7 +95,7 @@ function BannerSlide({
             {banner.subtitle}
           </p>
         ) : null}
-        {banner.linkUrl ? (
+        {banner.linkUrl && variant !== "page" ? (
           <span className="mt-4 inline-flex w-fit items-center gap-1.5 rounded-full bg-white/15 px-4 py-2 text-xs font-semibold text-white backdrop-blur-sm transition-colors group-hover:bg-white/25 sm:text-sm">
             Ver más
             <ArrowRight className="h-3.5 w-3.5" />

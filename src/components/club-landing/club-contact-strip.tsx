@@ -58,7 +58,7 @@ export function ClubContactStrip() {
             <div className="mt-6 text-sm text-slate-500 dark:text-zinc-500">
               Eventos e inscripciones:{" "}
               <Link
-                href="/unete"
+                href="/#unete"
                 className="font-semibold text-[#3b41ff] hover:underline dark:text-violet-300"
               >
                 página Únete (Meetup)
