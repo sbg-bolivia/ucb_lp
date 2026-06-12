@@ -15,6 +15,7 @@ export type ClubEventSnapshot = {
   isFeatured: boolean;
   promoVideoUrl: string | null;
   isPublished: boolean;
+  category: string | null;
   sortOrder: number;
 };
 
@@ -34,6 +35,7 @@ export function eventToSnapshot(event: ClubEvent): ClubEventSnapshot {
     isFeatured: event.isFeatured,
     promoVideoUrl: event.promoVideoUrl,
     isPublished: event.isPublished,
+    category: event.category,
     sortOrder: event.sortOrder,
   };
 }
@@ -54,6 +56,7 @@ export function snapshotToEventData(snapshot: ClubEventSnapshot) {
     isFeatured: snapshot.isFeatured,
     promoVideoUrl: snapshot.promoVideoUrl,
     isPublished: snapshot.isPublished,
+    category: snapshot.category ?? null,
     sortOrder: snapshot.sortOrder,
   };
 }

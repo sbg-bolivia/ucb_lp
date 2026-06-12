@@ -3,7 +3,7 @@
 import { AdminDragHandle, reorderItems } from "@/components/dashboard/AdminDragReorder";
 import { AdminLivePreview } from "@/components/dashboard/AdminLivePreview";
 import { EventVersionHistory } from "@/components/dashboard/EventVersionHistory";
-import { S3ImageUploadField } from "@/components/dashboard/S3ImageUploadField";
+import { EventImageUploadField } from "@/components/dashboard/EventImageUploadField";
 import { S3VideoUploadField } from "@/components/dashboard/S3VideoUploadField";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -34,6 +34,11 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { useTranslation } from "@/hooks/useTranslation";
 import { parseDatetimeLocal, toDatetimeLocalValue } from "@/lib/datetime-local";
+import {
+  EVENT_CATEGORY_LABELS,
+  EVENT_CATEGORY_VALUES,
+  type EventCategoryValue,
+} from "@/lib/event-category";
 import {
   EVENT_STATUS_LABELS,
   REGISTRATION_TYPE_LABELS,
@@ -66,7 +71,7 @@ type FormState = {
   isFeatured: boolean;
   promoVideoUrl: string;
   isPublished: boolean;
-  sortOrder: string;
+  category: EventCategoryValue | "";
 };
 
 /** Fila devuelta por tRPC (fechas pueden venir como string serializado). */
@@ -87,6 +92,7 @@ type ClubEventRow = {
   isFeatured: boolean;
   promoVideoUrl: string | null;
   isPublished: boolean;
+  category: string | null;
   sortOrder: number;
 };
 
@@ -110,7 +116,7 @@ const emptyForm: FormState = {
   isFeatured: false,
   promoVideoUrl: "",
   isPublished: true,
-  sortOrder: "0",
+  category: "",
 };
 
 function eventToForm(e: ClubEventRow): FormState {
@@ -129,7 +135,11 @@ function eventToForm(e: ClubEventRow): FormState {
     isFeatured: e.isFeatured ?? false,
     promoVideoUrl: e.promoVideoUrl ?? "",
     isPublished: e.isPublished,
-    sortOrder: String(e.sortOrder),
+    category:
+      e.category &&
+      EVENT_CATEGORY_VALUES.includes(e.category as EventCategoryValue)
+        ? (e.category as EventCategoryValue)
+        : "",
   };
 }
 
@@ -223,7 +233,6 @@ export default function ClubEventosAdminPage() {
       toast.error("El título es obligatorio");
       return;
     }
-    const sortOrder = Number.parseInt(form.sortOrder, 10);
     const payload = {
       title,
       description: form.description.trim() || null,
@@ -239,7 +248,7 @@ export default function ClubEventosAdminPage() {
       isFeatured: form.isFeatured,
       promoVideoUrl: form.promoVideoUrl.trim() || null,
       isPublished: form.isPublished,
-      sortOrder: Number.isFinite(sortOrder) ? sortOrder : 0,
+      category: form.category || null,
     };
 
     if (editingId) {
@@ -547,13 +556,43 @@ export default function ClubEventosAdminPage() {
                 placeholder="Campus, aula, enlace Zoom..."
               />
             </div>
-            <S3ImageUploadField
+            <div className="space-y-2">
+              <Label>Categoría / etiqueta</Label>
+              <Select
+                value={form.category || "auto"}
+                onValueChange={(v) =>
+                  setForm((f) => ({
+                    ...f,
+                    category:
+                      v === "auto" ? "" : (v as EventCategoryValue),
+                  }))
+                }
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Automática (por título)" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="auto">
+                    Automática (según título/descripción)
+                  </SelectItem>
+                  {EVENT_CATEGORY_VALUES.map((cat) => (
+                    <SelectItem key={cat} value={cat}>
+                      {EVENT_CATEGORY_LABELS[cat]}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <p className="text-xs text-muted-foreground">
+                Define la etiqueta visible en tarjetas: Taller, Charla,
+                Certificación o Networking.
+              </p>
+            </div>
+            <EventImageUploadField
               id="ev-img"
               label="Imagen del evento (opcional)"
               folder="events"
               value={form.imageUrl}
               onChange={(url) => setForm((f) => ({ ...f, imageUrl: url }))}
-              placeholder="Sube a S3 o pega una URL"
             />
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div className="space-y-2">
@@ -669,18 +708,6 @@ export default function ClubEventosAdminPage() {
               <Label htmlFor="ev-pub" className="font-normal cursor-pointer">
                 Publicado en la web
               </Label>
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="ev-sort">Orden (menor = primero)</Label>
-              <Input
-                id="ev-sort"
-                type="number"
-                min={0}
-                value={form.sortOrder}
-                onChange={(e) =>
-                  setForm((f) => ({ ...f, sortOrder: e.target.value }))
-                }
-              />
             </div>
             <AdminLivePreview
               path={editingId ? `/eventos/${editingId}` : null}

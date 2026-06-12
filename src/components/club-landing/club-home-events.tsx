@@ -116,8 +116,8 @@ export function ClubHomeEvents() {
                         src={event.imageUrl?.trim() || FALLBACK_IMAGE}
                         alt={event.title}
                         fill
-                        className="object-contain object-center transition-transform duration-500 group-hover:scale-[1.02]"
-                        sizes="(max-width: 640px) 50vw, 25vw"
+                        className="object-cover object-center transition-transform duration-500 group-hover:scale-[1.03]"
+                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
                         priority={index === 0}
                         loading={index === 0 ? undefined : "lazy"}
                       />

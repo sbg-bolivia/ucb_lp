@@ -6,7 +6,7 @@ export const clubTheme = {
   pageBg:
     "bg-[var(--bg)] text-[var(--text)] dark:bg-[var(--brand-dark)] dark:text-[var(--text-main)]",
   navBar:
-    "border-b border-slate-200/80 bg-white/85 backdrop-blur-xl dark:border-[var(--border-soft)] dark:bg-[var(--aws-ink)]/90",
+    "border-b border-slate-200/50 bg-white/55 backdrop-blur-xl dark:border-white/5 dark:bg-[var(--brand-dark)]/35",
   navLinkIdle:
     "text-slate-600 hover:text-[var(--aws-ink)] dark:text-[var(--text-muted)] dark:hover:text-[var(--text-main)] transition-all duration-300",
   navLinkActive:

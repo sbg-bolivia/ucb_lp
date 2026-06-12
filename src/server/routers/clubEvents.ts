@@ -7,6 +7,7 @@ import {
   snapshotToEventData,
   type ClubEventSnapshot,
 } from "../../lib/club-event-snapshot";
+import { EVENT_CATEGORY_VALUES } from "../../lib/event-category";
 import { prisma } from "../../lib/db";
 import { hasAdminOrContentPermission } from "../../services/rbacService";
 import { PermissionAction } from "../../types/rbac";
@@ -36,6 +37,10 @@ const clubEventCreateSchema = z.object({
   isFeatured: z.boolean().optional(),
   promoVideoUrl: optionalUrl,
   isPublished: z.boolean().optional(),
+  category: z
+    .enum(EVENT_CATEGORY_VALUES as unknown as [string, ...string[]])
+    .optional()
+    .nullable(),
   sortOrder: z.number().int().min(0).max(9999).optional(),
 });
 
@@ -179,6 +184,11 @@ export const clubEventsRouter = router({
       const registrationUrl =
         input.registrationUrl ?? input.externalUrl ?? null;
 
+      const maxOrder = await prisma.clubEvent.aggregate({
+        where: { tenantId: ctx.user.tenantId },
+        _max: { sortOrder: true },
+      });
+
       return prisma.clubEvent.create({
         data: {
           tenantId: ctx.user.tenantId,
@@ -196,7 +206,8 @@ export const clubEventsRouter = router({
           isFeatured: input.isFeatured ?? false,
           promoVideoUrl: input.promoVideoUrl ?? null,
           isPublished: input.isPublished ?? true,
-          sortOrder: input.sortOrder ?? 0,
+          category: input.category ?? null,
+          sortOrder: input.sortOrder ?? (maxOrder._max.sortOrder ?? -1) + 1,
         },
       });
     }),
@@ -249,6 +260,7 @@ export const clubEventsRouter = router({
       if (patch.promoVideoUrl !== undefined)
         data.promoVideoUrl = patch.promoVideoUrl;
       if (patch.isPublished !== undefined) data.isPublished = patch.isPublished;
+      if (patch.category !== undefined) data.category = patch.category;
       if (patch.sortOrder !== undefined) data.sortOrder = patch.sortOrder;
 
       return prisma.clubEvent.update({

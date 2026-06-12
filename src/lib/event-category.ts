@@ -13,11 +13,34 @@ export const EVENT_FILTER_LABELS: Record<EventFilterCategory, string> = {
   networking: "Networking",
 };
 
-/** Clasifica eventos por título/descripción (sin campo extra en BD). */
+export const EVENT_CATEGORY_VALUES = [
+  "workshop",
+  "talk",
+  "certification",
+  "networking",
+] as const;
+
+export type EventCategoryValue = (typeof EVENT_CATEGORY_VALUES)[number];
+
+export const EVENT_CATEGORY_LABELS: Record<EventCategoryValue, string> = {
+  workshop: "Taller práctico",
+  talk: "Charla",
+  certification: "Certificación",
+  networking: "Networking",
+};
+
+/** Clasifica eventos por categoría guardada o, si falta, por título/descripción. */
 export function inferEventCategory(event: {
   title: string;
   description?: string | null;
+  category?: string | null;
 }): Exclude<EventFilterCategory, "all"> {
+  if (
+    event.category &&
+    EVENT_CATEGORY_VALUES.includes(event.category as EventCategoryValue)
+  ) {
+    return event.category as EventCategoryValue;
+  }
   const text = `${event.title} ${event.description ?? ""}`.toLowerCase();
 
   if (/network|alumni|café|networking|egresad/i.test(text)) {
@@ -37,7 +60,11 @@ export function inferEventCategory(event: {
 }
 
 export function matchesEventFilter(
-  event: { title: string; description?: string | null },
+  event: {
+    title: string;
+    description?: string | null;
+    category?: string | null;
+  },
   filter: EventFilterCategory
 ): boolean {
   if (filter === "all") return true;

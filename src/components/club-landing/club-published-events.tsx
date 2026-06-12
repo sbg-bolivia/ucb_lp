@@ -5,6 +5,7 @@ import { ClubPaginationBar } from "@/components/club-landing/club-pagination-bar
 import { useClubLinks } from "@/hooks/useClubLinks";
 import { CLUB } from "@/lib/club-brand";
 import {
+  EVENT_CATEGORY_LABELS,
   EVENT_FILTER_LABELS,
   type EventFilterCategory,
   inferEventCategory,
@@ -53,13 +54,6 @@ function formatDuration(
   if (hours < 1) return "1 hora";
   return `${hours} horas`;
 }
-
-const CATEGORY_LABEL: Record<Exclude<EventFilterCategory, "all">, string> = {
-  workshop: "Taller práctico",
-  talk: "Charla",
-  certification: "Certificación",
-  networking: "Networking",
-};
 
 const CATEGORY_IMAGES: Record<Exclude<EventFilterCategory, "all">, string> = {
   workshop: UNIVERSITY_IMAGES.auditorio,
@@ -174,8 +168,8 @@ export function ClubPublishedEvents() {
                       src={thumb}
                       alt=""
                       fill
-                      className="object-contain object-center transition-transform duration-500 ease-out group-hover:scale-[1.02]"
-                      sizes="(max-width: 640px) 50vw, 25vw"
+                      className="object-cover object-center transition-transform duration-500 ease-out group-hover:scale-[1.03]"
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
                     />
                     <div className="absolute left-3 top-3 flex items-start gap-2">
                       <div className="flex h-11 w-11 shrink-0 flex-col items-center justify-center rounded-lg bg-white/95 text-[var(--aws-ink)] shadow-md dark:bg-[var(--surface-soft)] dark:text-[var(--text-main)]">
@@ -187,7 +181,7 @@ export function ClubPublishedEvents() {
                         </span>
                       </div>
                       <span className="rounded-full border border-white/30 bg-black/40 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-white backdrop-blur-sm">
-                        {CATEGORY_LABEL[cat]}
+                        {EVENT_CATEGORY_LABELS[cat]}
                       </span>
                     </div>
                   </div>

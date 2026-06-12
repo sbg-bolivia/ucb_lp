@@ -34,11 +34,20 @@ export function ClubSiteModel({
 
   useEffect(() => {
     if (variant === "hero") {
-      setVisible(true);
-      void import("./club-hero-model").then((m) => {
-        m.preloadHeroModel?.();
-      });
-      return;
+      const loadModel = () => {
+        setVisible(true);
+        void import("./club-hero-model").then((m) => {
+          m.preloadHeroModel?.();
+        });
+      };
+
+      // Diferir ~11 MB del GLB hasta que el hilo principal esté libre (mejora TBT/LCP).
+      if (typeof window.requestIdleCallback === "function") {
+        const id = window.requestIdleCallback(loadModel, { timeout: 3500 });
+        return () => window.cancelIdleCallback(id);
+      }
+      const timer = window.setTimeout(loadModel, 2200);
+      return () => window.clearTimeout(timer);
     }
     if (!rootRef.current) return;
     const el = rootRef.current;
